@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+      "target": "es2017",
+      "module": "commonjs",
+      "outDir": "./build",
+      "rootDir": "./src",
+      "declaration": false,
+      "noImplicitAny": true,
+      "resolveJsonModule": true,
+      "typeRoots": ["./node_modules/@types"],
+      "removeComments": true
+    },
+    "exclude": ["./build/*", "./node_modules/*"],
+    "include": ["./src/**/*.ts"],
+    "typedocOptions": {
+        "mode": "modules",
+        "out": "docs",
+        "theme": "minimal",
+        "name": "Q-Bot Docs",
+        "readme": "README-docs.md",
+        "plugin": ["typedoc-plugin-external-module-name"],
+        "exclude": ["src/*+(index|.spec|.e2e).ts", "src/commands/**/*.ts"],
+        "hideGenerator": true,
+        "includeVersion": true
+    }
+  }
