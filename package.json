@@ -1,0 +1,19 @@
+{
+  "name": "kwako",
+  "version": "1.0.0",
+  "description": "<div align=\"center\"> <p align=\"center\">   <img src=\"https://cdn.iwa.sh/img/tiles/kwako.png\" alt=\"logo\"/>   <h1>Kwako</h1>",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwa/Kwako.git"
+  },
+  "author": "iwa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iwa/Kwako/issues"
+  },
+  "homepage": "https://github.com/iwa/Kwako#readme"
+}
