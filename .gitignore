@@ -103,5 +103,14 @@ dist
 # TernJS port file
 .tern-port
 
+# macOS Spotlight file
+.DS_Store
+
+# Q-Bot internals
+image/
+
+# TypeScript artifacts
 build/
+
+# Enmap databases
 data/
