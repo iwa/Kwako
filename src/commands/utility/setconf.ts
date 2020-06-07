@@ -32,6 +32,6 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, set
 
 module.exports.help = {
     name: 'setconf',
-    usage: "?ping",
-    desc: "This will send you the ping between Q-Bot and Discord's Servers"
+    usage: "setconf (property) (value)",
+    desc: "Set a custom configuration for this Guild"
 };

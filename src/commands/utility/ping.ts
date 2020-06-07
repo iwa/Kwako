@@ -9,6 +9,6 @@ module.exports.run = async (bot: Client, msg: Message) => {
 
 module.exports.help = {
     name: 'ping',
-    usage: "?ping",
+    usage: "ping",
     desc: "This will send you the ping between Q-Bot and Discord's Servers"
 };
