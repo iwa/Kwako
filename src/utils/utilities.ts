@@ -5,7 +5,6 @@
  * @category Utils
  */
 import * as Discord from "discord.js";
-import { Db } from 'mongodb';
 
 /** @desc Importing package.json to fetch the version tag */
 let packageJson = require('../../package.json')

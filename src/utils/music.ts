@@ -8,7 +8,6 @@ import { Client, Message, MessageEmbed, Util, VoiceChannel, VoiceConnection, Str
 import * as YoutubeStream from 'ytdl-core';
 import { YouTube, Video } from 'popyt';
 const yt = new YouTube(process.env.YT_TOKEN)
-import utilities from './utilities'
 
 /** @desc Voice Channel where the bot connects and plays music */
 let VC = process.env.MUSICVC;
