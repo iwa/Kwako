@@ -91,7 +91,7 @@ bot.on('message', async (msg: Discord.Message) => {
 
     return setTimeout(async () => {
         await mongod.close()
-    }, 31000);
+    }, 1000);
 });
 
 
