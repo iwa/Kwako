@@ -7,8 +7,6 @@
 import * as Discord from "discord.js";
 import { Db } from 'mongodb';
 
-/** @desc Object containing infos about levels (ids, exp amounts, ...) */
-let levels = require('../../lib/levels.json')
 /** @desc Importing package.json to fetch the version tag */
 let packageJson = require('../../package.json')
 
