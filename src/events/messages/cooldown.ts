@@ -48,10 +48,9 @@ export default class cooldown {
      * @param db - Database connection
      */
     static async exp(msg: Message, mongod: MongoClient, db: Db) {
-        if (msg.channel.id == '608630294261530624') return;
-
         if (!cooldownXP[msg.author.id]) {
-            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { exp: 1 } }, { upsert: true });
+            let guild = `exp.${msg.guild.id.toString()}`
+            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: 1 }  }, { upsert: true });
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
             //leveling.levelCheck(msg, (user.exp));
             cooldownXP[msg.author.id] = 1;
