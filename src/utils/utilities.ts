@@ -56,14 +56,14 @@ export default class utilities {
      * @param xp - Total amount of exp points of the user
      */
     static levelInfo(xp: number): { 'level': number, 'current': number, 'max': number } {
-        if (xp < levels[1].amount) {
-            return { 'level': 0, 'current': xp, 'max': levels[1].amount }
-        }
-        for (let i = 1; i < 20; i++) {
-            if (xp >= levels[i].amount && xp < levels[i + 1].amount) {
-                return { 'level': i, 'current': (xp - levels[i].amount), 'max': (levels[i + 1].amount - levels[i].amount) }
+        let x = 25;
+        for (let i = 1; i < 100; i++) {
+            if (xp < x) {
+                return { 'level': i, 'current': xp, 'max': x }
             }
+            xp -= x;
+            x = Math.round(Math.pow(x*1.15, 1.001))
         }
-        return { 'level': 20, 'current': xp, 'max': levels[20].amount }
+        return { 'level': 100, 'current': 1, 'max': 1 }
     }
 }
