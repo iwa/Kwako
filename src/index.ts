@@ -125,7 +125,33 @@ bot.on("guildMemberAdd", async member => {
 bot.on('guildCreate', async guild => {
     let channel = guild.channels.cache.find(val => val.name === 'general');
     if(channel) {
-        await (channel as Discord.TextChannel).send('Hey, thanks for inviting me!\nYou can learn how to configure me here:\nhttps://iwa.sh/Kwako').catch(() => {return;})
+        await (channel as Discord.TextChannel).send({
+            "embed": {
+              "title": "Hey, thanks for inviting me!",
+              "description": "Here are some useful tips to begin with:",
+              "color": 16774804,
+              "footer": {
+                "text": "💛"
+              },
+              "fields": [
+                {
+                  "name": "How to configure me:",
+                  "value": "https://iwa.sh/Kwako",
+                  "inline": true
+                },
+                {
+                  "name": "List of the commands",
+                  "value": "`!help`",
+                  "inline": true
+                },
+                {
+                  "name": "Command-specific help",
+                  "value": "`!help (command name)`",
+                  "inline": true
+                }
+              ]
+            }
+          }).catch(() => {return;})
         if(!guild.me.permissions.has(305523776))
             await (channel as Discord.TextChannel).send(':x: **Some needed perms are unavailable. Quitting. Please re-invite me with all the needed perms.**').catch(() => {return;})
     }
