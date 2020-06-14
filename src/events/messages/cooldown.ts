@@ -6,6 +6,7 @@
  */
 import { MongoClient, Db } from 'mongodb';
 import { Message } from 'discord.js';
+import levelCheck from '../../utils/levelCheck';
 
 let cooldownMsg: stringKeyArray = [], cooldownXP: stringKeyArray = [];
 interface stringKeyArray {
@@ -52,7 +53,7 @@ export default class cooldown {
             let guild = `exp.${msg.guild.id.toString()}`
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: 1 }  }, { upsert: true });
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-            //leveling.levelCheck(msg, (user.exp));
+            levelCheck(msg, (user.exp));
             cooldownXP[msg.author.id] = 1;
             return setTimeout(async () => { delete cooldownXP[msg.author.id] }, 5000)
         }
