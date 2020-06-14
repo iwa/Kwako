@@ -44,7 +44,7 @@ let count: stringKeyArray = {
  * @param type - Type of actions (hug, pat...)
  */
 export default async function actionsRun(bot: Client, msg: Message, args: string[], db: Db, type: string) {
-    if (args.length <= 10) {
+    if (args.length <= 4) {
         if (msg.mentions.everyone) return;
         if (msg.mentions.members.has(msg.author.id))
             return msg.channel.send({ "embed": { "title": `:x: > **You can't ${type} yourself!**`, "color": 13632027 } });
@@ -94,22 +94,11 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
         }
 
-        let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-        await db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [type]: msg.mentions.members.size } }, { upsert: true });
-        await db.collection('user').updateOne({ '_id': { $eq: bot.user.id } }, { $inc: { [type]: msg.mentions.members.size } }, { upsert: true });
-
-        embed.setFooter(`You have given ${(user[type] ? user[type] : 0) + msg.mentions.members.size} ${type}s`)
         return msg.channel.send(embed)
             .then(() => {
                 console.log(`info: ${type} sent by ${msg.author.tag}`);
             })
             .catch(console.error);
 
-    } else if (args.length > 2) {
-        if (type == "hug") {
-            msg.reply(`You can't ${type} them all, you can't fit more than two people in a hug! :(`)
-        } else {
-            msg.reply(`You can't ${type} them all, you only have 2 arms! :(`)
-        }
     }
 }
