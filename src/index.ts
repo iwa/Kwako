@@ -5,26 +5,21 @@ const commands: Discord.Collection<any, any> = new Discord.Collection();
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import Enmap = require('enmap');
-const settings = new Enmap({
-    name: "settings",
-    fetchAll: false,
-    autoFetch: true,
-    cloneLevel: 'deep'
-});
-
-const defaultSettings = {
-    prefix: "!",
-    welcomeMessage: "",
-    starboardChannel: ""
-}
-
 import * as fs from 'fs';
 
 import { MongoClient } from 'mongodb';
 
 // MongoDB constants
 const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
+
+const settings = new Map();
+const defaultSettings = {
+    prefix: "!",
+    welcomeMessage: "",
+    starboardChannel: "",
+    something: ""
+}
+settings.set('_default', defaultSettings)
 
 import cooldown from './events/messages/cooldown';
 import ready from './events/ready';
@@ -70,12 +65,17 @@ bot.on('message', async (msg: Discord.Message) => {
     if(!msg.guild || msg.author.bot) return;
     if (msg.channel.type != "text") return;
 
-    const guildConf = settings.ensure(msg.guild.id, defaultSettings);
-
-    await cooldown.message(msg);
-
     let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
     let db = mongod.db(dbName);
+    let guildConf = await settings.get(msg.guild.id);
+
+    if(!guildConf) {
+        guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+        guildConf = guildConf ? guildConf.config : defaultSettings;
+        settings.set(msg.guild.id, guildConf);
+    }
+
+    await cooldown.message(msg);
 
     if (!msg.content.startsWith(guildConf.prefix))
         return cooldown.exp(msg, mongod, db);
@@ -96,8 +96,19 @@ bot.on('message', async (msg: Discord.Message) => {
 
 
 bot.on("guildMemberAdd", async member => {
-    settings.ensure(member.guild.id, defaultSettings);
-    let welcomeMessage = settings.get(member.guild.id, "welcomeMessage");
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
+    let guildConf = await settings.get(member.guild.id);
+
+    if(!guildConf) {
+        guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+        guildConf = guildConf ? guildConf.config : defaultSettings;
+        settings.set(member.guild.id, guildConf);
+    }
+
+    await mongod.close()
+
+    let welcomeMessage = guildConf.welcomeMessage;
 
     if(!welcomeMessage) return;
 
@@ -112,16 +123,32 @@ bot.on("guildMemberAdd", async member => {
   });
 
 
-bot.on("guildDelete", guild => {
+bot.on("guildDelete", async guild => {
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
+
     settings.delete(guild.id);
+    await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
+    await mongod.close()
 });
 
 
 // Starboard Event
 import starboard from './events/starboard';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
-    settings.ensure(reaction.message.guild.id, defaultSettings);
-    let starboardChannel = settings.get(reaction.message.guild.id, "starboardChannel");
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
+    let guildConf = await settings.get(reaction.message.guild.id);
+
+    if(!guildConf) {
+        guildConf = await db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
+        guildConf = guildConf ? guildConf.config : defaultSettings;
+        settings.set(reaction.message.guild.id, guildConf);
+    }
+
+    await mongod.close()
+
+    let starboardChannel = guildConf.starboardChannel;
 
     if(!starboardChannel) return;
 
