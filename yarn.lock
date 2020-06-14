@@ -675,6 +675,11 @@ tar@^6.0.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
+timespan-parser@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/timespan-parser/-/timespan-parser-1.0.2.tgz#eec341948779ba5ef56bd05792c8cb173efcf6d5"
+  integrity sha512-18qhwC1ok5y5CS0PIXUB7wHPe8TbbQLj/Z3ANeFLh6dipPGZzWxWdr18yKuT4QnBWq09mJTSM5YrBvuNXUbXLg==
+
 tweetnacl@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
