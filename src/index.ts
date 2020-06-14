@@ -169,5 +169,11 @@ bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author
     reactionRoles.remove(reaction, author);
 });
 
+// Update guilds count every 5min
+setInterval(async () => {
+    if(process.env.SLEEP == '0')
+        await bot.user.setPresence({ activity: { name: `with ${bot.guilds.cache.size} guilds`, type: 0 }, status: 'online' })
+}, 300000);
+
 // Login
 bot.login(process.env.TOKEN)
