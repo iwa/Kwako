@@ -8,6 +8,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
 module.exports.help = {
     name: 'lead',
-    usage: "?lead",
+    usage: "lead",
     desc: "Show the exp points leaderboard of the server\n(alias of `leaderboard`)"
 };

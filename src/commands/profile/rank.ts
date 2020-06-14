@@ -8,6 +8,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 
 module.exports.help = {
     name: 'rank',
-    usage: "?rank [mention someone]",
+    usage: "rank [mention someone]",
     desc: "Print your or someone's profile\n(alias of ?profile)"
 };

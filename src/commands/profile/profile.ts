@@ -14,7 +14,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 
 module.exports.help = {
     name: 'profile',
-    usage: "?profile [mention someone]",
+    usage: "profile [mention someone]",
     desc: "Print your or someone's profile"
 };
 
