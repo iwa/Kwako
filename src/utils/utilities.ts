@@ -20,10 +20,10 @@ export default class utilities {
         let embed = {
             "embed": {
                 "title": "**Bot Infos**",
-                "description": "Kwako is developed and handled by <@125325519054045184>.\nYou can help contribute to Q-Bot's code [here!](https://github.com/iwa/Q-Bot)\n\nLanguage : `TypeScript` using NodeJS\nAPI Access : `discord.js` package on npm\n\nYou can access to the index of commands by typing `?help`\n\nAll my work is done for free, but you can still financially support me [here](https://www.patreon.com/iwaQwQ)",
+                "description": "Kwako is developed and handled by <@125325519054045184>.\n\nLanguage : `TypeScript` using NodeJS\nAPI Access : `discord.js` package\n\nYou can access to the index of commands by typing `?help`\n\nAll my work is done for free, but you can still financially support me [here](https://www.patreon.com/iwaQwQ)",
                 "color": 13002714,
                 "footer": {
-                    "text": `Created with ♥ by iwa & contributors | Copyright © iwa, v${packageJson.version}`
+                    "text": `Created with ♥ by iwa | Copyright © iwa, v${packageJson.version}`
                 },
                 "thumbnail": {
                     "url": iwaUrl
