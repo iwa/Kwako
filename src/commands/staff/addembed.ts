@@ -26,5 +26,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
 module.exports.help = {
     name: 'addembed',
-    usage: "?addembed"
+    usage: "addembed",
+    staff: true
 };

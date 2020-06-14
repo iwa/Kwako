@@ -6,5 +6,7 @@ module.exports.run = (bot: Client, msg: Message) => {
 };
 
 module.exports.help = {
-    name: 'forceskip'
+    name: 'forceskip',
+    usage: 'forceskip',
+    staff: true
 };

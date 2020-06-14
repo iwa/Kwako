@@ -25,5 +25,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
 module.exports.help = {
     name: 'editembed',
-    usage: "?editembed"
+    usage: "editembed (message id) (new embed)",
+    staff: true
 };

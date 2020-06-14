@@ -36,5 +36,6 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, com
 module.exports.help = {
     name: 'setconf',
     usage: "setconf (property) (value)",
-    desc: "Set a custom configuration for this Guild"
+    desc: "Set a custom configuration for this Guild",
+    staff: true
 };
