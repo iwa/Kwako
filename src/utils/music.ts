@@ -9,9 +9,6 @@ import * as YoutubeStream from 'ytdl-core';
 import { YouTube, Video } from 'popyt';
 const yt = new YouTube(process.env.YT_TOKEN)
 
-/** @desc Voice Channel where the bot connects and plays music */
-let VC = process.env.MUSICVC;
-
 let queue: { url: string, title: string, length: string }[] = []
 let skippers: string[] = []
 let skipReq = 0
@@ -29,9 +26,9 @@ module.exports = class music {
     static async play(bot: Client, msg: Message, args: string[]) {
         if (!args[0]) return;
 
-        let voiceChannel: any = msg.guild.channels.cache.find(val => val.id == VC)
+        let voiceChannel:VoiceChannel = msg.member.voice.channel;
         if (voiceChannel == null) return;
-        if (!voiceChannel.members.find((val: any) => val.id == msg.author.id)) return msg.channel.send(":x: > **You need to be connected in the voice channel before I join it !**")
+        if (!voiceChannel.members.find((val: any) => val.id == msg.author.id)) return msg.channel.send(":x: > **You need to be connected in a voice channel before I join it !**")
 
         let video_url = args[0].split('&')
 
@@ -190,10 +187,10 @@ module.exports = class music {
      * @param msg - Message object
      */
     static async skip(bot: Client, msg: Message) {
-        let voiceChannel = msg.guild.channels.cache.find(val => val.id == VC)
+        let voiceChannel:VoiceChannel = msg.member.voice.channel;
 
-        let voiceConnection = bot.voice.connections.find(val => val.channel.id == VC);
-        if (!voiceConnection) {
+        let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        if (!queue[0]) {
             const embed = new MessageEmbed();
             embed.setColor('RED')
             embed.setTitle("I'm not playing anything right now!")
@@ -251,12 +248,12 @@ module.exports = class music {
      * @param msg - Message object
      */
     static async stop(msg: Message) {
-        let voiceChannel: any = msg.guild.channels.cache.find(val => val.id == VC)
+        let voiceChannel:VoiceChannel = msg.member.voice.channel;
 
         queue = [];
 
         await msg.react('✅');
-        await voiceChannel.leave()
+        voiceChannel.leave()
         console.log(`musc: stop by ${msg.author.tag}`)
     }
 
@@ -269,8 +266,9 @@ module.exports = class music {
     static async forceskip(bot: Client, msg: Message) {
         if (!msg.member.hasPermission('MANAGE_GUILD')) return;
 
-        let voiceConnection = bot.voice.connections.find(val => val.channel.id == VC);
-        if (!voiceConnection) {
+        let voiceChannel:VoiceChannel = msg.member.voice.channel;
+        let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        if (!queue[0]) {
             const embed = new MessageEmbed();
             embed.setColor('RED')
             embed.setTitle("I'm not playing anything right now!")
@@ -319,8 +317,9 @@ module.exports = class music {
      * @param bot - Discord Client object
      */
     static async np(msg: Message, bot: Client) {
-        let voiceConnection = bot.voice.connections.find(val => val.channel.id == VC);
-        if (!voiceConnection) {
+        let voiceChannel:VoiceChannel = msg.member.voice.channel;
+        let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        if (!queue[0]) {
             const embed = new MessageEmbed();
             embed.setColor('RED')
             embed.setTitle("I'm not playing anything right now!")
@@ -484,7 +483,8 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
  * @returns The existing StreamDispatcher (if exists)
  */
 async function fetchDispatcher(bot: Client, msg: Message): Promise<StreamDispatcher> {
-    let voiceConnection = bot.voice.connections.find(val => val.channel.id == VC);
+    let voiceChannel:VoiceChannel = msg.member.voice.channel;
+    let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
     if (!voiceConnection) {
         const embed = new MessageEmbed();
         embed.setColor('RED')
