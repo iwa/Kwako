@@ -21,7 +21,20 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, com
             else
                 return msg.reply("there's a problem with this channel!")
         } else
-            return msg.reply('please')
+            return msg.reply('please mention the channel!')
+    }
+
+    if(prop.includes('Role')) {
+        let role = args[args.length - 1];
+        if(role.startsWith('<@&') && role.endsWith('>')) {
+            role = role.slice(3, (role.length-1))
+            let chan = msg.guild.roles.resolve(role);
+            if(chan && chan.editable)
+                clearValue = role;
+            else
+                return msg.reply("there's a problem with this role!")
+        } else
+            return msg.reply('please mention the role!')
     }
 
     let config:any = settings.get(msg.guild.id);
