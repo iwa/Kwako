@@ -1,7 +1,7 @@
 import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb';
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, settings:Map<string, Object>) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, commands:any, settings:Map<string, Object>) => {
     if(!msg.member.hasPermission('MANAGE_GUILD')) return msg.delete();
 
     const [prop, ...value] = args;
