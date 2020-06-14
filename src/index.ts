@@ -87,7 +87,7 @@ bot.on('message', async (msg: Discord.Message) => {
     if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
     if (!cmd) return;
-    else await cmd.run(bot, msg, args, db, settings);
+    else await cmd.run(bot, msg, args, db, commands, settings);
 
     return setTimeout(async () => {
         await mongod.close()
