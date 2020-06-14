@@ -1,14 +1,13 @@
 import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb';
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, settings:any) => {
-    if(!msg.member.hasPermission('MANAGE_GUILD'))
-        return msg.delete();
+module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, settings:Map<string, Object>) => {
+    if(!msg.member.hasPermission('MANAGE_GUILD')) return msg.delete();
 
     const [prop, ...value] = args;
+    let defaultSettings:any = settings.get('_default');
 
-    if(!settings.has(msg.guild.id, prop))
-        return msg.reply("This key is not in the configuration.");
+    if(defaultSettings[prop] == null) return msg.channel.send(":x: **This key does not exist in the configuration**");
 
     let clearValue = value.join(" ");
 
@@ -25,9 +24,13 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, set
             return msg.reply('please')
     }
 
-    settings.set(msg.guild.id, clearValue, prop);
+    let config:any = settings.get(msg.guild.id);
+    config[prop] = clearValue
+    await db.collection('settings').updateOne({ '_id': msg.guild.id }, { $set: { config: config } }, { upsert: true });
 
-    msg.channel.send(`\`${prop}\` has been changed to: **${value.join(" ")}**`);
+    settings.set(msg.guild.id, config);
+
+    msg.channel.send(`✅ \`${prop}\` has been changed to: **${value.join(" ")}**`);
 };
 
 module.exports.help = {
