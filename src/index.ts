@@ -16,8 +16,7 @@ const settings = new Map();
 const defaultSettings = {
     prefix: "!",
     welcomeMessage: "",
-    starboardChannel: "",
-    something: ""
+    starboardChannel: ""
 }
 settings.set('_default', defaultSettings)
 
