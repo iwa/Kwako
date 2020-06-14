@@ -156,10 +156,8 @@ module.exports = class music {
      */
     static list(msg: Message, args: string[]) {
         if (args.length > 0) return;
-        let queu = queue.get(msg.guild.id);
+        let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
         if (queu.length < 0) return;
-
-        msg.channel.startTyping();
 
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
@@ -181,7 +179,6 @@ module.exports = class music {
         }
 
         if (queu.length > 10) embed.setFooter(`and ${(queu.length - 10)} more...`)
-        msg.channel.stopTyping(true);
         msg.channel.send(embed);
 
         console.log(`musc: show queue by ${msg.author.tag}`)
@@ -204,7 +201,7 @@ module.exports = class music {
             return msg.channel.send(embed);
         }
 
-        let skipperz = skippers.get(msg.guild.id)
+        let skipperz = skippers.get(msg.guild.id) ? skippers.get(msg.guild.id) : []
         if (skipperz.indexOf(msg.author.id) == -1) {
             skipperz.push(msg.author.id);
             skippers.set(msg.guild.id, skipperz);
@@ -461,7 +458,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
 async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string, data: void | YoutubeStream.videoInfo) {
     msg.channel.startTyping();
     let error = false;
-    let queu = queue.get(msg.guild.id);
+    let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
     if (queu && !queu.find(song => song.url === video_url)) {
         data = await YoutubeStream.getInfo(video_url).catch(() => { error = true; })
         if (!error && data) {
