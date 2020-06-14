@@ -11,16 +11,5 @@
       "removeComments": true
     },
     "exclude": ["./build/*", "./node_modules/*"],
-    "include": ["./src/**/*.ts"],
-    "typedocOptions": {
-        "mode": "modules",
-        "out": "docs",
-        "theme": "minimal",
-        "name": "Q-Bot Docs",
-        "readme": "README-docs.md",
-        "plugin": ["typedoc-plugin-external-module-name"],
-        "exclude": ["src/*+(index|.spec|.e2e).ts", "src/commands/**/*.ts"],
-        "hideGenerator": true,
-        "includeVersion": true
-    }
-  }
+    "include": ["./src/**/*.ts"]
+}
