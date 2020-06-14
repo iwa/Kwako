@@ -16,7 +16,8 @@ const settings = new Map();
 const defaultSettings = {
     prefix: "!",
     welcomeMessage: "",
-    starboardChannel: ""
+    starboardChannel: "",
+    muteRole: ""
 }
 settings.set('_default', defaultSettings)
 

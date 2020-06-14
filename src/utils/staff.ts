@@ -40,9 +40,7 @@ export default class staff {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async mute(bot: Client, msg: Message, args: string[]): Promise<void> {
-        if (!msg.member.hasPermission('MANAGE_GUILD')) return;
-
+    static async mute(bot: Client, msg: Message, args: string[], muteRole: string): Promise<void> {
         if (args.length >= 2 && msg.channel.type != 'dm') {
             if (msg.mentions.everyone) return;
 
@@ -69,7 +67,7 @@ export default class staff {
             embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\` by **${msg.author.username}**`)
 
             try {
-                await mention.roles.add('636254696880734238')
+                await mention.roles.add(muteRole)
                 let reply = await msg.channel.send(embed)
                 let channel = await bot.channels.fetch(process.env.LOGTC);
                 let embedLog = new MessageEmbed();
@@ -82,7 +80,7 @@ export default class staff {
                 await (channel as TextChannel).send(embedLog);
                 setTimeout(async () => {
                     await reply.delete()
-                    return mention.roles.remove('636254696880734238')
+                    return mention.roles.remove(muteRole)
                 }, timeParsed)
             } catch (err) {
                 console.error(err);
