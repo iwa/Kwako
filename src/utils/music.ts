@@ -11,9 +11,9 @@ const yt = new YouTube(process.env.YT_TOKEN)
 
 //let queue: { url: string, title: string, length: string }[] = []
 let queue:Map<string, any[]> = new Map();
-let skippers: string[] = []
-let skipReq = 0
-let loop = 0
+let skippers:Map<string, string[]> = new Map();
+let skipReq:Map<string, number> = new Map();
+let loop:Map<string, boolean> = new Map();
 
 module.exports = class music {
 
@@ -204,9 +204,14 @@ module.exports = class music {
             return msg.channel.send(embed);
         }
 
-        if (skippers.indexOf(msg.author.id) == -1) {
-            skippers.push(msg.author.id);
-            skipReq++;
+        let skipperz = skippers.get(msg.guild.id)
+        if (skipperz.indexOf(msg.author.id) == -1) {
+            skipperz.push(msg.author.id);
+            skippers.set(msg.guild.id, skipperz);
+
+            let reqs = skipReq.get(msg.guild.id) ? skipReq.get(msg.guild.id) : 0;
+            reqs++;
+            skipReq.set(msg.guild.id, reqs)
 
             const embed = new MessageEmbed();
             embed.setColor('GREEN')
@@ -215,19 +220,19 @@ module.exports = class music {
 
             console.log(`info: voteskip by ${msg.author.tag}`)
 
-            if (skipReq >= Math.ceil((voiceChannel.members.size - 1) / 2)) {
+            if (reqs >= Math.ceil((voiceChannel.members.size - 1) / 2)) {
                 let dispatcher = voiceConnection.dispatcher
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("Half of the people have voted, skipping...")
                 msg.channel.send(embed)
-                loop = 0;
+                loop.set(msg.guild.id, false);
                 dispatcher.end()
                 console.log(`musc: skipping song`)
             } else {
                 const embed = new MessageEmbed();
                 embed.setColor('BRIGHT_RED')
-                embed.setTitle("You need **" + (Math.ceil((voiceChannel.members.size - 1) / 2) - skipReq) + "** more skip vote to skip!")
+                embed.setTitle("You need **" + (Math.ceil((voiceChannel.members.size - 1) / 2) - reqs) + "** more skip vote to skip!")
                 msg.channel.send(embed)
             }
         } else {
@@ -290,7 +295,7 @@ module.exports = class music {
         embed.setColor('GREEN')
         embed.setAuthor("Forced skip...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
         msg.channel.send(embed)
-        loop = 0;
+        loop.set(msg.guild.id, false);
 
         dispatcher.end()
 
@@ -302,16 +307,16 @@ module.exports = class music {
      * @param msg - Message object
      */
     static loop(msg: Message) {
-        if (loop == 0) {
-            loop = 1
+        let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+        if (!loo) {
+            loop.set(msg.guild.id, true)
             console.log(`info: loop enabled by ${msg.author.tag}`)
             const embed = new MessageEmbed();
             embed.setAuthor("🔂 Looping the current song...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
-        }
-        else if (loop == 1) {
-            loop = 0
+        } else if (loo) {
+            loop.set(msg.guild.id, false)
             console.log(`info: loop disabled by ${msg.author.tag}`)
             const embed = new MessageEmbed();
             embed.setAuthor("This song will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
@@ -345,7 +350,8 @@ module.exports = class music {
         embed.setTitle("**:cd: Now Playing:**")
 
         let desc = `[${queu[0].title}](${queu[0].url})`;
-        if (loop == 1) desc += "\n🔂 Currently looping this song - type `?loop` to disable";
+        let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+        if (loo) desc += "\n🔂 Currently looping this song - type `?loop` to disable";
         embed.setDescription(desc)
 
         let time = new Date(voiceConnection.dispatcher.streamTime).toISOString().slice(11, 19)
@@ -401,7 +407,8 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
 
     voiceConnection.play(video, { volume: 0.8, bitrate: 64000, highWaterMark: 48, fec: true, plp: 0 })
         .on('start', async () => {
-            if (loop == 0) {
+            let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+            if (!loo) {
                 let date = new Date(null)
                 date.setSeconds(parseInt(queu[0].length, 10))
                 let timeString = date.toISOString().substr(11, 8)
@@ -417,7 +424,8 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 console.log(`musc: playing: ${queu[0].title}`)
             }
         }).on('finish', () => {
-            if (loop == 0) {
+            let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+            if (!loo) {
                 queu.shift()
                 queue.set(msg.guild.id, queu)
             }
@@ -426,15 +434,17 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("🚪 Queue finished. Disconnecting...")
-                queue.delete(msg.guild.id)
-                skipReq = 0;
-                skippers = [];
-                loop = 0;
+
+                queue.delete(msg.guild.id);
+                skipReq.delete(msg.guild.id);
+                skippers.delete(msg.guild.id);
+                loop.delete(msg.guild.id);
+
                 msg.channel.send(embed)
                 voiceChannel.leave();
             } else {
-                skipReq = 0;
-                skippers = [];
+                skipReq.delete(msg.guild.id);
+                skippers.delete(msg.guild.id);
                 playSong(msg, voiceConnection, voiceChannel)
             }
         }).on('error', console.error);
