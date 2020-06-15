@@ -206,6 +206,61 @@ bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author
     reactionRoles.remove(reaction, author);
 });
 
+// Logs channel
+import messageDelete from './events/logs/messageDelete';
+bot.on('messageDelete', async msg => {
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
+    let guildConf = await settings.get(msg.guild.id);
+
+    if(!guildConf) {
+        guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+        guildConf = guildConf ? guildConf.config : defaultSettings;
+        settings.set(msg.guild.id, guildConf);
+    }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) return;
+
+    return messageDelete(msg, bot, modLogChannel);
+});
+
+import guildMemberRemove from './events/logs/guildMemberRemove';
+bot.on('guildMemberRemove', async member => {
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
+    let guildConf = await settings.get(member.guild.id);
+
+    if(!guildConf) {
+        guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+        guildConf = guildConf ? guildConf.config : defaultSettings;
+        settings.set(member.guild.id, guildConf);
+    }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) return;
+
+	return guildMemberRemove(member, bot, modLogChannel);
+});
+
+import guildBanAdd from './events/logs/guildBanAdd';
+bot.on('guildBanAdd', async (guild, user) => {
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
+    let guildConf = await settings.get(guild.id);
+
+    if(!guildConf) {
+        guildConf = await db.collection('settings').findOne({ '_id': { $eq: guild.id } });
+        guildConf = guildConf ? guildConf.config : defaultSettings;
+        settings.set(guild.id, guildConf);
+    }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) return;
+
+	return guildBanAdd(guild, user, bot, modLogChannel);
+});
+
 // Update guilds count every 5min
 setInterval(async () => {
     if(process.env.SLEEP == '0')
