@@ -55,7 +55,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 module.exports.help = {
     name: 'help',
     usage: "help",
-    desc: "Well... Obviously it sends you the list of the commands"
+    desc: "Sends you the list of the commands available"
 };
 
 async function sendHelp(msg: Message, config: any) {
