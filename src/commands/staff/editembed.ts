@@ -12,7 +12,12 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     let embed = args.join(' ')
     embed = JSON.parse(embed)
 
-    await fetchMsg.edit(embed)
+    let sent = await fetchMsg.edit(embed)
+
+    let embed2 = sent.embeds[0];
+    embed2.setFooter(sent.id);
+
+    await sent.edit(embed2);
 
     if (msg.deletable) {
         try {
