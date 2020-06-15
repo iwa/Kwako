@@ -29,12 +29,25 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
     let memberDiscord = await msg.guild.members.fetch(id)
 
     if (!userDB || !userDB.exp[msg.guild.id]) {
-        let embed = new MessageEmbed();
+        let user = {
+            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
+            username: userDiscord.username,
+            positionExp: "?",
+            level: 1,
+            current: 0,
+            max: 25,
+            userColor: memberDiscord.displayHexColor
+        }
+        let html = await ejs.renderFile('views/profile.ejs', { user });
+        let file = await imGenerator(508, 168, html, userDiscord.id, 'prof')
 
-        embed.setTitle(userDiscord.tag)
-        embed.setDescription(`Level 1\n(0/25 exp)`)
-        embed.setThumbnail(userDiscord.avatarURL({ format: 'png', dynamic: false, size: 256 }))
-        return msg.channel.send(embed).then(() => { msg.channel.stopTyping(true) });
+        try {
+            console.log(`info: profile by ${msg.author.tag}`)
+            return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
+        } catch (err) {
+            console.error(err)
+            return msg.channel.send(":x: > An error occured. Please retry later.")
+        }
     }
 
     let guild = `exp.${msg.guild.id.toString()}`
@@ -43,10 +56,9 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
     let lvlInfo = utilities.levelInfo(userDB.exp[msg.guild.id]);
 
     let user = {
-        avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 256 }),
+        avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
         username: userDiscord.username,
-        exp: userDB.exp[msg.guild.id],
-        positionExp: leadXP.findIndex(val => val._id == id),
+        positionExp: (leadXP.findIndex(val => val._id == id) + 1),
         level: lvlInfo.level,
         current: lvlInfo.current,
         max: lvlInfo.max,
