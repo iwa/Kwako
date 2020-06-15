@@ -1,5 +1,6 @@
 import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb'
+import utilities from '../../utils/utilities';
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands:any, settings:Map<string, Object>) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
@@ -26,7 +27,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
     await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
-    return msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}**.`);
+    await giveRoleToUpper(msg, db, role, parseInt(args[0]));
+
+    return msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}** and to members currently above this level.`);
 };
 
 module.exports.help = {
@@ -34,3 +37,16 @@ module.exports.help = {
     usage: "addlevelrole (level number) (mention role)",
     staff: true
 };
+
+async function giveRoleToUpper (msg:Message, db:Db, role:string, level:number) {
+    let exp = utilities.expForLevel(level);
+    let guild = `exp.${msg.guild.id.toString()}`
+    let list = await db.collection('user').find({ [guild]: { $gte: exp } }).toArray();
+
+    if(list) {
+        for(const user of list) {
+            let member = await msg.guild.members.fetch(user._id);
+            await member.roles.add(role).catch(() => {return});
+        }
+    }
+}

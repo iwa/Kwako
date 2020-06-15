@@ -63,4 +63,14 @@ export default class utilities {
         }
         return { 'level': 100, 'current': 1, 'max': 1 }
     }
+
+    static expForLevel(level: number): number {
+        let x = 25;
+        let xp = 0;
+        for (let i = 1; i <= level; i++) {
+            xp += x;
+            x = Math.round(Math.pow(x*1.15, 1.001))
+        }
+        return xp;
+    }
 }
