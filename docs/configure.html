@@ -1,26 +1,45 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Welcome to the Official Kwako Wiki</title>
+        <title>⬅️ Go back to the homepage</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="bear-note-unique-identifier" content="9EB12606-DD74-4DF7-B70E-E40CC8101C4D-13991-00014A31067FDD5E"
-        <meta name="created" content="2020-06-14T15:45:32+0200"/>
-        <meta name="modified" content="2020-06-15T21:23:23+0200"/>
+        <meta name="bear-note-unique-identifier" content="FFFCA500-825F-4380-94B2-361D77B70A45-83225-00018A334DBB4E0C"
+        <meta name="created" content="2020-06-15T14:40:51+0200"/>
+        <meta name="modified" content="2020-06-15T22:46:29+0200"/>
         <meta name="tags" content=""/>
         <meta name="last device" content="Nokushi"/>
     </head>
     <body>
         <div class="note-wrapper">
-            <h1 id="Welcome to the Official Kwako Wiki">Welcome to the Official Kwako Wiki</h1>
-<p>Through this wiki, I'll try to help you configuring and using Kwako on your server.</p>
-<hr>
-<ul><li><a href="configure.html">Invite & Configure Kwako</a>
-<ul><li>	<a href="welcome-message.html">Set up a welcome message</a>
-</li><li>	<a href="reaction-roles.html">Set up reactions-roles messages</a>
-</li><li>	<a href="level-roles.html">Set up roles given at certain levels</a></li></ul>
+            <p><a href="index.html">⬅️ Go back to the homepage</a></p>
+<h2 id="Inviting Kwako">Inviting Kwako</h2>
+<p>You can invite Kwako to your server using <a href="https://discord.com/oauth2/authorize/?permissions=305523776&scope=bot&client_id=630488699347533854">this link</a>.</p>
+<br>
+<p><b>Note:</b> Please make sure to add Kwako with all the required permissions, or the bot won't work correctly. If the bot detects that it don't has the needed perms, <u>it'll automatically leave the server.</u></p>
+<br>
+<h2 id="Configure Kwako">Configure Kwako</h2>
+<p>Kwako supports per-server configuration. In order to configure your server, you'll firstly have to make sure that you have the <code class='code-inline'>Manage Server</code> permission. Members with this permissions can access to <u>every staff-related commands</u>.</p>
+<br>
+<p>The command used to configure the bot on your server is <code class='code-inline'>!setconf</code>.</p>
+<p>Actually, these properties are configurable:</p>
+<ul><li><code class='code-inline'>prefix</code>, Kwako's prefix. <mark>(default:</mark> <code class='code-inline'>!</code><mark>)</mark>
+</li><li><code class='code-inline'>welcomeMessage</code>, message that Kwako sends in DM to every new members. <mark>(default: none)</mark>
+</li><li><code class='code-inline'>starboardChannel</code>, to designate a channel used as a Starboard. <mark>(default: none)</mark>
+</li><li><code class='code-inline'>muteRole</code>, mute role in order to use the <code class='code-inline'>mute</code> command. <mark>(default: none)</mark>
+</li><li><code class='code-inline'>modLogChannel</code>, a channel were Kwako will send every info related to: bans, kicks, mutes & message deletions. <mark>(default: none)</mark>
 </li></ul>
-
+<br>
+<p>To use the command, do:</p>
+<p><code class='code-inline'>!setconf (property) (value)</code></p>
+<br>
+<p>For example:</p>
+<p><code class='code-inline'>!setconf prefix ?</code></p>
+<br>
+<p><b>Note:</b> In order to set roles or channels, mention them. Make sure they are colored as the following screenshot shows, or it won't work.</p>
+<p><img src='configure/Screen%20Shot%202020-06-14%20at%2015.56.21.png'><img src='configure/Screen%20Shot%202020-06-14%20at%2015.55.31.png'></p>
+<br>
+<p><b>Note 2:</b> Respect the exact spelling and capitalization, or the bot won't understand. (That will be less strict later in future updates)</p>
         </div>
         <script type="text/javascript">
             (function() {

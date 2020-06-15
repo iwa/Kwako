@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Welcome to the Official Kwako Wiki</title>
+        <title>⬅️ Go back to the homepage</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="bear-note-unique-identifier" content="9EB12606-DD74-4DF7-B70E-E40CC8101C4D-13991-00014A31067FDD5E"
-        <meta name="created" content="2020-06-14T15:45:32+0200"/>
-        <meta name="modified" content="2020-06-15T21:23:23+0200"/>
+        <meta name="bear-note-unique-identifier" content="4B4A794F-ED92-4BF5-BF59-3D5980561B1C-83225-000192879F8327A5"
+        <meta name="created" content="2020-06-15T20:49:21+0200"/>
+        <meta name="modified" content="2020-06-15T22:46:49+0200"/>
         <meta name="tags" content=""/>
         <meta name="last device" content="Nokushi"/>
     </head>
     <body>
         <div class="note-wrapper">
-            <h1 id="Welcome to the Official Kwako Wiki">Welcome to the Official Kwako Wiki</h1>
-<p>Through this wiki, I'll try to help you configuring and using Kwako on your server.</p>
+            <p><a href="index.html">⬅️ Go back to the homepage</a></p>
+<h1 id="Level Roles system">Level Roles system</h1>
+<p>You can configure the bot to give roles when a member achieve a certain level.</p>
+<p>Keep in mind that, <u>for now</u>, the maximum level is 100, but is also really far away.</p>
+<br>
 <hr>
-<ul><li><a href="configure.html">Invite & Configure Kwako</a>
-<ul><li>	<a href="welcome-message.html">Set up a welcome message</a>
-</li><li>	<a href="reaction-roles.html">Set up reactions-roles messages</a>
-</li><li>	<a href="level-roles.html">Set up roles given at certain levels</a></li></ul>
-</li></ul>
-
+<h2 id="How to configure a role to be given at a certain level">How to configure a role to be given at a certain level</h2>
+<p>You just need to do this command:</p>
+<p><code class='code-inline'>!addlevelrole (level number) (mention the role)</code></p>
+<br>
+<p><u>eg:</u></p>
+<p><img src='level-roles/Screen%20Shot%202020-06-15%20at%2020.53.19.png'></p>
+<p>Doing this will give the role 'cool person' to every members who achieve the level 10.</p>
+<br>
+<p><b>Note:</b> Every members that have the required level or are above the required level will automatically get the role.</p>
+<hr>
+<h2 id="How to remove a configured level role">How to remove a configured level role</h2>
+<p>The following level will remove the role that is normally given at the level given:</p>
+<p><code class='code-inline'>!dellevelrole (level number)</code></p>
+<br>
+<p><b>Note:</b> The bot <u>will not</u> remove the role to every members that has earned it.</p>
         </div>
         <script type="text/javascript">
             (function() {

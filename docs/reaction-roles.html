@@ -1,25 +1,86 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Welcome to the Official Kwako Wiki</title>
+        <title>⬅️ Go back to the homepage</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="bear-note-unique-identifier" content="9EB12606-DD74-4DF7-B70E-E40CC8101C4D-13991-00014A31067FDD5E"
-        <meta name="created" content="2020-06-14T15:45:32+0200"/>
-        <meta name="modified" content="2020-06-15T21:23:23+0200"/>
+        <meta name="bear-note-unique-identifier" content="B23E0FDE-2964-4399-B7F4-7BF9E2AE3861-83225-00018A44E85F266D"
+        <meta name="created" content="2020-06-15T14:42:07+0200"/>
+        <meta name="modified" content="2020-06-15T22:47:16+0200"/>
         <meta name="tags" content=""/>
         <meta name="last device" content="Nokushi"/>
     </head>
     <body>
         <div class="note-wrapper">
-            <h1 id="Welcome to the Official Kwako Wiki">Welcome to the Official Kwako Wiki</h1>
-<p>Through this wiki, I'll try to help you configuring and using Kwako on your server.</p>
+            <p><a href="index.html">⬅️ Go back to the homepage</a></p>
+<h1 id="Reaction Roles messages">Reaction Roles messages</h1>
+<p>You can create and configure reaction roles messages with Kwako. Here's how to do.</p>
+<br>
 <hr>
-<ul><li><a href="configure.html">Invite & Configure Kwako</a>
-<ul><li>	<a href="welcome-message.html">Set up a welcome message</a>
-</li><li>	<a href="reaction-roles.html">Set up reactions-roles messages</a>
-</li><li>	<a href="level-roles.html">Set up roles given at certain levels</a></li></ul>
-</li></ul>
+<h2 id="How to create the Reaction Roles message">How to create the Reaction Roles message</h2>
+<ol start="0"><li><b>Make sure that Kwako's role is above every roles you want people to be able to pick through reaction role messages.</b>
+</li></ol>
+<br>
+<ol start="1"><li>First of all, you will have to create your a Rich Embed message, in JSON format. To do so, you can use this website: <a href="https://leovoel.github.io/embed-visualizer/">Embed Visualizer</a>
+</li></ol>
+<p>It's really useful to create embeds.</p>
+<p>Copy all the JSON part (left part).</p>
+<br>
+<ol start="2"><li>Now, go into the channel you want the reaction role message to be created, and write:
+</li></ol>
+<p><code class='code-inline'>!addembed (paste here the JSON code)</code> <i>(change the prefix if you edited it)</i></p>
+<p>If your embed shows up correctly, as next pic, then you're fine to continue.</p>
+<p><img src='reaction-roles/Screen%20Shot%202020-06-15%20at%2014.50.48.png'></p>
+<p><b>⚠️ Important:</b> Never write text into the 'Footer text' field, it'll get replaced by the UID of the message.</p>
+<br>
+<ol start="3"><li>To add role, you now have to copy the UID of the message. Fortunately, I wanted to make that easy for everyone, so the UID is showing by itself into the embed.
+</li></ol>
+<p>The UID of the message is shown there:</p>
+<p><img src='reaction-roles/embed.png'></p>
+<br>
+<ol start="4"><li>Now, for each role, do this command:
+</li></ol>
+<p><code class='code-inline'>!addrole (message UID) (emote) (mention role)</code></p>
+<p><u>eg:</u></p>
+<p><img src='reaction-roles/addrole.png'></p>
+<br>
+<ol start="5"><li>You're done! Repeat the step 4 for each role.
+</li></ol>
+<hr>
+<h2 id="How to edit an embed already sent">How to edit an embed already sent</h2>
+<ol start="1"><li>Create your new embed through the <a href="https://leovoel.github.io/embed-visualizer/">Embed Visualizer</a>. Copy the JSON code.
+</li></ol>
+<br>
+<ol start="2"><li>Copy the UID of the embed you want to edit.
+</li></ol>
+<br>
+<ol start="3"><li>Do this command:
+</li></ol>
+<p><code class='code-inline'>!editembed (message UID) (new JSON)</code></p>
+<br>
+<ol start="4"><li>You're done!
+</li></ol>
+<hr>
+<h2 id="How to remove a role from an embed">How to remove a role from an embed</h2>
+<ol start="1"><li>Copy the UID of the embed in which the role is.
+</li></ol>
+<br>
+<ol start="2"><li>Do this command:
+</li></ol>
+<p><code class='code-inline'>!delrole (message UID) (emote)</code></p>
+<br>
+<ol start="3"><li>You're done!
+</li></ol>
+<hr>
+<h2 id="How to remove a Reaction Role embed">How to remove a Reaction Role embed</h2>
+<ol start="1"><li>Copy the UID of the embed you want to delete.
+</li></ol>
+<br>
+<ol start="2"><li>Do this command:
+</li></ol>
+<p><code class='code-inline'>!delembed (message kid)</code></p>
+<br>
+<ol start="3"><li>You're done!</li></ol>
 
         </div>
         <script type="text/javascript">
