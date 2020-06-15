@@ -2,7 +2,7 @@ import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands:any, settings:Map<string, Object>) => {
-    if (msg.author.id != process.env.IWA) return;
+    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
     let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));

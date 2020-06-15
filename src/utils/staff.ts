@@ -15,8 +15,6 @@ export default class staff {
      * @param args - Arguments in the message
      */
     static async bulk(msg: Message, args: string[]) {
-        if (!msg.member.hasPermission('MANAGE_GUILD')) return;
-
         if (args.length !== 0) {
             let channel: any = msg.channel
             if (msg.channel.type !== "dm") {

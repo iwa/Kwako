@@ -273,8 +273,6 @@ module.exports = class music {
      * @param msg - Message object
      */
     static async forceskip(bot: Client, msg: Message) {
-        if (!msg.member.hasPermission('MANAGE_GUILD')) return;
-
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
         let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
         let queu = queue.get(msg.guild.id);
