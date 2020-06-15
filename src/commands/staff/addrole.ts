@@ -3,6 +3,8 @@ import { Db } from 'mongodb'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if (args.length != 3) return;
+
     let dbEmbed = await db.collection('msg').findOne({ _id: args[0] })
     if (!dbEmbed) return msg.reply(":x: > That message doesn't exist!")
     let embed = await msg.channel.messages.fetch(args[0])

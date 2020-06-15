@@ -3,6 +3,7 @@ import { Db } from 'mongodb'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands:any, settings:Map<string, Object>) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if (args.length != 2) return;
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
     let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
