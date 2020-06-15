@@ -266,8 +266,10 @@ bot.on('guildBanAdd', async (guild, user) => {
 
 // Update guilds count every 5min
 setInterval(async () => {
-    if(process.env.SLEEP == '0')
-        await bot.user.setPresence({ activity: { name: `with ${bot.guilds.cache.size} guilds`, type: 0 }, status: 'online' })
+    if(process.env.SLEEP == '0') {
+        let guilds = await bot.shard.fetchClientValues('guilds.cache.size')
+        await bot.user.setActivity(`with ${guilds.reduce((prev, guildCount) => prev + guildCount, 0)} guilds`, { type: 0 }).catch(console.error);
+    }
 }, 300000);
 
 // Login
