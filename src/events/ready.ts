@@ -24,10 +24,13 @@ export default async function ready(bot: Client) {
     let db = mongod.db(dbName);
 
     let allMsg = db.collection('msg').find()
-    allMsg.forEach(async elem => {
-        let channel: any = await bot.channels.fetch(elem.channel)
-        await channel.messages.fetch(elem._id, true)
-    });
+    if(allMsg) {
+        allMsg.forEach(async elem => {
+            let channel: any = await bot.channels.fetch(elem.channel)
+            if(channel)
+                await channel.messages.fetch(elem._id, true)
+        });
+    }
 
     return setTimeout(async () => {
         await mongod.close()
