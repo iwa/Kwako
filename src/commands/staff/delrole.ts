@@ -3,7 +3,7 @@ import { Db } from 'mongodb'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
-    if (args.length != 1) return;
+    if (args.length != 2) return;
 
     let dbEmbed = await db.collection('msg').findOne({ _id: args[0] })
     if (!dbEmbed) return msg.reply(":x: > That message doesn't exist!")
@@ -26,6 +26,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
 module.exports.help = {
     name: 'delrole',
-    usage: "delrole (emote)",
+    usage: "delrole (message UID) (emote)",
     staff: true
 };
