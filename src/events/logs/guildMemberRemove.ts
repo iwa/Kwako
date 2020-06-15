@@ -24,7 +24,7 @@ export default async function guildMemberRemove(member: GuildMember | PartialGu
         let channel = await bot.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Member kicked");
-        embed.setDescription(`Who: ${member.user.tag} (<@${member.id}>)\nBy: <@${executor.id}>\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);
+        embed.setDescription(`Who: ${member.user.tag} (<@${member.id}>)\nBy: ${executor.tag} (<@${executor.id}>)\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);
         embed.setColor(15260213);
         embed.setTimestamp(createdTimestamp);
         embed.setFooter("Date of kick:")

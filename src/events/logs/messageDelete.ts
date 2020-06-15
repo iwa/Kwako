@@ -23,7 +23,7 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
         let channel = await bot.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message deleted");
-        embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nDeleted by: <@${executor.id}>\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);
+        embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nDeleted by: ${executor.tag} (<@${executor.id}>)\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);
         embed.setColor(10613368);
         embed.setTimestamp(createdTimestamp);
         embed.setFooter("Date of deletion:")

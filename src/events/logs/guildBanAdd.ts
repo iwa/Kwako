@@ -21,7 +21,7 @@ export default async function guildBanAdd(guild: Guild, user: User | PartialUser
         let channel = await bot.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Member banned");
-        embed.setDescription(`Who: ${user.tag} (<@${user.id}>)\nBy: <@${executor.id}>\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);
+        embed.setDescription(`Who: ${user.tag} (<@${user.id}>)\nBy: ${executor.tag} (<@${executor.id}>)\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);
         embed.setColor(13632027);
         embed.setTimestamp(createdTimestamp);
         embed.setFooter("Date of ban:")
