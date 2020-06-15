@@ -1,7 +1,7 @@
 import * as Discord from "discord.js";
 const manager = new Discord.ShardingManager('build/bot.js', {
-    shardArgs: ['--ansi', '--color'],
-    totalShards: 2
+    totalShards: 2,
+    mode: 'worker'
 });
 
 manager.spawn(2, 1000);
