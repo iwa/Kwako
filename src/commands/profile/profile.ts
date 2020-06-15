@@ -1,5 +1,7 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
 import { Db } from 'mongodb'
+import * as ejs from 'ejs';
+import imGenerator from '../../utils/img';
 import utilities from '../../utils/utilities'
 
 module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
@@ -47,19 +49,16 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
         positionExp: leadXP.findIndex(val => val._id == id),
         level: lvlInfo.level,
         current: lvlInfo.current,
-        max: lvlInfo.max
+        max: lvlInfo.max,
+        userColor: memberDiscord.displayHexColor
     }
 
-    let embed = new MessageEmbed();
-
-    embed.setTitle(userDiscord.tag)
-    embed.setDescription(`Level ${user.level} | #${user.positionExp}\n(${user.current}/${user.max} exp)`)
-    embed.setThumbnail(user.avatar)
-    embed.setColor(memberDiscord.displayColor);
+    let html = await ejs.renderFile('views/profile.ejs', { user });
+    let file = await imGenerator(508, 168, html, userDiscord.id, 'prof')
 
     try {
         console.log(`info: profile by ${msg.author.tag}`)
-        return msg.channel.send(embed).then(() => { msg.channel.stopTyping(true) });
+        return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
     } catch (err) {
         console.error(err)
         return msg.channel.send(":x: > An error occured. Please retry later.")
