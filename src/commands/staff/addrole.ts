@@ -14,9 +14,14 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         return msg.reply(":x: > Can't react!")
     }
 
-    let roleID = args[2]
-    let role = msg.guild.roles.fetch(roleID);
-    if (!role) return msg.reply(":x: > That role doesn't exist!")
+    let role = args[2];
+    if(role.startsWith('<@&') && role.endsWith('>')) {
+        role = role.slice(3, (role.length-1))
+        let chan = await msg.guild.roles.fetch(role);
+        if(!chan || !chan.editable)
+            return msg.channel.send(":x: > That role doesn't exist!")
+    } else
+        return msg.reply('please mention the role!')
 
     if (msg.deletable) {
         try {
@@ -26,7 +31,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         }
     }
 
-    await db.collection('msg').updateOne({ _id: args[0] }, { $push: { roles: { "id": roleID, "emote": emote } } })
+    await db.collection('msg').updateOne({ _id: args[0] }, { $push: { roles: { "id": role, "emote": emote } } })
 };
 
 module.exports.help = {
