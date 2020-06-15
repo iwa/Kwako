@@ -21,6 +21,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
 module.exports.help = {
     name: 'delembed',
-    usage: "delembed (message id)",
+    usage: "delembed (message uid)",
     staff: true
 };
