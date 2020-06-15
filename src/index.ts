@@ -17,7 +17,8 @@ const defaultSettings = {
     prefix: "!",
     welcomeMessage: "",
     starboardChannel: "",
-    muteRole: ""
+    muteRole: "",
+    modLogChannel: ""
 }
 settings.set('_default', defaultSettings)
 
