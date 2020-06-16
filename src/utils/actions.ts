@@ -46,8 +46,22 @@ let count: stringKeyArray = {
 export default async function actionsRun(bot: Client, msg: Message, args: string[], db: Db, type: string) {
     if (args.length <= 4) {
         if (msg.mentions.everyone) return;
-        if (msg.mentions.members.has(msg.author.id))
-            return msg.channel.send({ "embed": { "title": `:x: > **You can't ${type} yourself!**`, "color": 13632027 } });
+        if (msg.mentions.members.has(msg.author.id)) {
+            msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! Lemme do it for you...**`, "color": 13632027 }});
+            const embed = new MessageEmbed();
+            embed.setColor('#F2DEB0')
+            embed.setDescription(`**<@${bot.user.id}>** ${type}s you **<@${msg.author.id}>**!`)
+
+            let n = utilities.randomInt(count[type])
+            while (lastGif[type] == n)
+                n = utilities.randomInt(count[type]);
+            lastGif[type] = n;
+
+            embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
+            return msg.channel.send(embed)
+                .then(() => { console.log(`info: ${type} sent by ${msg.author.tag}`); })
+                .catch(console.error);
+        }
 
         if (msg.mentions.members.has(bot.user.id) && type != 'slap') {
             let r = utilities.randomInt(reply.length)
