@@ -18,12 +18,12 @@ If your embed shows up correctly, as next pic, then you're fine to continue.
 **⚠️ Important:** Never write text into the 'Footer text' field, it'll get replaced by the UID of the message.
 
 3. To add role, you now have to copy the UID of the message. Fortunately, I wanted to make that easy for everyone, so the UID is showing by itself into the embed.
-The UID of the message is shown there:
+The UID of the message is shown there:<br/>
 ![](assets/embeduid.png)
 
 4. Now, for each role, do this command:
 `!addrole (message UID) (emote) (mention role)`
-<u>eg:</u>
+<u>eg:</u><br/>
 ![](assets/addrole.png)
 
 5. You're done! Repeat the step 4 for each role.

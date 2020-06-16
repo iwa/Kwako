@@ -9,7 +9,7 @@ Keep in mind that, ~for now~, the maximum level is 100, but is also really far a
 You just need to do this command:
 `!addlevelrole (level number) (mention the role)`
 
-<u>eg:</u>
+<u>eg:</u><br/>
 ![](assets/addlevelrole.png)
 
 Doing this will give the role 'cool person' to every members who achieve the level 10.
