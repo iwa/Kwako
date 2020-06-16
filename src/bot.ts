@@ -57,7 +57,7 @@ bot.on('shardDisconnect', () => console.log("warn: bot disconnected"));
 bot.on('shardReconnecting', () => console.log("info: bot reconnecting..."));
 bot.on('shardResume', async () => ready(bot));
 bot.on('shardReady', async () => {
-    setTimeout(() => ready(bot), 1000);
+    setTimeout(async () => ready(bot), 1000);
     console.log(`info: logged in as ${bot.user.username}`);
 });
 
