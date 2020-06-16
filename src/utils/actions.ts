@@ -50,7 +50,7 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
             msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! Lemme do it for you...**`, "color": 13632027 }});
             const embed = new MessageEmbed();
             embed.setColor('#F2DEB0')
-            embed.setDescription(`**<@${bot.user.id}>** ${type}s you **<@${msg.author.id}>**!`)
+            embed.setDescription(`<@${bot.user.id}> ${type}s you <@${msg.author.id}>!`)
 
             let n = utilities.randomInt(count[type])
             while (lastGif[type] == n)
@@ -75,10 +75,10 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
         embed.setColor('#F2DEB0')
         if (msg.mentions.members.size >= 2) {
             let users = msg.mentions.members.array()
-            let title: string = `**<@${msg.author.id}>** ${type}s you **<@${users[0].id}>**`;
+            let title: string = `<@${msg.author.id}> ${type}s you <@${users[0].id}>`;
             for (let i = 1; i < (msg.mentions.members.size - 1); i++)
-                title = `${title}, **<@${users[i].id}>**`
-            title = `${title} & **<@${(msg.mentions.members.last()).id}>**!`
+                title = `${title}, <@${users[i].id}>`
+            title = `${title} & <@${(msg.mentions.members.last()).id}>!`
             embed.setDescription(title);
 
             if (type == 'hug') {
@@ -98,7 +98,7 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
                 embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
             }
         } else {
-            embed.setDescription(`**<@${msg.author.id}>** ${type}s you **<@${(msg.mentions.members.first()).id}>**!`)
+            embed.setDescription(`<@${msg.author.id}> ${type}s you <@${(msg.mentions.members.first()).id}>!`)
 
             let n = utilities.randomInt(count[type])
             while (lastGif[type] == n)
