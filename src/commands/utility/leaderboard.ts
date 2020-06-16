@@ -12,18 +12,28 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     const embed = new MessageEmbed();
     embed.setColor(16114507)
     embed.setTitle(`:trophy: **Experience Points Leaderboard**`)
+    let desc = "";
 
     leaderboard.forEach(async elem => {
-        let user = await bot.users.fetch(elem._id)
+        let user = await msg.guild.members.fetch(elem._id)
+        if(!user || !elem.exp[msg.guild.id]) return;
         n++;
-        embed.addField(`**${n}. ${user.username}**`, `${elem.exp[msg.guild.id]} exps`)
+        let level = utilities.levelInfo(elem.exp[msg.guild.id])
+        if(n === 1)
+            desc = `${desc}:first_place: `
+        if(n === 2)
+            desc = `${desc}:second_place: `
+        if(n === 3)
+            desc = `${desc}:third_place: `
+        desc = `${desc}**${n}. <@${user.id}>**\n**Level ${level.level}** (${elem.exp[msg.guild.id]} exps)\n`
     })
 
     setTimeout(() => {
+        embed.setDescription(desc)
         msg.channel.send(embed)
             .then(() => {
                 console.log(`info: exp leaderboard: ${msg.author.tag}`);
-                msg.channel.stopTyping()
+                msg.channel.stopTyping(true)
             }).catch(console.error)
     }, 1500)
 };
