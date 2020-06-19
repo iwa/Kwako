@@ -6,12 +6,13 @@
  */
 import { MongoClient, Db } from 'mongodb';
 import { Message } from 'discord.js';
-import levelCheck from '../../utils/levelCheck';
 
-let cooldownMsg: stringKeyArray = [], cooldownXP: stringKeyArray = [];
-interface stringKeyArray {
-    [index: string]: any;
-}
+import levelCheck from '../../utils/levelCheck';
+import utils from '../../utils/utilities';
+let exp: number = 1;
+
+let cooldownMsg: Map<string, number> = new Map();
+let cooldownXP: Map<string, number> = new Map();
 
 /**
  * @classdesc Class used to gather every methods related to a cooldown system
@@ -24,15 +25,15 @@ export default class cooldown {
      * @param msg - Message object
      */
     static async message(msg: Message) {
-        if (!cooldownMsg[msg.author.id]) {
-            cooldownMsg[msg.author.id] = 1;
-            setTimeout(async () => { delete cooldownMsg[msg.author.id] }, 2500)
+        if (!cooldownMsg.has(msg.author.id)) {
+            cooldownMsg.set(msg.author.id, 1);
+            setTimeout(async () => { cooldownMsg.delete(msg.author.id) }, 2500)
         } else
-            cooldownMsg[msg.author.id]++;
+            cooldownMsg.set(msg.author.id, (cooldownMsg.get(msg.author.id)+1));
 
-        if (cooldownMsg[msg.author.id] == 4)
+        if (cooldownMsg.get(msg.author.id) == 4)
             return msg.reply({ "embed": { "title": "**Please calm down, or I'll mute you.**", "color": 13632027 } })
-        else if (cooldownMsg[msg.author.id] == 6) {
+        else if (cooldownMsg.get(msg.author.id) == 6) {
             await msg.member.roles.add('636254696880734238')
             let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason : spamming.**", "color": 13632027 } })
             setTimeout(async () => {
@@ -49,13 +50,13 @@ export default class cooldown {
      * @param db - Database connection
      */
     static async exp(msg: Message, mongod: MongoClient, db: Db) {
-        if (!cooldownXP[msg.author.id]) {
+        if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: 1 }  }, { upsert: true });
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
             levelCheck(msg, (user.exp[msg.guild.id]), db);
-            cooldownXP[msg.author.id] = 1;
-            return setTimeout(async () => { delete cooldownXP[msg.author.id] }, 5000)
+            cooldownXP.set(msg.author.id, 1);
+            return setTimeout(async () => { cooldownXP.delete(msg.author.id) }, 5000)
         }
 
         mongod.close();
