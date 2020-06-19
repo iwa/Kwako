@@ -1,54 +1,15 @@
 import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb';
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db, commands:any, settings:Map<string, Object>) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db) => {
     if(!msg.member.hasPermission('MANAGE_GUILD')) return msg.delete();
 
-    const [prop, ...value] = args;
-    let defaultSettings:any = settings.get('_default');
-
-    if(defaultSettings[prop] == null) return msg.channel.send(":x: **This key does not exist in the configuration**");
-
-    let clearValue = value.join(" ");
-
-    if(prop.includes('Channel')) {
-        let channel = args[args.length - 1];
-        if(channel.startsWith('<#') && channel.endsWith('>')) {
-            channel = channel.slice(2, (channel.length-1))
-            let chan = msg.guild.channels.resolve(channel);
-            if(chan && chan.type == 'text' && chan.viewable)
-                clearValue = channel;
-            else
-                return msg.reply("there's a problem with this channel!")
-        } else
-            return msg.reply('please mention the channel!')
-    }
-
-    if(prop.includes('Role')) {
-        let role = args[args.length - 1];
-        if(role.startsWith('<@&') && role.endsWith('>')) {
-            role = role.slice(3, (role.length-1))
-            let chan = msg.guild.roles.resolve(role);
-            if(chan && chan.editable)
-                clearValue = role;
-            else
-                return msg.reply("there's a problem with this role!")
-        } else
-            return msg.reply('please mention the role!')
-    }
-
-    let config:any = settings.get(msg.guild.id);
-    config[prop] = clearValue
-    await db.collection('settings').updateOne({ '_id': msg.guild.id }, { $set: { config: config } }, { upsert: true });
-
-    settings.set(msg.guild.id, config);
-
-    msg.channel.send(`✅ \`${prop}\` has been changed to: **${value.join(" ")}**`);
+    msg.channel.send(`❓You now have to configure Kwako by using its web dashboard there:\nhttps://kwako.iwa.sh`);
 };
 
 module.exports.help = {
     name: 'setconf',
-    usage: "setconf (property) (value)",
+    usage: "setconf",
     desc: "Set a custom configuration for this Guild",
     staff: true
 };
