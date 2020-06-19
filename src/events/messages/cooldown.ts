@@ -24,22 +24,24 @@ export default class cooldown {
      * Automatically mutes the spammer if a spam is detected
      * @param msg - Message object
      */
-    static async message(msg: Message) {
-        if (!cooldownMsg.has(msg.author.id)) {
-            cooldownMsg.set(msg.author.id, 1);
-            setTimeout(async () => { cooldownMsg.delete(msg.author.id) }, 2500)
-        } else
-            cooldownMsg.set(msg.author.id, (cooldownMsg.get(msg.author.id)+1));
+    static async message(msg: Message, guildConf: any) {
+        if(guildConf.muteRole != "") {
+            if (!cooldownMsg.has(msg.author.id)) {
+                cooldownMsg.set(msg.author.id, 1);
+                setTimeout(async () => { cooldownMsg.delete(msg.author.id) }, 2500)
+            } else
+                cooldownMsg.set(msg.author.id, (cooldownMsg.get(msg.author.id)+1));
 
-        if (cooldownMsg.get(msg.author.id) == 4)
-            return msg.reply({ "embed": { "title": "**Please calm down, or I'll mute you.**", "color": 13632027 } })
-        else if (cooldownMsg.get(msg.author.id) == 6) {
-            await msg.member.roles.add('636254696880734238')
-            let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason : spamming.**", "color": 13632027 } })
-            setTimeout(async () => {
-                await msgReply.delete()
-                return msg.member.roles.remove('636254696880734238')
-            }, 1200000);
+            if (cooldownMsg.get(msg.author.id) == 4)
+                return msg.reply({ "embed": { "title": "**Please calm down, or I'll mute you.**", "color": 13632027 } })
+            else if (cooldownMsg.get(msg.author.id) == 6) {
+                await msg.member.roles.add(guildConf.muteRole)
+                let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason : spamming.**", "color": 13632027 } })
+                setTimeout(async () => {
+                    await msgReply.delete()
+                    return msg.member.roles.remove(guildConf.muteRole)
+                }, 1200000);
+            }
         }
     }
 

@@ -77,7 +77,7 @@ bot.on('message', async (msg: Discord.Message) => {
         settings.set(msg.guild.id, guildConf);
     }
 
-    await cooldown.message(msg);
+    await cooldown.message(msg, guildConf);
 
     if (!msg.content.startsWith(guildConf.prefix))
         return cooldown.exp(msg, mongod, db);
