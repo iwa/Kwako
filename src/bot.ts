@@ -161,6 +161,7 @@ bot.on('guildCreate', async guild => {
     }
     if(!guild.me.permissions.has(305523776))
         await guild.leave();
+    await db.collection('settings').insertOne({ '_id': guild.id });
     https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
 });
 
