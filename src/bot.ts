@@ -150,6 +150,7 @@ bot.on('guildCreate', async guild => {
     if(!guild.me.permissions.has(305523776))
         await guild.leave();
     await db.collection('settings').insertOne({ '_id': guild.id });
+    await mongod.close()
     https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
 });
 
@@ -205,6 +206,8 @@ bot.on('messageDelete', async msg => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
 
+    await mongod.close()
+
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
@@ -218,6 +221,8 @@ bot.on('guildMemberRemove', async member => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
 
+    await mongod.close()
+
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
@@ -230,6 +235,8 @@ bot.on('guildBanAdd', async (guild, user) => {
     let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
+
+    await mongod.close()
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
