@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import * as fs from 'fs';
+import * as https from 'https';
 
 import { MongoClient } from 'mongodb';
 
@@ -124,6 +125,8 @@ bot.on("guildMemberAdd", async member => {
 });
 
 bot.on('guildCreate', async guild => {
+    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    let db = mongod.db(dbName);
     let channel = guild.channels.cache.find(val => val.name === 'general');
     if(channel) {
         await (channel as Discord.TextChannel).send({
@@ -158,6 +161,7 @@ bot.on('guildCreate', async guild => {
     }
     if(!guild.me.permissions.has(305523776))
         await guild.leave();
+    https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
 });
 
 bot.on("guildDelete", async guild => {
@@ -167,6 +171,7 @@ bot.on("guildDelete", async guild => {
     settings.delete(guild.id);
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
     await mongod.close()
+    https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
 });
 
 
