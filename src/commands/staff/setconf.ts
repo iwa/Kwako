@@ -4,7 +4,7 @@ import { Db } from 'mongodb';
 module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db) => {
     if(!msg.member.hasPermission('MANAGE_GUILD')) return msg.delete();
 
-    msg.channel.send(`❓You now have to configure Kwako by using its web dashboard there:\nhttps://kwako.iwa.sh`);
+    msg.channel.send(`**☁️ Please now use Kwako Web Dashboard to configure the bot**\nhttps://kwako.iwa.sh`);
 };
 
 module.exports.help = {
