@@ -73,7 +73,7 @@ bot.on('message', async (msg: Discord.Message) => {
 
     if(!guildConf) {
         guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
-        guildConf = guildConf ? guildConf.config : defaultSettings;
+        guildConf = guildConf.config ? guildConf.config : defaultSettings;
         settings.set(msg.guild.id, guildConf);
     }
 
