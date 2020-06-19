@@ -52,7 +52,7 @@ export default class cooldown {
     static async exp(msg: Message, mongod: MongoClient, db: Db) {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
-            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: 1 }  }, { upsert: true });
+            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: exp }  }, { upsert: true });
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
             levelCheck(msg, (user.exp[msg.guild.id]), db);
             cooldownXP.set(msg.author.id, 1);
@@ -62,3 +62,5 @@ export default class cooldown {
         mongod.close();
     }
 }
+
+setInterval(() => { exp = utils.randomInt(8) }, 300000);
