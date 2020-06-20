@@ -38,17 +38,16 @@ setTimeout(() => {
     mod.setColor(4886754)
 }, 5000)
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: Collection<any, any>, settings:Map<string, Object>) => {
-    let config:any = settings.get(msg.guild.id);
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: Collection<any, any>, guildConf: any) => {
     if (args.length == 1) {
         let cmd = commands.get(args[0]);
         if (!cmd || !cmd.help.usage) return;
         if (cmd.help.staff && !msg.member.hasPermission('MANAGE_GUILD')) return;
 
         await msg.channel.send("`Syntax : ( ) is needed argument, [ ] is optional argument`")
-        return msg.channel.send(`\`\`\`markdown\n< ${cmd.help.name} >\n\n# Usage\n${config.prefix}${cmd.help.usage}\n\n# Description\n${cmd.help.desc}\`\`\``);
+        return msg.channel.send(`\`\`\`markdown\n< ${cmd.help.name} >\n\n# Usage\n${guildConf.prefix}${cmd.help.usage}\n\n# Description\n${cmd.help.desc}\`\`\``);
     } else
-        sendHelp(msg, config);
+        sendHelp(msg, guildConf);
     console.log(`info: help sent to ${msg.author.tag}`)
 }
 
@@ -58,9 +57,9 @@ module.exports.help = {
     desc: "Sends you the list of the commands available"
 };
 
-async function sendHelp(msg: Message, config: any) {
+async function sendHelp(msg: Message, guildConf: any) {
     let memberEmbed = member;
-    memberEmbed.setDescription(`Prefix : \`${config.prefix}\`\nUse \`${config.prefix}help (command)\` to have more info about a specific command`)
+    memberEmbed.setDescription(`Prefix : \`${guildConf.prefix}\`\nUse \`${guildConf.prefix}help (command)\` to have more info about a specific command`)
     if (msg.member.hasPermission('MANAGE_GUILD'))
         try {
             await msg.author.send(member)
