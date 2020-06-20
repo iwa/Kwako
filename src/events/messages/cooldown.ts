@@ -9,7 +9,7 @@ import { Message } from 'discord.js';
 
 import levelCheck from '../../utils/levelCheck';
 import utils from '../../utils/utilities';
-let exp: number = 1;
+let exp: number = 2;
 
 let cooldownMsg: Map<string, number> = new Map();
 let cooldownXP: Map<string, number> = new Map();
@@ -54,14 +54,14 @@ export default class cooldown {
     static async exp(msg: Message, mongod: MongoClient, db: Db) {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
-            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: exp }  }, { upsert: true });
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-            levelCheck(msg, (user.exp[msg.guild.id]), db);
+            levelCheck(msg, (user.exp[msg.guild.id]), db, exp);
+            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: exp }  }, { upsert: true });
             cooldownXP.set(msg.author.id, 1);
             return setTimeout(async () => { cooldownXP.delete(msg.author.id) }, 5000)
         }
 
-        mongod.close();
+        await mongod.close();
     }
 }
 
