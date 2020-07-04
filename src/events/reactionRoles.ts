@@ -5,7 +5,7 @@
  * @category Events
  */
 import { MessageReaction, User } from "discord.js";
-import { MongoClient } from 'mongodb';
+import { Db } from 'mongodb';
 /**
  * @desc MongoDB constants
  */
@@ -21,21 +21,16 @@ export default class reactionRoles {
      * @param {MessageReaction} reaction
      * @param {User} author
      */
-    static async add(reaction: MessageReaction, author: User) {
-        let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-        let db = mongod.db(dbName);
-
+    static async add(reaction: MessageReaction, author: User, db: Db) {
         let msg = await db.collection('msg').findOne({ _id: reaction.message.id })
-        if (!msg) return mongod.close();
+        if (!msg) return;
 
         let role = msg.roles.find((val: any) => val.emote == reaction.emoji.name)
-        if (!role) return mongod.close();
+        if (!role) return;
 
         let member = reaction.message.guild.member(author)
-        if (!member) return mongod.close();
+        if (!member) return;
         await member.roles.add(role.id)
-
-        return mongod.close();
     }
 
     /**
@@ -43,20 +38,15 @@ export default class reactionRoles {
      * @param {MessageReaction} reaction
      * @param {User} author
      */
-    static async remove(reaction: MessageReaction, author: User) {
-        let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-        let db = mongod.db(dbName);
-
+    static async remove(reaction: MessageReaction, author: User, db: Db) {
         let msg = await db.collection('msg').findOne({ _id: reaction.message.id })
-        if (!msg) return mongod.close();
+        if (!msg) return;
 
         let role = msg.roles.find((val: any) => val.emote == reaction.emoji.name)
-        if (!role) return mongod.close();
+        if (!role) return;
 
         let member = reaction.message.guild.member(author)
-        if (!member) return mongod.close();
+        if (!member) return;
         await member.roles.remove(role.id)
-
-        return mongod.close();
     }
 }

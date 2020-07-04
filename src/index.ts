@@ -8,10 +8,16 @@ dotenv.config();
 import * as fs from 'fs';
 import * as https from 'https';
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
 // MongoDB constants
 const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
+let mongod: MongoClient, db: Db;
+
+(async () => {
+    mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
+    db = mongod.db(dbName);
+})()
 
 const defaultSettings = {
     prefix: "!",
@@ -54,9 +60,9 @@ bot.on('warn', console.warn);
 bot.on('shardError', console.error);
 bot.on('shardDisconnect', () => console.log("warn: bot disconnected"));
 bot.on('shardReconnecting', () => console.log("info: bot reconnecting..."));
-bot.on('shardResume', async () => ready(bot));
+bot.on('shardResume', async () => ready(bot, db));
 bot.on('shardReady', async () => {
-    setTimeout(async () => ready(bot), 1000);
+    ready(bot, db);
     console.log(`info: logged in as ${bot.user.username}`);
 });
 
@@ -65,8 +71,6 @@ bot.on('message', async (msg: Discord.Message) => {
     if(!msg.guild || msg.author.bot) return;
     if (msg.channel.type != "text") return;
 
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
 
@@ -83,20 +87,12 @@ bot.on('message', async (msg: Discord.Message) => {
 
     if (!cmd) return;
     else await cmd.run(bot, msg, args, db, commands, guildConf);
-
-    return setTimeout(async () => {
-        await mongod.close()
-    }, 1000);
 });
 
 
 bot.on("guildMemberAdd", async member => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
-
-    await mongod.close()
 
     let welcomeMessage = guildConf.welcomeMessage;
 
@@ -113,8 +109,6 @@ bot.on("guildMemberAdd", async member => {
 });
 
 bot.on('guildCreate', async guild => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let channel = guild.channels.cache.find(val => val.name === 'general');
     if(channel) {
         await (channel as Discord.TextChannel).send({
@@ -128,7 +122,7 @@ bot.on('guildCreate', async guild => {
               "fields": [
                 {
                   "name": "How to configure me:",
-                  "value": "https://iwa.sh/Kwako",
+                  "value": "https://kwako.iwa.sh/",
                   "inline": true
                 },
                 {
@@ -150,16 +144,11 @@ bot.on('guildCreate', async guild => {
     if(!guild.me.permissions.has(305523776))
         await guild.leave();
     await db.collection('settings').insertOne({ '_id': guild.id });
-    await mongod.close()
     https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
 });
 
 bot.on("guildDelete", async guild => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
-
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    await mongod.close()
     https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
 });
 
@@ -167,12 +156,8 @@ bot.on("guildDelete", async guild => {
 // Starboard Event
 import starboard from './events/starboard';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
-
-    await mongod.close()
 
     let starboardChannel = guildConf.starboardChannel;
 
@@ -184,29 +169,25 @@ bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: D
 // MemberLeave Event
 import memberLeave from './events/memberLeave'
 bot.on('guildMemberRemove', async member => {
-    memberLeave(member)
+    memberLeave(member, db)
 })
 
 // Reaction Role Events
 import reactionRoles from './events/reactionRoles';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
     if (author.bot) return;
-    reactionRoles.add(reaction, author);
+    reactionRoles.add(reaction, author, db);
 });
 bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author: Discord.User) => {
     if (author.bot) return;
-    reactionRoles.remove(reaction, author);
+    reactionRoles.remove(reaction, author, db);
 });
 
 // Logs channel
 import messageDelete from './events/logs/messageDelete';
 bot.on('messageDelete', async msg => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
-
-    await mongod.close()
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
@@ -216,12 +197,8 @@ bot.on('messageDelete', async msg => {
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
 bot.on('guildMemberRemove', async member => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
-
-    await mongod.close()
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
@@ -231,12 +208,8 @@ bot.on('guildMemberRemove', async member => {
 
 import guildBanAdd from './events/logs/guildBanAdd';
 bot.on('guildBanAdd', async (guild, user) => {
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: guild.id } });
     guildConf = guildConf.config ? guildConf.config : defaultSettings;
-
-    await mongod.close()
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;

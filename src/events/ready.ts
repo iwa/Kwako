@@ -5,7 +5,7 @@
  * @category Events
  */
 import { Client } from 'discord.js';
-import { MongoClient } from 'mongodb';
+import { Db } from 'mongodb';
 /**
  * @desc MongoDB constants
  */
@@ -16,12 +16,9 @@ const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
  * - Cache all messages needed for Reaction Roles system
  * @param {Client} bot - Discord Client object
  */
-export default async function ready(bot: Client) {
+export default async function ready(bot: Client, db: Db) {
     await bot.user.setActivity(`kwako.iwa.sh`, { type: 'WATCHING' }).catch(console.error);
     await bot.user.setStatus("online").catch(console.error)
-
-    let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    let db = mongod.db(dbName);
 
     let allMsg = db.collection('msg').find()
     if(allMsg) {
@@ -31,8 +28,4 @@ export default async function ready(bot: Client) {
                 await channel.messages.fetch(elem._id, true)
         });
     }
-
-    return setTimeout(async () => {
-        await mongod.close()
-    }, 15000);
 }
