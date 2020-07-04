@@ -10,7 +10,7 @@ import { YouTube, Video } from 'popyt';
 const yt = new YouTube(process.env.YT_TOKEN)
 
 //let queue: { url: string, title: string, length: string }[] = []
-let queue:Map<string, any[]> = new Map();
+let queue:Map<string, string[]> = new Map();
 let skippers:Map<string, string[]> = new Map();
 let skipReq:Map<string, number> = new Map();
 let loop:Map<string, boolean> = new Map();
@@ -32,8 +32,6 @@ module.exports = class music {
         if (!voiceChannel.members.find((val: any) => val.id == msg.author.id)) return msg.channel.send(":x: > **You need to be connected in a voice channel before I join it !**")
 
         let video_url = args[0].split('&')
-
-        let error, data;
 
         if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
 
@@ -57,7 +55,6 @@ module.exports = class music {
 
             let emote = collected.first().emoji.name
 
-            if (emote == '❌') return;
             if (emote != '✅') return;
 
             reply.delete()
@@ -67,22 +64,20 @@ module.exports = class music {
             embed.setColor('LUMINOUS_VIVID_PINK')
             msg.channel.send(embed)
 
-            const videos = await playlist.fetchVideos();
+            let videos = await playlist.fetchVideos();
             let errors = 0;
 
             let bar = new Promise((resolve, reject) => {
+                let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
                 videos.forEach(async (video: Video, index: number, array: Video[]) => {
-                    const url: string = video.url
-                    error = false;
-                    let queu = queue.get(msg.guild.id);
-                    if (queu && !queu.find(song => song.url === url)) {
-                        data = await YoutubeStream.getInfo(url).catch(() => { error = true; errors++; })
-                        if (!error && data) {
-                            queu.push({ url, title: Util.escapeMarkdown(data.title), length: data.length_seconds })
-                            queue.set(msg.guild.id, queu)
-                        }
+                    let url = video.url
+                    if (queu && !queu.find(song => song === url)) {
+                        queu.push(url)
                     }
-                    if (index === array.length - 1) resolve();
+                    if (index === array.length - 1){
+                        queue.set(msg.guild.id, queu)
+                        resolve();
+                    }
                 });
             });
 
@@ -107,21 +102,20 @@ module.exports = class music {
                     }
                 }
             });
-            return;
-        }
-
-        if (YoutubeStream.validateURL(video_url[0])) {
-            launchPlay(msg, voiceChannel, video_url[0], data)
         } else {
-            let keywords = args.join(' ')
+            if (YoutubeStream.validateURL(video_url[0])) {
+                launchPlay(msg, voiceChannel, video_url[0])
+            } else {
+                let keywords = args.join(' ')
 
-            let video = await yt.searchVideos(keywords, 1).then((data: any) => {
-                return data.results[0].url
-            })
+                let video = await yt.searchVideos(keywords, 1).then((data: any) => {
+                    return data.results[0].url
+                })
 
-            if (!YoutubeStream.validateURL(video)) return;
+                if (!YoutubeStream.validateURL(video)) return;
 
-            launchPlay(msg, voiceChannel, video, data)
+                launchPlay(msg, voiceChannel, video)
+            }
         }
     }
 
@@ -130,21 +124,25 @@ module.exports = class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static remove(msg: Message, args: string[]) {
+    static async remove(msg: Message, args: string[]) {
         let queueID: number = parseInt(args[0]);
 
         if (isNaN(queueID)) return;
         let queu = queue.get(msg.guild.id);
 
+        let data = await YoutubeStream.getInfo(queu[queueID])
+
+        if (!data) return;
+
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
         embed.setAuthor('Removed from the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
-        embed.setDescription(`**${queu[queueID].title}**`)
+        embed.setDescription(`**${data.title}**`)
         embed.setFooter(`Removed by ${msg.author.username}`)
 
         msg.channel.send(embed)
 
-        console.log(`musc: remove from queue: ${msg.author.tag} removed ${queu[queueID].title}`)
+        console.log(`musc: remove from queue: ${msg.author.tag} removed ${data.title}`)
         queu.splice(queueID, 1);
         queue.set(msg.guild.id, queu);
     }
@@ -154,7 +152,7 @@ module.exports = class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static list(msg: Message, args: string[]) {
+    static async list(msg: Message, args: string[]) {
         if (args.length > 0) return;
         let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
         if (queu.length < 0) return;
@@ -162,26 +160,31 @@ module.exports = class music {
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
 
-        if (queu.length <= 1)
+        if (queu.length <= 1) {
             embed.setTitle("**:cd: The queue is empty.**")
-        else {
+            msg.channel.send(embed);
+            console.log(`musc: show queue by ${msg.author.tag}`)
+        } else {
+            msg.channel.startTyping();
             embed.setTitle("**:cd: Here's the queue:**")
 
-            queu.forEach(async (song, index) => {
-                if (index == 0 || index > 10) return;
-
+            let n = 1;
+            let q = queu.slice(1, 10);
+            for await (const song of q) {
+                let videoData = await YoutubeStream.getInfo(song)
+                if (!videoData) return;
                 let date = new Date(null)
-                date.setSeconds(parseInt(song.length, 10))
+                date.setSeconds(parseInt(videoData.length_seconds, 10))
                 let timeString = date.toISOString().substr(11, 8)
+                embed.addField(`${n} : **${Util.escapeMarkdown(videoData.title)}**, *${timeString}*`, song)
+                n += 1;
+            }
 
-                embed.addField(`${index} : **${song.title}**, *${timeString}*`, song.url)
-            })
+            if (queu.length > 10) embed.setFooter(`and ${(queu.length - 10)} more...`)
+            msg.channel.send(embed);
+            msg.channel.stopTyping(true);
+            console.log(`musc: show queue by ${msg.author.tag}`)
         }
-
-        if (queu.length > 10) embed.setFooter(`and ${(queu.length - 10)} more...`)
-        msg.channel.send(embed);
-
-        console.log(`musc: show queue by ${msg.author.tag}`)
     }
 
     /**
@@ -337,14 +340,20 @@ module.exports = class music {
             return msg.channel.send(embed);
         }
 
+        msg.channel.startTyping();
+        let videoData = await YoutubeStream.getInfo(queu[0])
+
+        if (!videoData) return;
+
         let date = new Date(null)
-        date.setSeconds(parseInt(queu[0].length, 10))
+        date.setSeconds(parseInt(videoData.length_seconds, 10))
         let timeString = date.toISOString().substr(11, 8)
+
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
         embed.setTitle("**:cd: Now Playing:**")
 
-        let desc = `[${queu[0].title}](${queu[0].url})`;
+        let desc = `[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`;
         let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
         if (loo) desc += "\n🔂 Currently looping this song - type `?loop` to disable";
         embed.setDescription(desc)
@@ -352,12 +361,12 @@ module.exports = class music {
         let time = new Date(voiceConnection.dispatcher.streamTime).toISOString().slice(11, 19)
         embed.setFooter(`${time} / ${timeString}`)
 
-        let infos = await yt.getVideo(queu[0].url);
+        let infos = await yt.getVideo(queu[0]);
         let thumbnail = infos.thumbnails
         embed.setThumbnail(thumbnail.high.url)
 
         msg.channel.send(embed)
-
+        msg.channel.stopTyping(true);
         console.log(`info: nowplaying by ${msg.author.tag}`)
     }
 
@@ -394,7 +403,7 @@ module.exports = class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = YoutubeStream(queu[0].url, { filter: "audioonly", quality: "highestaudio", highWaterMark: 1024 });
+    const video = YoutubeStream(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: 1024 });
 
     video.on('error', () => {
         return msg.channel.send(":x: > **There was an unexpected error with playing the video, please retry later**")
@@ -404,19 +413,22 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
         .on('start', async () => {
             let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
             if (!loo) {
+                let videoData = await YoutubeStream.getInfo(queu[0])
+                if (!videoData) return;
+
                 let date = new Date(null)
-                date.setSeconds(parseInt(queu[0].length, 10))
+                date.setSeconds(parseInt(videoData.length_seconds, 10))
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("**:cd: Now Playing:**")
-                embed.setDescription(`[${queu[0].title}](${queu[0].url})`)
+                embed.setDescription(`[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`)
                 embed.setFooter(`Length : ${timeString}`)
-                let infos = await yt.getVideo(queu[0].url);
+                let infos = await yt.getVideo(queu[0]);
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
                 msg.channel.send(embed)
-                console.log(`musc: playing: ${queu[0].title}`)
+                console.log(`musc: playing: ${Util.escapeMarkdown(videoData.title)}`)
             }
         }).on('finish', () => {
             let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
@@ -457,10 +469,10 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
     msg.channel.startTyping();
     let error = false;
     let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
-    if (queu && !queu.find(song => song.url === video_url)) {
+    if (queu && !queu.find(song => song === video_url)) {
         data = await YoutubeStream.getInfo(video_url).catch(() => { error = true; })
         if (!error && data) {
-            queu.push({ url: video_url, title: Util.escapeMarkdown(data.title), length: data.length_seconds })
+            queu.push(video_url)
             queue.set(msg.guild.id, queu)
         }
     } else {
@@ -475,7 +487,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
 
     msg.delete();
 
-    if (queu[0].url != video_url && data) {
+    if (queu[0] != video_url && data) {
         const embed = new MessageEmbed();
         embed.setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
         embed.setDescription(`**${data.title}**`)
