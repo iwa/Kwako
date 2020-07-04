@@ -17,8 +17,7 @@ const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
  * @param {Client} bot - Discord Client object
  */
 export default async function ready(bot: Client) {
-    let guilds = await bot.shard.fetchClientValues('guilds.cache.size')
-    await bot.user.setActivity(`with ${guilds.reduce((prev, guildCount) => prev + guildCount, 0)} guilds`, { type: 0 }).catch(console.error);
+    await bot.user.setActivity(`kwako.iwa.sh`, { type: 'WATCHING' }).catch(console.error);
     await bot.user.setStatus("online").catch(console.error)
 
     let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
