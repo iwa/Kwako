@@ -51,7 +51,7 @@ export default class cooldown {
      * @param mongod - MongoDB Client
      * @param db - Database connection
      */
-    static async exp(msg: Message, mongod: MongoClient, db: Db) {
+    static async exp(msg: Message, db: Db) {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
@@ -61,8 +61,6 @@ export default class cooldown {
             cooldownXP.set(msg.author.id, 1);
             return setTimeout(async () => { cooldownXP.delete(msg.author.id) }, 5000)
         }
-
-        await mongod.close();
     }
 }
 

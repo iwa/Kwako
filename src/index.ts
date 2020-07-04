@@ -77,7 +77,7 @@ bot.on('message', async (msg: Discord.Message) => {
     await cooldown.message(msg, guildConf);
 
     if (!msg.content.startsWith(guildConf.prefix))
-        return cooldown.exp(msg, mongod, db);
+        return cooldown.exp(msg, db);
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
