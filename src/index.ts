@@ -244,13 +244,5 @@ bot.on('guildBanAdd', async (guild, user) => {
 	return guildBanAdd(guild, user, bot, modLogChannel);
 });
 
-// Update guilds count every 5min
-setInterval(async () => {
-    if(process.env.SLEEP == '0') {
-        let guilds = await bot.shard.fetchClientValues('guilds.cache.size')
-        await bot.user.setActivity(`with ${guilds.reduce((prev, guildCount) => prev + guildCount, 0)} guilds`, { type: 0 }).catch(console.error);
-    }
-}, 300000);
-
 // Login
 bot.login(process.env.TOKEN)
