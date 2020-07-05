@@ -28,7 +28,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
                 if(n > 3)
                     desc = `${desc}**${n}.** `
 
-                let level = utilities.levelInfo(elem.exp)
+                let level = utilities.levelInfo(elem.exp[msg.guild.id])
                 desc = `${desc}**${user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
 
             }
