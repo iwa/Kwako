@@ -4,7 +4,7 @@ module.exports.run = async (bot: Client, msg: Message) => {
     await msg.channel.send({
         "embed": {
           "title": "You can invite me to your server through this link:",
-          "description": "https://iwa.sh/Kwako",
+          "description": "https://kwako.iwa.sh/",
           "color": 16774804}
         })
         .then(() => { console.log(`info: ping: ${msg.author.tag}`) })
