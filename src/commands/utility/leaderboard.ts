@@ -29,7 +29,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
                     desc = `${desc}**${n}.** `
 
                 let level = utilities.levelInfo(elem.exp)
-                desc = `${desc}**${user.username}**\nLevel ${level.level} (${elem.exp} exps)\n`
+                desc = `${desc}**${user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
 
             }
             if (index === leaderboard.length - 1) resolve();
