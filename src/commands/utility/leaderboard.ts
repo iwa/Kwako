@@ -14,28 +14,36 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     embed.setTitle(`:trophy: **Experience Points Leaderboard**`)
     let desc = "";
 
-    leaderboard.forEach(async elem => {
-        let user = await msg.guild.members.fetch(elem._id)
-        if(!user || !elem.exp[msg.guild.id]) return;
-        n++;
-        let level = utilities.levelInfo(elem.exp[msg.guild.id])
-        if(n === 1)
-            desc = `${desc}:first_place: `
-        if(n === 2)
-            desc = `${desc}:second_place: `
-        if(n === 3)
-            desc = `${desc}:third_place: `
-        desc = `${desc}**${n}. <@${user.id}>**\n**Level ${level.level}** (${elem.exp[msg.guild.id]} exps)\n`
-    })
+    let bar = new Promise((resolve, reject) => {
+        leaderboard.forEach(async (elem, index) => {
+            let user = await bot.users.fetch(elem._id)
+            if(user) {
+                n++;
+                if(n === 1)
+                    desc = `${desc}:first_place: `
+                if(n === 2)
+                    desc = `${desc}:second_place: `
+                if(n === 3)
+                    desc = `${desc}:third_place: `
+                if(n > 3)
+                    desc = `${desc}**${n}.** `
 
-    setTimeout(() => {
+                let level = utilities.levelInfo(elem.exp)
+                desc = `${desc}**${user.username}**\nLevel ${level.level} (${elem.exp} exps)\n`
+
+            }
+            if (index === leaderboard.length - 1) resolve();
+        })
+    });
+
+    bar.then(async () => {
         embed.setDescription(desc)
         msg.channel.send(embed)
             .then(() => {
                 console.log(`info: exp leaderboard: ${msg.author.tag}`);
-                msg.channel.stopTyping(true)
+                msg.channel.stopTyping()
             }).catch(console.error)
-    }, 1500)
+    });
 };
 
 module.exports.help = {
