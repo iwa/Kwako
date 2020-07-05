@@ -36,10 +36,12 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
             level: 1,
             current: 0,
             max: 25,
-            userColor: memberDiscord.displayHexColor
+            userColor: memberDiscord.displayHexColor,
+            expBar: 0
         }
-        let html = await ejs.renderFile('views/profile.ejs', { user });
-        let file = await imGenerator(508, 168, html, userDiscord.id, 'prof')
+
+        if(user.userColor == '#000000') user.userColor = '#444444';
+        let file = await imGenerator(user);
 
         try {
             console.log(`info: profile by ${msg.author.tag}`)
@@ -62,11 +64,12 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
         level: lvlInfo.level,
         current: lvlInfo.current,
         max: lvlInfo.max,
-        userColor: memberDiscord.displayHexColor
+        userColor: memberDiscord.displayHexColor,
+        expBar: Math.round((lvlInfo.current / lvlInfo.max) * 646)
     }
 
-    let html = await ejs.renderFile('views/profile.ejs', { user });
-    let file = await imGenerator(508, 168, html, userDiscord.id, 'prof')
+    if(user.userColor == '#000000') user.userColor = '#444444';
+    let file = await imGenerator(user);
 
     try {
         console.log(`info: profile by ${msg.author.tag}`)
