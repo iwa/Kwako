@@ -2,7 +2,7 @@ import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands:any, settings:Map<string, Object>) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA || process.env.SUDO == '0')) return;
     if (args.length != 1) return;
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     if(!guildConf) {

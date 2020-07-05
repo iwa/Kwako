@@ -2,7 +2,7 @@ import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb';
 
 module.exports.run = async (bot: Client, msg: Message, args:string[], db:Db) => {
-    if(!msg.member.hasPermission('MANAGE_GUILD')) return msg.delete();
+    if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA || process.env.SUDO == '0')) return msg.delete();
 
     msg.channel.send(`**☁️ Please now use Kwako Web Dashboard to configure the bot**\nhttps://kwako.iwa.sh`);
 };
