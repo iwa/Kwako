@@ -109,7 +109,7 @@ bot.on("guildMemberAdd", async member => {
 });
 
 bot.on('guildCreate', async guild => {
-    let channel = guild.channels.cache.find(val => val.name === 'general');
+    let channel = guild.channels.cache.find(val => val.name.includes('general') && val.type === 'text');
     if(channel) {
         await (channel as Discord.TextChannel).send({
             "embed": {
@@ -139,7 +139,7 @@ bot.on('guildCreate', async guild => {
             }
           }).catch(() => {return;})
         if(!guild.me.permissions.has(305523776))
-            await (channel as Discord.TextChannel).send(':x: **Some needed perms are unavailable. Quitting. Please re-invite me with all the needed perms.**').catch(() => {return;})
+            await (channel as Discord.TextChannel).send(':x: **Some needed perms are unavailable. Leaving. Please re-invite me with all the needed perms.**').catch(() => {return;})
     }
     if(!guild.me.permissions.has(305523776))
         await guild.leave();
