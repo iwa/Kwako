@@ -64,4 +64,4 @@ export default class cooldown {
     }
 }
 
-setInterval(() => { exp = utils.randomInt(8) }, 300000);
+setInterval(() => { exp = utils.randomInt(3) }, 300000);
