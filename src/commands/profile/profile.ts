@@ -17,7 +17,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 module.exports.help = {
     name: 'profile',
     usage: "profile [mention someone]",
-    desc: "Print your or someone's profile"
+    desc: "Print your or someone's profile",
+    perms: ['SEND_MESSAGES', 'ATTACH_FILES']
 };
 
 async function profileImg(bot: Client, msg: Message, db: Db, id: string) {

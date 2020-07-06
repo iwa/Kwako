@@ -8,5 +8,6 @@ module.exports.run = (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'nowplaying',
     usage: "nowplaying",
-    desc: "Show the currently playing song."
+    desc: "Show the currently playing song.",
+    perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD']
 };

@@ -39,7 +39,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 module.exports.help = {
     name: 'addlevelrole',
     usage: "addlevelrole (level number) (mention role)",
-    staff: true
+    staff: true,
+    perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES']
 };
 
 async function giveRoleToUpper (msg:Message, db:Db, role:string, level:number) {

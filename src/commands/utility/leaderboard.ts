@@ -49,5 +49,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 module.exports.help = {
     name: 'leaderboard',
     usage: "leaderboard",
-    desc: "Show the exp points leaderboard of the server"
+    desc: "Show the exp points leaderboard of the server",
+    perms: ['EMBED_LINKS']
 };

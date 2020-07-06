@@ -9,5 +9,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 module.exports.help = {
     name: 'pat',
     usage: "pat (mention someone) [someone else]",
-    desc: "Pat people by mentioning them"
+    desc: "Pat people by mentioning them",
+    perms: ['EMBED_LINKS']
 };

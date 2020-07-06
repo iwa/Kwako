@@ -10,5 +10,6 @@ module.exports.run = async (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'info',
     usage: "info",
-    desc: "Show some info about Kwako"
+    desc: "Show some info about Kwako",
+    perms: ['EMBED_LINKS']
 };

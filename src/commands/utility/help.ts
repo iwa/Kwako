@@ -54,7 +54,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 module.exports.help = {
     name: 'help',
     usage: "help",
-    desc: "Sends you the list of the commands available"
+    desc: "Sends you the list of the commands available",
+    perms: ['EMBED_LINKS', 'MANAGE_ROLES']
 };
 
 async function sendHelp(msg: Message, guildConf: any) {

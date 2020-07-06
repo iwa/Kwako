@@ -50,5 +50,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
 module.exports.help = {
     name: 'rps',
     usage: "rps (rock | paper | scissors)",
-    desc: "Play Rock-Paper-Scissors with me"
+    desc: "Play Rock-Paper-Scissors with me",
+    perms: ['EMBED_LINKS']
 };

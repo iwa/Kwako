@@ -13,5 +13,6 @@ module.exports.run = (bot: Client, msg: Message, args:string[], db:any, commands
 module.exports.help = {
     name: 'mute',
     usage: 'mute (mention someone) (length)',
-    staff: true
+    staff: true,
+    perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
 };

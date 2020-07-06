@@ -8,5 +8,6 @@ module.exports.run = (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'leave',
     usage: "leave",
-    desc: "Make the bot stop playing music and disconnect it from the Qumu Radio"
+    desc: "Make the bot stop playing music and disconnect it",
+    perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD', 'ADD_REACTIONS']
 };

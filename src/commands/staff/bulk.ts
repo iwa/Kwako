@@ -9,5 +9,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
 module.exports.help = {
     name: 'bulk',
     usage: 'bulk (number of messages to delete)',
-    staff: true
+    staff: true,
+    perms: ['MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
 };

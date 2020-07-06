@@ -16,5 +16,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[]) => {
 module.exports.help = {
     name: '8ball',
     usage: "8ball (your question)",
-    desc: "Let Kwako reply to all your questions, with a **lot** of honesty"
+    desc: "Let Kwako reply to all your questions, with a **lot** of honesty",
+    perms: ['EMBED_LINKS']
 };

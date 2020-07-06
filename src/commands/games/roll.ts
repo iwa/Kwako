@@ -27,5 +27,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
 module.exports.help = {
     name: 'roll',
     usage: "roll [number]",
-    desc: "Generates a number between 1 and the number you choose.\n_Rolls up to 100 if a number isn't provided._"
+    desc: "Generates a number between 1 and the number you choose.\n_Rolls up to 100 if a number isn't provided._",
+    perms: ['EMBED_LINKS']
 };

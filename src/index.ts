@@ -84,6 +84,8 @@ bot.on('message', async (msg: Discord.Message) => {
     let cmd: any = commands.get(req);
 
     if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
+    if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
+        return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
 
     if (!cmd) return;
     else await cmd.run(bot, msg, args, db, commands, guildConf);

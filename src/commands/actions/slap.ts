@@ -9,5 +9,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 module.exports.help = {
     name: 'slap',
     usage: "slap (mention someone) [someone else]",
-    desc: "Slap people by mentioning them"
+    desc: "Slap people by mentioning them",
+    perms: ['EMBED_LINKS']
 };

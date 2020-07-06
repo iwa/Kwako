@@ -13,5 +13,6 @@ module.exports.run = (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'flip',
     usage: "flip",
-    desc: "Flip a coin"
+    desc: "Flip a coin",
+    perms: ['EMBED_LINKS']
 };

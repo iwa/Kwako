@@ -27,5 +27,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 module.exports.help = {
     name: 'dellevelrole',
     usage: "dellevelrole (level number)",
-    staff: true
+    staff: true,
+    perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES']
 };

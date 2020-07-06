@@ -10,5 +10,6 @@ module.exports.run = async (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'ping',
     usage: "ping",
-    desc: "Get response time between Kwako and Discord servers."
+    desc: "Get response time between Kwako and Discord servers.",
+    perms: ['EMBED_LINKS']
 };

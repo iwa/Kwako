@@ -9,5 +9,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 module.exports.help = {
     name: 'rank',
     usage: "rank [mention someone]",
-    desc: "Print your or someone's profile\n(alias of ?profile)"
+    desc: "Print your or someone's profile\n(alias of ?profile)",
+    perms: ['SEND_MESSAGES', 'ATTACH_FILES']
 };

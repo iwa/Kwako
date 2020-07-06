@@ -8,5 +8,6 @@ module.exports.run = (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'pause',
     usage: "pause",
-    desc: "Pause the currently played song"
+    desc: "Pause the currently played song",
+    perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD', 'ADD_REACTIONS']
 };

@@ -8,5 +8,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
 module.exports.help = {
     name: 'queue',
     usage: "queue",
-    desc: "Show the music queue"
+    desc: "Show the music queue",
+    perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD']
 };

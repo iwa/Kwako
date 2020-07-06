@@ -8,5 +8,6 @@ module.exports.run = (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'loop',
     usage: "loop",
-    desc: "Enable / Disable loop for the current song."
+    desc: "Enable / Disable loop for the current song.",
+    perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD']
 };

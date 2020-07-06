@@ -8,5 +8,6 @@ module.exports.run = (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'clear',
     usage: "clear",
-    desc: "Clear the music queue\nOnly in #radio-lounge"
+    desc: "Clear the music queue",
+    perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD', 'ADD_REACTIONS']
 };

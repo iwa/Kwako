@@ -9,5 +9,6 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 module.exports.help = {
     name: 'hug',
     usage: "hug (mention someone) [someone else]",
-    desc: "Hug people by mentioning them"
+    desc: "Hug people by mentioning them",
+    perms: ['EMBED_LINKS']
 };

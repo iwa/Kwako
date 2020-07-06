@@ -11,5 +11,6 @@ module.exports.help = {
     name: 'setconf',
     usage: "setconf",
     desc: "Set a custom configuration for this Guild",
-    staff: true
+    staff: true,
+    perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES']
 };

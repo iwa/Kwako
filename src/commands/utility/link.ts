@@ -14,5 +14,6 @@ module.exports.run = async (bot: Client, msg: Message) => {
 module.exports.help = {
     name: 'link',
     usage: "link",
-    desc: "This will send you a link to add me into your server!"
+    desc: "This will send you a link to add me into your server!",
+    perms: ['EMBED_LINKS']
 };
