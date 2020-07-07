@@ -4,7 +4,7 @@ import utilities from '../../utils/utilities'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
     let guild = `exp.${msg.guild.id.toString()}`
-    let leaderboard = await db.collection('user').find().sort({ [guild]: -1 }).limit(10).toArray();
+    let leaderboard = await db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
 
     msg.channel.startTyping()
