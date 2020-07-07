@@ -16,7 +16,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
     let bar = new Promise((resolve, reject) => {
         leaderboard.forEach(async (elem, index) => {
-            let member = await msg.guild.members.fetch(elem._id)
+            let member = await msg.guild.members.fetch(elem._id).catch(() => {return});
             if(member) {
                 n++;
                 if(n === 1)
