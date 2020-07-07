@@ -16,8 +16,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
     let bar = new Promise((resolve, reject) => {
         leaderboard.forEach(async (elem, index) => {
-            let user = await bot.users.fetch(elem._id)
-            if(user) {
+            let member = await msg.guild.members.fetch(elem._id)
+            if(member) {
                 n++;
                 if(n === 1)
                     desc = `${desc}:first_place: `
@@ -29,7 +29,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
                     desc = `${desc}**${n}.** `
 
                 let level = utilities.levelInfo(elem.exp[msg.guild.id])
-                desc = `${desc}**${user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
+                desc = `${desc}**${member.user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
 
             }
             if (index === leaderboard.length - 1) resolve();
