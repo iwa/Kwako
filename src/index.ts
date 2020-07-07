@@ -72,7 +72,7 @@ bot.on('message', async (msg: Discord.Message) => {
     if (msg.channel.type != "text") return;
 
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
-    guildConf = guildConf.config ? guildConf.config : defaultSettings;
+    guildConf = guildConf.config || defaultSettings;
 
     await cooldown.message(msg, guildConf);
 
@@ -94,7 +94,7 @@ bot.on('message', async (msg: Discord.Message) => {
 
 bot.on("guildMemberAdd", async member => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
-    guildConf = guildConf.config ? guildConf.config : defaultSettings;
+    guildConf = guildConf.config || defaultSettings;
 
     let welcomeMessage = guildConf.welcomeMessage;
 
@@ -164,7 +164,7 @@ bot.on("guildDelete", async guild => {
 import starboard from './events/starboard';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
-    guildConf = guildConf.config ? guildConf.config : defaultSettings;
+    guildConf = guildConf.config || defaultSettings;
 
     let starboardChannel = guildConf.starboardChannel;
 
@@ -194,7 +194,7 @@ bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author
 import messageDelete from './events/logs/messageDelete';
 bot.on('messageDelete', async msg => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
-    guildConf = guildConf.config ? guildConf.config : defaultSettings;
+    guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
@@ -205,7 +205,7 @@ bot.on('messageDelete', async msg => {
 import guildMemberRemove from './events/logs/guildMemberRemove';
 bot.on('guildMemberRemove', async member => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
-    guildConf = guildConf.config ? guildConf.config : defaultSettings;
+    guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
@@ -216,7 +216,7 @@ bot.on('guildMemberRemove', async member => {
 import guildBanAdd from './events/logs/guildBanAdd';
 bot.on('guildBanAdd', async (guild, user) => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: guild.id } });
-    guildConf = guildConf.config ? guildConf.config : defaultSettings;
+    guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
