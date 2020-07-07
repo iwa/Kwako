@@ -136,12 +136,19 @@ bot.on('guildCreate', async guild => {
                   "name": "Command-specific help",
                   "value": "`!help (command name)`",
                   "inline": true
+                },
+                {
+                  "name": "Support Server",
+                  "value": "https://discord.gg/4ZFYUcw",
+                  "inline": true
                 }
               ]
             }
           }).catch(() => {return;})
-        if(!guild.me.permissions.has(305523776))
+        if(!guild.me.permissions.has(305523776)) {
+            await (channel as Discord.TextChannel).send('Hey, thanks for inviting me!\n\nCheck out the official website to configure me:\nhttps://kwako.iwa.sh/').catch(() => {return;})
             await (channel as Discord.TextChannel).send(':x: **Some needed perms are unavailable. Please give me all the required permissions or I won\'t be able to work normally.**').catch(() => {return;})
+        }
     }
     await db.collection('settings').insertOne({ '_id': guild.id });
     https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
