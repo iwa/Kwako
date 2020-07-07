@@ -100,7 +100,7 @@ bot.on("guildMemberAdd", async member => {
 
     if(!welcomeMessage) return;
 
-    welcomeMessage = welcomeMessage.replace("{{user}}", member.user.tag)
+    welcomeMessage = welcomeMessage.replace("{{user}}", member.user.username)
     welcomeMessage = welcomeMessage.replace("{{guild}}", member.guild.name)
 
     try {
