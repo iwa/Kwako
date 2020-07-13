@@ -81,7 +81,7 @@ bot.on('message', async (msg: Discord.Message) => {
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
-    let cmd: any = commands.get(req);
+    let cmd: any = commands.get(req) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(req));
 
     if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
