@@ -6,7 +6,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import * as fs from 'fs';
-import * as https from 'https';
+import * as http from 'http';
 
 import { MongoClient, Db } from 'mongodb';
 
@@ -153,12 +153,12 @@ bot.on('guildCreate', async guild => {
         }
     }
     await db.collection('settings').insertOne({ '_id': guild.id });
-    https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
+    http.get('http://localhost:8080/api/guilds/update').on("error", console.error);
 });
 
 bot.on("guildDelete", async guild => {
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    https.get('https://kwako.iwa.sh/api/guilds/update').on("error", console.error);
+    http.get('http://localhost:8080/api/guilds/update').on("error", console.error);
 });
 
 
