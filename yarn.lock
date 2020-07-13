@@ -84,6 +84,13 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
+anilist-node@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/anilist-node/-/anilist-node-1.4.0.tgz#37cd0b5b275163d13a27f2cdae6b35b4c7ef658b"
+  integrity sha512-41BNk/wv8uX3JUZRQKu1zd0Mq0hfuwIZa3OtPs5hYzpYl8SGJkes+Ia7X6H2n5uxsONTTRD+xg2vmnKDx93bXQ==
+  dependencies:
+    node-fetch "^2.6.0"
+
 ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
