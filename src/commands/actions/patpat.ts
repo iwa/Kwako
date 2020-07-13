@@ -3,7 +3,7 @@ import { Db } from 'mongodb'
 import actionsRun from '../../utils/actions';
 
 module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
-    actionsRun(bot, msg, args, db, 'pat');
+    actionsRun(bot, msg, args, db, 'pat', 'pats', false);
 };
 
 module.exports.help = {
