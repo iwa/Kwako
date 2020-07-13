@@ -14,7 +14,7 @@ export default async function levelCheck (msg: Discord.Message, xp: number, db: 
     if(before.level != after.level) {
         await msg.reply(`you're now level ${after.level}!🎉🎉`).catch(() => {return})
         let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
-        let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
+        let levelroles:string = guildConf.levelroles || "[]";
         let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
 
         if(levelrolesMap.has(after.level))

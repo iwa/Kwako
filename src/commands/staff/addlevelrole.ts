@@ -13,8 +13,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
     let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
 
-    if(parseInt(args[0]) < 2 || parseInt(args[0]) > 100)
-        return msg.channel.send(":x: > Please choose a valid level number between 2 and 100!")
+    if(parseInt(args[0]) < 2 || parseInt(args[0]) > 50)
+        return msg.channel.send(":x: > Please choose a valid level number between 2 and 50!")
 
     let role = args[1];
     if(role.startsWith('<@&') && role.endsWith('>')) {
