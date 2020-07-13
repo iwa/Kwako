@@ -53,6 +53,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
 module.exports.help = {
     name: 'help',
+    aliases: ['commands', 'command'],
     usage: "help",
     desc: "Sends you the list of the commands available",
     perms: ['EMBED_LINKS', 'MANAGE_ROLES']
@@ -60,10 +61,11 @@ module.exports.help = {
 
 async function sendHelp(msg: Message, guildConf: any) {
     let memberEmbed = member;
-    memberEmbed.setDescription(`Prefix : \`${guildConf.prefix}\`\nUse \`${guildConf.prefix}help (command)\` to have more info about a specific command`)
+    memberEmbed.setDescription(`Prefix : \`${guildConf.prefix}\`\nUse \`${guildConf.prefix}help (command)\` to have more info about a specific command`);
+    memberEmbed.setFooter('Need more help? https://discord.gg/4ZFYUcw');
     if (msg.member.hasPermission('MANAGE_GUILD'))
         try {
-            await msg.author.send(member)
+            await msg.channel.send(member)
             await msg.author.send(mod)
         } catch (ex) {
             return msg.channel.send(":x: > **Please open your DMs, I can't reach you**")
