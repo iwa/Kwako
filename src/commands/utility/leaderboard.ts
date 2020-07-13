@@ -7,8 +7,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     let leaderboard = await db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
 
-    msg.channel.startTyping()
-
     const embed = new MessageEmbed();
     embed.setColor(16114507)
     embed.setTitle(`:trophy: **Experience Points Leaderboard**`)
@@ -41,7 +39,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         msg.channel.send(embed)
             .then(() => {
                 console.log(`info: exp leaderboard: ${msg.author.tag}`);
-                msg.channel.stopTyping()
             }).catch(console.error)
     });
 };
