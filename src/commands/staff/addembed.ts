@@ -16,11 +16,6 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         }
     }
 
-    let embed2 = sent.embeds[0];
-    embed2.setFooter(sent.id);
-
-    await sent.edit(embed2);
-
     await db.collection('msg').insertOne({ _id: (await sent).id, channel: (await sent).channel.id })
 };
 
