@@ -24,11 +24,13 @@ const defaultSettings = {
     welcomeMessage: "",
     starboardChannel: "",
     muteRole: "",
-    modLogChannel: ""
+    modLogChannel: "",
+    suggestionChannel: ""
 }
 
 import cooldown from './events/messages/cooldown';
 import ready from './events/ready';
+import suggestion from './events/messages/suggestion';
 
 
 // Imports commands from the 'commands' folder
@@ -75,6 +77,9 @@ bot.on('message', async (msg: Discord.Message) => {
     guildConf = guildConf.config || defaultSettings;
 
     await cooldown.message(msg, guildConf);
+
+    if (msg.channel.id === guildConf.suggestionChannel)
+        return suggestion(bot, msg, db);
 
     if (!msg.content.startsWith(guildConf.prefix))
         return cooldown.exp(msg, db);
