@@ -179,12 +179,6 @@ bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: D
     await starboard.check(reaction, author, bot, starboardChannel);
 });
 
-// MemberLeave Event
-import memberLeave from './events/memberLeave'
-bot.on('guildMemberRemove', async member => {
-    memberLeave(member, db)
-})
-
 // Reaction Role Events
 import reactionRoles from './events/reactionRoles';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
