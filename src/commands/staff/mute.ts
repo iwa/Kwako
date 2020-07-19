@@ -7,7 +7,9 @@ module.exports.run = (bot: Client, msg: Message, args:string[], db:any, commands
     let muteRole = guildConf.muteRole;
     if(!muteRole) return msg.channel.send(":x: > You haven't configured any muted role!")
 
-    staff.mute(bot, msg, args, muteRole);
+    let modLogChannel = guildConf.modLogChannel;
+
+    staff.mute(bot, msg, args, muteRole, modLogChannel);
 };
 
 module.exports.help = {

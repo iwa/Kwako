@@ -38,7 +38,7 @@ export default class staff {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async mute(bot: Client, msg: Message, args: string[], muteRole: string): Promise<void> {
+    static async mute(bot: Client, msg: Message, args: string[], muteRole: string, modLogChannel: string): Promise<void> {
         if (args.length >= 2 && msg.channel.type != 'dm') {
             if (msg.mentions.everyone) return;
 
@@ -67,15 +67,19 @@ export default class staff {
             try {
                 await mention.roles.add(muteRole)
                 let reply = await msg.channel.send(embed)
-                let channel = await bot.channels.fetch(process.env.LOGTC);
-                let embedLog = new MessageEmbed();
-                embedLog.setTitle("Member muted");
-                embedLog.setDescription(`Who: ${mention.user.tag} (<@${mention.id}>)\nBy: <@${msg.author.id}>\nFor: \`${timeParsedString}\``);
-                embedLog.setColor(9392322);
-                embedLog.setTimestamp(msg.createdTimestamp);
-                embedLog.setFooter("Date of mute:")
-                embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
-                await (channel as TextChannel).send(embedLog);
+
+                if(modLogChannel) {
+                    let channel = await bot.channels.fetch(modLogChannel);
+                    let embedLog = new MessageEmbed();
+                    embedLog.setTitle("Member muted");
+                    embedLog.setDescription(`Who: ${mention.user.tag} (<@${mention.id}>)\nBy: <@${msg.author.id}>\nFor: \`${timeParsedString}\``);
+                    embedLog.setColor(9392322);
+                    embedLog.setTimestamp(msg.createdTimestamp);
+                    embedLog.setFooter("Date of mute:")
+                    embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+                    await (channel as TextChannel).send(embedLog);
+                }
+
                 setTimeout(async () => {
                     await reply.delete()
                     return mention.roles.remove(muteRole)
