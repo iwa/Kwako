@@ -47,7 +47,7 @@ export default class staff {
             if (!mention) return;
             if (mention.id == msg.author.id || mention.id == bot.user.id) return;
 
-            if ((msg.author.id != process.env.IWA || msg.author.id != process.env.QUMU) && mention.roles.cache.find(val => val.id == process.env.MODROLE)) return;
+            if (msg.author.id != process.env.IWA && mention.hasPermission('MANAGE_GUILD')) return;
 
             try {
                 msg.delete();
