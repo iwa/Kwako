@@ -46,7 +46,7 @@ export default class cooldown {
     }
 
     /**
-     * Experience cooldown (1exp earnable every 5sec)
+     * Experience cooldown
      * @param msg - Message object
      * @param mongod - MongoDB Client
      * @param db - Database connection

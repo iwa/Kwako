@@ -215,6 +215,9 @@ bot.on('guildMemberRemove', async member => {
 
 import guildBanAdd from './events/logs/guildBanAdd';
 bot.on('guildBanAdd', async (guild, user) => {
+    let guildDB = `exp.${guild.id.toString()}`
+    await db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
+
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
