@@ -15,8 +15,9 @@ export default class starboard {
      * @param {MessageReaction} reaction - Reaction object
      * @param {string} content - Content of the message that'll be posted to the Starboard
      */
-    static async send(bot: Client, msg: Message, reaction: MessageReaction, content: string): Promise<void> {
-        let channel: any = bot.channels.cache.find(val => val.id == process.env.STARBOARDTC);
+    static async send(bot: Client, msg: Message, reaction: MessageReaction, content: string, starboardChannel: string): Promise<void> {
+        let channel: any = bot.channels.fetch(starboardChannel);
+        if (!channel) return;
         await msg.react(reaction.emoji.name);
         await channel.send({
             "embed": {
@@ -41,7 +42,7 @@ export default class starboard {
      * @param {User} author - Author Object
      * @param {Client} bot - Discord Client object
      */
-    static async check(reaction: MessageReaction, author: User, bot: Client) {
+    static async check(reaction: MessageReaction, author: User, bot: Client, starboardChannel: string) {
         if (reaction.message.guild.id !== process.env.GUILDID) return;
         if (reaction.message.channel.id == process.env.STARBOARDTC) return;
         if (reaction.message.channel.id == process.env.ANNOUNCEMENTSTC) return;
@@ -55,7 +56,7 @@ export default class starboard {
                 else
                     content = `\`\`\`${msg.cleanContent}\`\`\``
 
-                return starboard.send(bot, msg, reaction, content);
+                return starboard.send(bot, msg, reaction, content, starboardChannel);
             }
         } else if (reaction.emoji.name == '🌟' && author.id == process.env.IWA) {
             let msg = reaction.message;
@@ -65,7 +66,7 @@ export default class starboard {
             else
                 content = `\`\`\`${msg.cleanContent}\`\`\``
 
-            return starboard.send(bot, msg, reaction, content);
+            return starboard.send(bot, msg, reaction, content, starboardChannel);
         }
     }
 }

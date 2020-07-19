@@ -174,10 +174,9 @@ bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: D
     guildConf = guildConf.config || defaultSettings;
 
     let starboardChannel = guildConf.starboardChannel;
-
     if(!starboardChannel) return;
 
-    await starboard.check(reaction, author, bot);
+    await starboard.check(reaction, author, bot, starboardChannel);
 });
 
 // MemberLeave Event
