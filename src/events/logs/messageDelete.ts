@@ -5,10 +5,11 @@
  * @category Events
  */
 import { Message, User, PartialMessage, Client, TextChannel, MessageEmbed } from 'discord.js';
+let lastTimestamp: number;
 
-export default async function messageDelete(msg: Message | PartialMessage, bot: Client, modLogChannel: string) {
+export default async function messageDelete(msg: Message | PartialMessage, bot: Client, modLogChannel: string, prefix: string) {
     if (!msg.guild) return;
-    if (msg.content.startsWith('?')) return;
+    if (msg.content.startsWith(prefix)) return;
 	const fetchedLogs = await msg.guild.fetchAuditLogs({
 		limit: 1,
 		type: 'MESSAGE_DELETE',
@@ -18,6 +19,9 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
 	if (!deletionLog) return;
 
     const { executor, target, createdTimestamp } = deletionLog;
+
+    if (lastTimestamp === createdTimestamp) return;
+    lastTimestamp = createdTimestamp;
 
 	if ((target as User).id === msg.author.id) {
         let channel = await bot.channels.fetch(modLogChannel);

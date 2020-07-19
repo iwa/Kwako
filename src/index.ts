@@ -199,7 +199,7 @@ bot.on('messageDelete', async msg => {
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-    return messageDelete(msg, bot, modLogChannel);
+    return messageDelete(msg, bot, modLogChannel, guildConf.prefix);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
