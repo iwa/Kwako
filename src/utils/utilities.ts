@@ -59,7 +59,7 @@ export default class utilities {
                 return { 'level': i, 'current': xp, 'max': x }
             }
             xp -= x;
-            x = Math.round(Math.log(Math.pow(x, 2))+(x*1.375))
+            x = Math.round(Math.log(Math.pow(x, 2))+(x*1.28))
         }
         return { 'level': 50, 'current': 1, 'max': 1 }
     }
@@ -69,7 +69,7 @@ export default class utilities {
         let xp = 0;
         for (let i = 1; i <= level; i++) {
             xp += x;
-            x = Math.round(Math.log(Math.pow(x, 2))+(x*1.375))
+            x = Math.round(Math.log(Math.pow(x, 2))+(x*1.28))
         }
         return xp;
     }
