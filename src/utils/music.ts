@@ -491,6 +491,9 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
         embed.setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
         embed.setDescription(`**${data.videoDetails.title}**`)
         embed.setFooter(`Added by ${msg.author.username}`)
+        let infos = await yt.getVideo(video_url);
+        let thumbnail = infos.thumbnails
+        embed.setThumbnail(thumbnail.high.url)
         embed.setColor('LUMINOUS_VIVID_PINK')
         msg.channel.stopTyping()
         await msg.channel.send(embed)
