@@ -6,10 +6,8 @@
  */
 import { Client } from 'discord.js';
 import { Db } from 'mongodb';
-/**
- * @desc MongoDB constants
- */
-const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
+
+let { version } = require('../../package.json');
 
 /**
  * - Sets bot activity
@@ -17,7 +15,7 @@ const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
  * @param {Client} bot - Discord Client object
  */
 export default async function ready(bot: Client, db: Db) {
-    await bot.user.setActivity(`kwako.iwa.sh`, { type: 'WATCHING' }).catch(console.error);
+    await bot.user.setActivity(`kwako.iwa.sh | v${version}`, { type: 'WATCHING' }).catch(console.error);
     await bot.user.setStatus("online").catch(console.error)
 
     let allMsg = db.collection('msg').find()
