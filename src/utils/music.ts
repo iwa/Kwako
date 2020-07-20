@@ -173,9 +173,9 @@ export default class music {
                 let videoData = await YoutubeStream.getInfo(song)
                 if (!videoData) return;
                 let date = new Date(null)
-                date.setSeconds(parseInt(videoData.length_seconds, 10))
+                date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
                 let timeString = date.toISOString().substr(11, 8)
-                embed.addField(`${n} : **${Util.escapeMarkdown(videoData.title)}**, *${timeString}*`, song)
+                embed.addField(`${n} : **${Util.escapeMarkdown(videoData.videoDetails.title)}**, *${timeString}*`, song)
                 n += 1;
             }
 
@@ -345,7 +345,7 @@ export default class music {
         if (!videoData) return;
 
         let date = new Date(null)
-        date.setSeconds(parseInt(videoData.length_seconds, 10))
+        date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
         let timeString = date.toISOString().substr(11, 8)
 
         const embed = new MessageEmbed();
@@ -416,18 +416,18 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 if (!videoData) return;
 
                 let date = new Date(null)
-                date.setSeconds(parseInt(videoData.length_seconds, 10))
+                date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("**:cd: Now Playing:**")
-                embed.setDescription(`[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`)
+                embed.setDescription(`[${Util.escapeMarkdown(videoData.videoDetails.title)}](${queu[0]})`)
                 embed.setFooter(`Length : ${timeString}`)
                 let infos = await yt.getVideo(queu[0]);
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
                 msg.channel.send(embed)
-                console.log(`musc: playing: ${Util.escapeMarkdown(videoData.title)}`)
+                console.log(`musc: playing: ${Util.escapeMarkdown(videoData.videoDetails.title)}`)
             }
         }).on('finish', () => {
             let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
@@ -489,12 +489,12 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
     if (queu[0] != video_url && data) {
         const embed = new MessageEmbed();
         embed.setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
-        embed.setDescription(`**${data.title}**`)
+        embed.setDescription(`**${data.videoDetails.title}**`)
         embed.setFooter(`Added by ${msg.author.username}`)
         embed.setColor('LUMINOUS_VIVID_PINK')
         msg.channel.stopTyping()
         await msg.channel.send(embed)
-        console.log(`musc: add to queue: ${msg.author.tag} added ${data.title}`)
+        console.log(`musc: add to queue: ${msg.author.tag} added ${data.videoDetails.title}`)
     }
     else {
         msg.channel.stopTyping()
