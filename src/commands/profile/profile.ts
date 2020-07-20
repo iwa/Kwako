@@ -1,6 +1,5 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
 import { Db } from 'mongodb'
-import * as ejs from 'ejs';
 import imGenerator from '../../utils/img';
 import utilities from '../../utils/utilities'
 
