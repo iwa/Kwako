@@ -16,6 +16,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
 
 module.exports.help = {
     name: 'profile',
+    aliases: ['me', 'rank'],
     usage: "profile [mention someone]",
     desc: "Print your or someone's profile",
     perms: ['SEND_MESSAGES', 'ATTACH_FILES']
