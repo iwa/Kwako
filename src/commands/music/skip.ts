@@ -1,5 +1,5 @@
 import { Client, Message } from 'discord.js'
-const music = require('../../utils/music')
+import music from '../../utils/music'
 
 module.exports.run = (bot: Client, msg: Message) => {
     music.skip(bot, msg);

@@ -9,13 +9,12 @@ import * as YoutubeStream from 'ytdl-core';
 import { YouTube, Video } from 'popyt';
 const yt = new YouTube(process.env.YT_TOKEN)
 
-//let queue: { url: string, title: string, length: string }[] = []
 let queue:Map<string, string[]> = new Map();
 let skippers:Map<string, string[]> = new Map();
 let skipReq:Map<string, number> = new Map();
 let loop:Map<string, boolean> = new Map();
 
-module.exports = class music {
+export default class music {
 
     /**
      * Parses the request (keywords or link)
