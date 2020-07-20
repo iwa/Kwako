@@ -37,7 +37,7 @@ export default class music {
             const playlist = await yt.getPlaylist(video_url[0]).catch(console.error)
             if (!playlist) return;
 
-            let reply = await msg.channel.send(":warning: Are you sure you want to add all the videos of __" + playlist.title + "__ to the queue ? *(**" + playlist.data.contentDetails.itemCount + "** videos)*")
+            let reply = await msg.channel.send(`:warning: Are you sure you want to add all the videos of __${playlist.title}__ to the queue ? *(**${playlist.data.contentDetails.itemCount}** videos)*`)
             await reply.react('✅');
             await reply.react('❌');
 
