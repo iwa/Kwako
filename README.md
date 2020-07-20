@@ -25,6 +25,25 @@
 - Language used : `TypeScript, with NodeJS`
 - Library used : `discord.js`
 
+## 🤝 Contributing
+
+- Create a fork and clone it
+- Make your modifications
+- Create a Pull Request
+
+
+Pull requests, feature requests and issues are welcome.<br/>
+**Please make sure to update / rebase your PR before submitting it.** c:
+
+
+## ⭐️ Show your support
+
+Star this repository if you like Kwako!
+
+<a href="https://www.patreon.com/iwaQwQ">
+  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="140">
+</a>
+
 ## 👤 Author
 
 👤 **[@iwa](https://github.com/iwa)**
