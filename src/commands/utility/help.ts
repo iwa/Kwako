@@ -40,12 +40,21 @@ setTimeout(() => {
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: Collection<any, any>, guildConf: any) => {
     if (args.length == 1) {
-        let cmd = commands.get(args[0]);
+        let cmd: any = commands.get(args[0]) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
         if (!cmd || !cmd.help.usage) return;
         if (cmd.help.staff && !msg.member.hasPermission('MANAGE_GUILD')) return;
 
         await msg.channel.send("`Syntax : ( ) is needed argument, [ ] is optional argument`")
-        return msg.channel.send(`\`\`\`markdown\n< ${cmd.help.name} >\n\n# Usage\n${guildConf.prefix}${cmd.help.usage}\n\n# Description\n${cmd.help.desc}\`\`\``);
+        return msg.channel.send(`
+\`\`\`markdown
+< ${cmd.help.name} >
+
+# Aliases\n${cmd.help.aliases.toString()}
+
+# Usage\n${guildConf.prefix}${cmd.help.usage}
+
+# Description\n${cmd.help.desc}\`\`\`
+`);
     } else
         sendHelp(msg, guildConf);
     console.log(`info: help sent to ${msg.author.tag}`)
