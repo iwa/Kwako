@@ -136,12 +136,12 @@ export default class music {
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
         embed.setAuthor('Removed from the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
-        embed.setDescription(`**${data.title}**`)
+        embed.setDescription(`**${data.videoDetails.title}**`)
         embed.setFooter(`Removed by ${msg.author.username}`)
 
         msg.channel.send(embed)
 
-        console.log(`musc: remove from queue: ${msg.author.tag} removed ${data.title}`)
+        console.log(`musc: remove from queue: ${msg.author.tag} removed ${data.videoDetails.title}`)
         queu.splice(queueID, 1);
         queue.set(msg.guild.id, queu);
     }
@@ -352,7 +352,7 @@ export default class music {
         embed.setColor('GREEN')
         embed.setTitle("**:cd: Now Playing:**")
 
-        let desc = `[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`;
+        let desc = `[${Util.escapeMarkdown(videoData.videoDetails.title)}](${queu[0]})`;
         let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
         if (loo) desc += "\n🔂 Currently looping this song - type `?loop` to disable";
         embed.setDescription(desc)
@@ -376,9 +376,11 @@ export default class music {
      */
     static async pause(bot: Client, msg: Message) {
         let dispatcher = await fetchDispatcher(bot, msg);
-        dispatcher.pause(false);
 
-        await msg.react('✅');
+        if(dispatcher) {
+            dispatcher.pause(false);
+            await msg.react('✅');
+        }
     }
 
     /**
@@ -388,9 +390,11 @@ export default class music {
      */
     static async resume(bot: Client, msg: Message) {
         let dispatcher = await fetchDispatcher(bot, msg);
-        dispatcher.resume();
 
-        await msg.react('✅');
+        if(dispatcher) {
+            dispatcher.resume();
+            await msg.react('✅');
+        }
     }
 }
 
