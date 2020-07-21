@@ -523,7 +523,15 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
  */
 async function fetchDispatcher(bot: Client, msg: Message): Promise<StreamDispatcher> {
     let voiceChannel:VoiceChannel = msg.member.voice.channel;
-    let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+    if (!voiceChannel) {
+        const embed = new MessageEmbed();
+        embed.setColor('RED')
+        embed.setTitle("You need to be connected in the VC where I'm playing music to use this command!")
+        await msg.channel.send(embed);
+        return;
+    }
+
+    let voiceConnection = bot.voice.connections.find(val => val.channel.id === voiceChannel.id);
     if (!voiceConnection) {
         const embed = new MessageEmbed();
         embed.setColor('RED')
