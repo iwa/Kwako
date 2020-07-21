@@ -409,13 +409,13 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = YoutubeStream(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: 1024 });
+    const video = YoutubeStream(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (1024 * 1024) });
 
     video.on('error', () => {
-        return msg.channel.send(":x: > **There was an unexpected error with playing the video, please retry later**")
+        return msg.channel.send(":x: > **There was an unexpected error while playing the video, please retry later**")
     })
 
-    voiceConnection.play(video, { volume: 0.8, bitrate: 64000, highWaterMark: 48, fec: true, plp: 0 })
+    voiceConnection.play(video, { volume: 0.8, bitrate: 96, highWaterMark: 256, fec: true, plp: 0 })
         .on('start', async () => {
             let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
             if (!loo) {
