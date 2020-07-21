@@ -108,9 +108,13 @@ export default class music {
                 let keywords = args.join(' ')
 
                 let video = await yt.searchVideos(keywords, 1).then((data: any) => {
-                    return data.results[0].url
+                    if(data && data.results)
+                        return data.results[0].url;
+                    else
+                        return null;
                 })
 
+                if (!video) return;
                 if (!YoutubeStream.validateURL(video)) return;
 
                 launchPlay(msg, voiceChannel, video)
