@@ -328,8 +328,7 @@ export default class music {
      * @param bot - Discord Client object
      */
     static async np(msg: Message, bot: Client) {
-        let voiceChannel:VoiceChannel = msg.member.voice.channel;
-        let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        let voiceConnection = bot.voice.connections.find(val => val.channel.guild.id === msg.guild.id);
         let queu = queue.get(msg.guild.id);
 
         if (!queu[0]) {
