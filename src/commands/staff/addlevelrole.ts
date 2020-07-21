@@ -50,8 +50,9 @@ async function giveRoleToUpper (msg:Message, db:Db, role:string, level:number) {
 
     if(list) {
         for(const user of list) {
-            let member = await msg.guild.members.fetch(user._id);
-            await member.roles.add(role).catch(() => {return});
+            let member = await msg.guild.members.fetch(user._id).catch(() => {return});
+            if(member)
+                await member.roles.add(role).catch(() => {return});
         }
     }
 }
