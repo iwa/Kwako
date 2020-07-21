@@ -4,7 +4,7 @@
  * @module ReadyFunction
  * @category Events
  */
-import { Client } from 'discord.js';
+import { Client, TextChannel } from 'discord.js';
 import { Db } from 'mongodb';
 
 let { version } = require('../../package.json');
@@ -21,9 +21,13 @@ export default async function ready(bot: Client, db: Db) {
     let allMsg = db.collection('msg').find()
     if(allMsg) {
         allMsg.forEach(async elem => {
-            let channel: any = await bot.channels.fetch(elem.channel)
-            if(channel)
-                await channel.messages.fetch(elem._id, true)
+            let channel = await bot.channels.fetch(elem.channel).catch(() => {return});
+            if(channel && channel.type === 'text') {
+                let msg = await (channel as TextChannel).messages.fetch(elem._id, true).catch(() => {return});
+                if(!msg)
+                    await db.collection('msg').deleteOne({ _id: elem._id });
+            } else
+                await db.collection('msg').deleteOne({ _id: elem._id });
         });
     }
 }
