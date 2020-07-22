@@ -158,7 +158,7 @@ export default class music {
      */
     static async list(msg: Message, args: string[]) {
         if (args.length > 0) return;
-        let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
+        let queu = queue.get(msg.guild.id) || [];
         if (queu.length < 0) return;
 
         const embed = new MessageEmbed();
