@@ -178,7 +178,7 @@ export default class music {
             console.log(`musc: show queue by ${msg.author.tag}`)
         } else {
             msg.channel.startTyping();
-            embed.setTitle("**:cd: Here's the queue:**")
+            embed.setTitle("**:cd: Music Queue**")
 
             let n = 1;
             let q = queu.slice(1, 10);
