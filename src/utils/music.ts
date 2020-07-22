@@ -13,6 +13,7 @@ let queue:Map<string, string[]> = new Map();
 let skippers:Map<string, string[]> = new Map();
 let skipReq:Map<string, number> = new Map();
 let loop:Map<string, boolean> = new Map();
+let loopqueue:Map<string, boolean> = new Map();
 
 export default class music {
 
@@ -183,7 +184,16 @@ export default class music {
                 n += 1;
             }
 
-            if (queu.length > 10) embed.setFooter(`and ${(queu.length - 10)} more...`)
+            if (queu.length > 10) {
+                let footer = `and ${(queu.length - 10)} more...`;
+                let looqueue = loopqueue.get(msg.guild.id) || false
+                if (looqueue) footer += " | Currently looping the queue - type `?loopqueue` to disable";
+                embed.setFooter(footer)
+            }
+
+            let looqueue = loopqueue.get(msg.guild.id) || false
+            if (looqueue) embed.setFooter("Currently looping the queue - type `?loopqueue` to disable");
+
             msg.channel.send(embed);
             msg.channel.stopTyping(true);
             console.log(`musc: show queue by ${msg.author.tag}`)
@@ -308,7 +318,7 @@ export default class music {
      * @param msg - Message object
      */
     static loop(msg: Message) {
-        let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+        let loo = loop.get(msg.guild.id) || false
         if (!loo) {
             loop.set(msg.guild.id, true)
             console.log(`info: loop enabled by ${msg.author.tag}`)
@@ -321,6 +331,25 @@ export default class music {
             console.log(`info: loop disabled by ${msg.author.tag}`)
             const embed = new MessageEmbed();
             embed.setAuthor("This song will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
+            embed.setColor('GREEN')
+            return msg.channel.send(embed)
+        }
+    }
+
+    static loopqueue(msg: Message) {
+        let loo = loopqueue.get(msg.guild.id) || false
+        if (!loo) {
+            loopqueue.set(msg.guild.id, true)
+            console.log(`info: loop enabled by ${msg.author.tag}`)
+            const embed = new MessageEmbed();
+            embed.setAuthor("🔁 Looping the queue...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
+            embed.setColor('GREEN')
+            return msg.channel.send(embed)
+        } else if (loo) {
+            loopqueue.set(msg.guild.id, false)
+            console.log(`info: loop disabled by ${msg.author.tag}`)
+            const embed = new MessageEmbed();
+            embed.setAuthor("The queue will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         }
@@ -356,8 +385,13 @@ export default class music {
         embed.setTitle("**:cd: Now Playing:**")
 
         let desc = `[${Util.escapeMarkdown(videoData.videoDetails.title)}](${queu[0]})`;
-        let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+
+        let loo = loop.get(msg.guild.id) || false
         if (loo) desc += "\n🔂 Currently looping this song - type `?loop` to disable";
+
+        let looqueue = loopqueue.get(msg.guild.id) || false
+        if (looqueue) desc += "\n🔁 Currently looping the queue - type `?loopqueue` to disable";
+
         embed.setDescription(desc)
 
         let time = new Date(voiceConnection.dispatcher.streamTime).toISOString().slice(11, 19)
@@ -417,7 +451,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
 
     voiceConnection.play(video, { volume: 0.8, bitrate: 96, highWaterMark: 256, fec: true, plp: 0 })
         .on('start', async () => {
-            let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+            let loo = loop.get(msg.guild.id) || false
             if (!loo) {
                 let videoData = await YoutubeStream.getInfo(queu[0])
                 if (!videoData) return;
@@ -437,9 +471,13 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 console.log(`musc: playing: ${Util.escapeMarkdown(videoData.videoDetails.title)}`)
             }
         }).on('finish', () => {
-            let loo = loop.get(msg.guild.id) ? loop.get(msg.guild.id) : false
+            let loo = loop.get(msg.guild.id) || false
+            let looqueue = loopqueue.get(msg.guild.id) || false
             if (!loo) {
-                queu.shift()
+                let lastPlayed = queu.shift();
+                if(looqueue)
+                    queu.push(lastPlayed);
+
                 queue.set(msg.guild.id, queu)
             }
 
