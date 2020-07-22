@@ -7,15 +7,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.1
 
-    - name: Install Node v12
-      uses: actions/setup-node@v1.4.2
+    - name: Install Node v14
+      uses: actions/setup-node@v2.1.1
       with:
-        node-version: 12
+        node-version: 14
 
     - name: deps cache
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v2.1.0
       with:
         path: node_modules/
         key: ${{ runner.os }}-yarn
@@ -27,28 +27,30 @@ jobs:
       run: |
         sudo yarn global add typescript
         tsc
-
-    - name: upload build files
-      uses: actions/upload-artifact@v2
+        
+    - name: caching build files
+      uses: actions/cache@v2.1.0
       with:
         path: build/
+        key: ${{ runner.os }}-build
 
   lint:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.1
 
-    - name: Install Node v12
-      uses: actions/setup-node@v1.4.2
+    - name: Install Node v14
+      uses: actions/setup-node@v2.1.1
       with:
-        node-version: 12
+        node-version: 14
 
     - name: download build files
-      uses: actions/download-artifact@v2
+      uses: actions/cache@v2.1.0
       with:
         path: build/
+        key: ${{ runner.os }}-build
 
     - name: run eslint
       run: |
