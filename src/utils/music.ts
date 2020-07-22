@@ -185,14 +185,14 @@ export default class music {
 
             let videoData = await yt.getVideo(queu[0]);
             let date = new Date(null)
-            date.setSeconds(videoData.seconds)
+            date.setSeconds((videoData.minutes * 60) + videoData.seconds)
             let timeString = date.toISOString().substr(11, 8)
             let desc = `🎶 [${Util.escapeMarkdown(videoData.title)}](${queu[0]}), *${timeString}*\n\n`;
             for await (const song of q) {
                 let videoData = await yt.getVideo(song);
                 if (!videoData) return;
                 let date = new Date(null)
-                date.setSeconds(videoData.seconds)
+                date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 desc = `${desc}${n}. [${Util.escapeMarkdown(videoData.title)}](${song}), *${timeString}*\n`;
                 n += 1;
@@ -393,7 +393,7 @@ export default class music {
         if (!videoData) return;
 
         let date = new Date(null)
-        date.setSeconds(videoData.seconds)
+        date.setSeconds((videoData.minutes * 60) + videoData.seconds)
         let timeString = date.toISOString().substr(11, 8)
 
         const embed = new MessageEmbed();
@@ -493,7 +493,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 if (!videoData) return;
 
                 let date = new Date(null)
-                date.setSeconds(videoData.seconds)
+                date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
