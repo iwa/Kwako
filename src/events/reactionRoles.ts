@@ -6,10 +6,6 @@
  */
 import { MessageReaction, User } from "discord.js";
 import { Db } from 'mongodb';
-/**
- * @desc MongoDB constants
- */
-const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
 
 /**
  * @class reactionRoles class

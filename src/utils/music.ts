@@ -76,7 +76,7 @@ export default class music {
             let videos = await playlist.fetchVideos(0);
             let errors = 0;
 
-            let bar = new Promise((resolve, reject) => {
+            let bar = new Promise((resolve) => {
                 let queu = queue.get(msg.guild.id) || [];
                 videos.forEach(async (video: Video, index: number, array: Video[]) => {
                     let url = video.url
@@ -165,7 +165,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async list(msg: Message, args: string[]) {
+    static async list(msg: Message) {
         let queu = queue.get(msg.guild.id) || [];
         if (queu.length < 0) return;
 

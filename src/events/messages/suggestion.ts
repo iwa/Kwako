@@ -24,4 +24,4 @@ export default async function suggestion (bot: Client, msg: Message, db: Db) {
     await sent.react('✅');
     await sent.react('❌');
     return sent.react('👀');
-};
+}

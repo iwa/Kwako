@@ -12,7 +12,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     embed.setTitle(`:trophy: **Experience Points Leaderboard**`)
     let desc = "";
 
-    let bar = new Promise((resolve, reject) => {
+    let bar = new Promise((resolve) => {
         leaderboard.forEach(async (elem, index) => {
             let member = await msg.guild.members.fetch(elem._id).catch(() => {return});
             if(member) {
