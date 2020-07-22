@@ -134,19 +134,19 @@ export default class music {
         if (isNaN(queueID)) return;
         let queu = queue.get(msg.guild.id);
 
-        let data = await ytdl.getBasicInfo(queu[queueID])
+        let data = await yt.getVideo(queu[queueID])
 
         if (!data) return;
 
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
         embed.setAuthor('Removed from the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
-        embed.setDescription(`**${data.videoDetails.title}**`)
+        embed.setDescription(`**${data.title}**`)
         embed.setFooter(`Removed by ${msg.author.username}`)
 
         msg.channel.send(embed)
 
-        console.log(`musc: remove from queue: ${msg.author.tag} removed ${data.videoDetails.title}`)
+        console.log(`musc: remove from queue: ${msg.author.tag} removed ${data.title}`)
         queu.splice(queueID, 1);
         queue.set(msg.guild.id, queu);
     }
@@ -175,12 +175,12 @@ export default class music {
             let n = 1;
             let q = queu.slice(1, 10);
             for await (const song of q) {
-                let videoData = await ytdl.getBasicInfo(song);
+                let videoData = await yt.getVideo(song);
                 if (!videoData) return;
                 let date = new Date(null)
-                date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
+                date.setSeconds(videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
-                embed.addField(`${n} : **${Util.escapeMarkdown(videoData.videoDetails.title)}**, *${timeString}*`, song)
+                embed.addField(`${n} : **${Util.escapeMarkdown(videoData.title)}**, *${timeString}*`, song)
                 n += 1;
             }
 
@@ -372,19 +372,19 @@ export default class music {
         }
 
         msg.channel.startTyping();
-        let videoData = await ytdl.getBasicInfo(queu[0])
+        let videoData = await yt.getVideo(queu[0]);
 
         if (!videoData) return;
 
         let date = new Date(null)
-        date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
+        date.setSeconds(videoData.seconds)
         let timeString = date.toISOString().substr(11, 8)
 
         const embed = new MessageEmbed();
         embed.setColor('GREEN')
         embed.setTitle("**:cd: Now Playing:**")
 
-        let desc = `[${Util.escapeMarkdown(videoData.videoDetails.title)}](${queu[0]})`;
+        let desc = `[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`;
 
         let loo = loop.get(msg.guild.id) || false
         if (loo) desc += "\n🔂 Currently looping this song - type `?loop` to disable";
@@ -473,22 +473,22 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
         .on('start', async () => {
             let loo = loop.get(msg.guild.id) || false
             if (!loo) {
-                let videoData = await ytdl.getBasicInfo(queu[0])
+                let videoData = await yt.getVideo(queu[0]);
                 if (!videoData) return;
 
                 let date = new Date(null)
-                date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
+                date.setSeconds(videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("**:cd: Now Playing:**")
-                embed.setDescription(`[${Util.escapeMarkdown(videoData.videoDetails.title)}](${queu[0]})`)
+                embed.setDescription(`[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`)
                 embed.setFooter(`Length : ${timeString}`)
                 let infos = await yt.getVideo(queu[0]);
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
                 msg.channel.send(embed)
-                console.log(`musc: playing: ${Util.escapeMarkdown(videoData.videoDetails.title)}`)
+                console.log(`musc: playing: ${Util.escapeMarkdown(videoData.title)}`)
             }
         }).on('finish', () => {
             let loo = loop.get(msg.guild.id) || false
