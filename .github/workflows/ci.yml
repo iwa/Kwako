@@ -27,7 +27,7 @@ jobs:
       run: |
         sudo yarn global add typescript
         tsc
-        
+
     - name: caching build files
       uses: actions/cache@v2.1.0
       with:
