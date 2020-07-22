@@ -5,7 +5,7 @@
  * @category Utils
  */
 import { Client, Message, MessageEmbed, Util, VoiceChannel, VoiceConnection, StreamDispatcher } from 'discord.js';
-import * as YoutubeStream from 'ytdl-core';
+import ytdl from 'ytdl-core';
 import { YouTube, Video } from 'popyt';
 const yt = new YouTube(process.env.YT_TOKEN)
 
@@ -103,7 +103,7 @@ export default class music {
                 }
             });
         } else {
-            if (YoutubeStream.validateURL(video_url[0])) {
+            if (ytdl.validateURL(video_url[0])) {
                 launchPlay(msg, voiceChannel, video_url[0])
             } else {
                 let keywords = args.join(' ')
@@ -116,7 +116,7 @@ export default class music {
                 })
 
                 if (!video) return;
-                if (!YoutubeStream.validateURL(video)) return;
+                if (!ytdl.validateURL(video)) return;
 
                 launchPlay(msg, voiceChannel, video)
             }
@@ -134,7 +134,7 @@ export default class music {
         if (isNaN(queueID)) return;
         let queu = queue.get(msg.guild.id);
 
-        let data = await YoutubeStream.getInfo(queu[queueID])
+        let data = await ytdl.getBasicInfo(queu[queueID])
 
         if (!data) return;
 
@@ -175,7 +175,7 @@ export default class music {
             let n = 1;
             let q = queu.slice(1, 10);
             for await (const song of q) {
-                let videoData = await YoutubeStream.getInfo(song)
+                let videoData = await ytdl.getBasicInfo(song);
                 if (!videoData) return;
                 let date = new Date(null)
                 date.setSeconds(parseInt(videoData.videoDetails.lengthSeconds, 10))
@@ -372,7 +372,7 @@ export default class music {
         }
 
         msg.channel.startTyping();
-        let videoData = await YoutubeStream.getInfo(queu[0])
+        let videoData = await ytdl.getBasicInfo(queu[0])
 
         if (!videoData) return;
 
@@ -463,7 +463,7 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = YoutubeStream(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (1024 * 1024) });
+    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (1024 * 1024) });
 
     video.on('error', () => {
         return msg.channel.send(":x: > **There was an unexpected error while playing the video, please retry later**")
@@ -473,7 +473,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
         .on('start', async () => {
             let loo = loop.get(msg.guild.id) || false
             if (!loo) {
-                let videoData = await YoutubeStream.getInfo(queu[0])
+                let videoData = await ytdl.getBasicInfo(queu[0])
                 if (!videoData) return;
 
                 let date = new Date(null)
@@ -529,12 +529,12 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
  * @param video_url - The video url to check and play
  * @param data - Youtube Stream data infos
  */
-async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string, data: void | YoutubeStream.videoInfo) {
+async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string) {
     msg.channel.startTyping();
-    let error = false;
+    let error = false, data;
     let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
     if (queu && !queu.find(song => song === video_url)) {
-        data = await YoutubeStream.getInfo(video_url).catch(() => { error = true; })
+        data = await ytdl.getBasicInfo(video_url).catch(() => { error = true; })
         if (!error && data) {
             queu.push(video_url)
             queue.set(msg.guild.id, queu)
