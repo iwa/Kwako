@@ -166,7 +166,6 @@ export default class music {
      * @param args - Arguments in the message
      */
     static async list(msg: Message, args: string[]) {
-        if (args.length > 0) return;
         let queu = queue.get(msg.guild.id) || [];
         if (queu.length < 0) return;
 
@@ -183,15 +182,23 @@ export default class music {
 
             let n = 1;
             let q = queu.slice(1, 10);
+
+            let videoData = await yt.getVideo(queu[0]);
+            let date = new Date(null)
+            date.setSeconds(videoData.seconds)
+            let timeString = date.toISOString().substr(11, 8)
+            let desc = `🎶 [${Util.escapeMarkdown(videoData.title)}](${queu[0]}), *${timeString}*\n\n`;
             for await (const song of q) {
                 let videoData = await yt.getVideo(song);
                 if (!videoData) return;
                 let date = new Date(null)
                 date.setSeconds(videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
-                embed.addField(`${n} : **${Util.escapeMarkdown(videoData.title)}**, *${timeString}*`, song)
+                desc = `${desc}${n}. [${Util.escapeMarkdown(videoData.title)}](${song}), *${timeString}*\n`;
                 n += 1;
             }
+
+            embed.setDescription(desc);
 
             if (queu.length > 10) {
                 let footer = `and ${(queu.length - 10)} more...`;
