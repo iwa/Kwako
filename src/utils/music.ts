@@ -433,6 +433,26 @@ export default class music {
             await msg.react('✅');
         }
     }
+
+    static async shuffle(bot: Client, msg: Message) {
+        let dispatcher = await fetchDispatcher(bot, msg);
+
+        if(dispatcher) {
+            let queu = queue.get(msg.guild.id) || [];
+
+            if (queu.length <= 2) return msg.react('❌');
+
+            let current = queu.shift();
+
+            for (let i = 0; i < 3; i++)
+                queu.sort(() => Math.random() - 0.5);
+
+            queu.unshift(current);
+
+            queue.set(msg.guild.id, queu)
+            await msg.react('✅');
+        }
+    }
 }
 
 /**
