@@ -6,10 +6,14 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
     let dbEmbed = await db.collection('msg').findOne({ _id: args[0] })
     if (!dbEmbed) return msg.reply(":x: > That message doesn't exist!")
+    let fetchMsg = await msg.channel.messages.fetch(args[0]);
 
     args.shift()
     let embed = args.join(' ')
     embed = JSON.parse(embed)
+
+    if (!fetchMsg.editable) return;
+    await fetchMsg.edit(embed);
 
     if (msg.deletable) {
         try {
