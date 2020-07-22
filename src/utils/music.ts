@@ -64,11 +64,11 @@ export default class music {
             embed.setColor('LUMINOUS_VIVID_PINK')
             msg.channel.send(embed)
 
-            let videos = await playlist.fetchVideos();
+            let videos = await playlist.fetchVideos(0);
             let errors = 0;
 
             let bar = new Promise((resolve, reject) => {
-                let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
+                let queu = queue.get(msg.guild.id) || [];
                 videos.forEach(async (video: Video, index: number, array: Video[]) => {
                     let url = video.url
                     if (queu && !queu.find(song => song === url)) {
