@@ -15,7 +15,7 @@ jobs:
         node-version: 12
 
     - name: deps cache
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v2.1.0
       with:
         path: node_modules/
         key: ${{ runner.os }}-yarn
@@ -27,11 +27,12 @@ jobs:
       run: |
         sudo yarn global add typescript
         tsc
-
-    - name: upload build files
-      uses: actions/upload-artifact@v2
+        
+    - name: caching build files
+      uses: actions/cache@v2.1.0
       with:
         path: build/
+        key: ${{ runner.os }}-build
 
   lint:
     needs: build
@@ -46,12 +47,12 @@ jobs:
         node-version: 12
 
     - name: download build files
-      uses: actions/download-artifact@v2
+      uses: actions/cache@v2.1.0
       with:
         path: build/
+        key: ${{ runner.os }}-build
 
     - name: run eslint
       run: |
         sudo yarn global add eslint
-        ls
         eslint build/**/*.js
