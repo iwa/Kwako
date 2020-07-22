@@ -38,11 +38,20 @@ export default class music {
             const playlist = await yt.getPlaylist(video_url[0]).catch(console.error)
             if (!playlist) return;
 
-            let reply = await msg.channel.send(`:warning: Are you sure you want to add all the videos of __${playlist.title}__ to the queue ? *(**${playlist.data.contentDetails.itemCount}** videos)*`)
+            let reply = await msg.channel.send({
+                "embed": {
+                  "title": ":warning:",
+                  "description": `Are you sure you want to add all the videos of __${playlist.title}__ to the queue ?`,
+                  "color": 16312092,
+                  "footer": {
+                    "text": `(${playlist.data.contentDetails.itemCount} videos)`
+                  }
+                }
+              })
             await reply.react('✅');
             await reply.react('❌');
 
-            let collected = await reply.awaitReactions((_reaction, user) => user.id == msg.author.id, { time: 10000 })
+            let collected = await reply.awaitReactions((_reaction, user) => user.id == msg.author.id, { time: 6000 })
 
             if (collected.first() == undefined) {
                 reply.delete()
