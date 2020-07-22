@@ -53,4 +53,5 @@ jobs:
     - name: run eslint
       run: |
         sudo yarn global add eslint
+        ls
         eslint build/**/*.js
