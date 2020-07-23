@@ -141,6 +141,7 @@ export default class music {
         let queueID: number = parseInt(args[0]);
 
         if (isNaN(queueID)) return;
+        if (queueID < 1) return;
         let queu = queue.get(msg.guild.id);
 
         let data = await yt.getVideo(queu[queueID])
