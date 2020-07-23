@@ -29,6 +29,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
                 let level = utilities.levelInfo(elem.exp[msg.guild.id])
                 desc = `${desc}**${member.user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
 
+            } else {
+                await db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
             }
             if (index === leaderboard.length - 1) resolve();
         })

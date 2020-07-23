@@ -104,6 +104,13 @@ bot.on("guildMemberAdd", async member => {
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
+    let userDB = await db.collection('user').findOne({ _id: member.id });
+    let guildDB = `exp.${member.guild.id.toString()}`
+    if (userDB) {
+        if(userDB.exp < 0)
+            await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+    }
+
     let welcomeMessage = guildConf.welcomeMessage;
 
     if(!welcomeMessage) return;
@@ -205,6 +212,9 @@ bot.on('messageDelete', async msg => {
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
 bot.on('guildMemberRemove', async member => {
+    let guildDB = `exp.${member.guild.id.toString()}`
+    await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
