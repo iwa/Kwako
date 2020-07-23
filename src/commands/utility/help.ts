@@ -57,11 +57,22 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
         if (!cmd || !cmd.help.usage) return;
         if (cmd.help.staff && !msg.member.hasPermission('MANAGE_GUILD')) return;
 
-        await msg.channel.send("`Syntax : ( ) is needed argument, [ ] is optional argument`")
-        let commandHelp = `\`\`\`markdown\n< ${cmd.help.name} >\n\n`
-        commandHelp = `${commandHelp}# Usage\n${guildConf.prefix}${cmd.help.usage}\n\n# Description\n${cmd.help.desc}\n\n`
-        if (cmd.help.aliases) commandHelp = `${commandHelp}# Aliases\n${cmd.help.aliases.toString()}\`\`\``
-        return msg.channel.send(commandHelp);
+        let embed = new MessageEmbed();
+
+        embed.setTitle(`${guildConf.prefix}${cmd.help.name}`);
+        embed.setDescription("Syntax : `( )` is needed argument, `[ ]` is optional argument");
+        embed.addField("Usage", `\`${guildConf.prefix}${cmd.help.usage}\``, true);
+
+        if (cmd.help.aliases) {
+            for(let i = 0; i < cmd.help.aliases.length; i++)
+                cmd.help.aliases[i] = `${guildConf.prefix}${cmd.help.aliases[i]}`;
+
+            embed.addField("Aliases", `${cmd.help.aliases.toString()}`, true);
+        }
+
+        embed.addField("Description", `${cmd.help.desc}`);
+
+        return msg.channel.send(embed);
     } else
         sendHelp(msg, guildConf);
     console.log(`info: help sent to ${msg.author.tag}`)
