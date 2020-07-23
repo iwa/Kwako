@@ -552,6 +552,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
     if (queu && !queu.find(song => song === video_url)) {
         data = await ytdl.getBasicInfo(video_url).catch(() => { error = true; })
         if (!error && data) {
+            video_url = data.videoDetails.video_url
             queu.push(video_url)
             queue.set(msg.guild.id, queu)
         }
