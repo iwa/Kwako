@@ -38,6 +38,7 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
             current: 0,
             max: 25,
             userColor: memberDiscord.displayHexColor,
+            userBackground: userDB.background,
             expBar: 0
         }
 
@@ -66,6 +67,7 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
         current: lvlInfo.current,
         max: lvlInfo.max,
         userColor: memberDiscord.displayHexColor,
+        userBackground: userDB.background,
         expBar: Math.round((lvlInfo.current / lvlInfo.max) * 646)
     }
 

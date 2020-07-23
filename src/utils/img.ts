@@ -24,15 +24,28 @@ export default async function imGenerator(user: any) {
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, 1016, 336)
 
-    var grd = ctx.createLinearGradient(0, 0, 1016, 336);
-    grd.addColorStop(0, `${user.userColor}A6`);
-    grd.addColorStop(1, `${user.userColor}`);
+    if(!user.userBackground) {
+        var grd = ctx.createLinearGradient(0, 0, 1016, 336);
+        grd.addColorStop(0, `${user.userColor}A6`);
+        grd.addColorStop(1, `${user.userColor}`);
 
-    ctx.fillStyle = grd;
-    ctx.fillRect(8, 8, 1000, 320);
+        ctx.fillStyle = grd;
+        ctx.fillRect(8, 8, 1000, 320);
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
-    ctx.fillRect(28, 28, 960, 280)
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
+        ctx.fillRect(28, 28, 960, 280)
+    } else {
+        let base_image = await loadImage(user.userBackground.url)
+        ctx.drawImage(base_image,
+            Math.ceil((base_image.width - user.userBackground.width)/2),
+            Math.ceil((base_image.height - user.userBackground.height)/2),
+            user.userBackground.width,
+            user.userBackground.height,
+            8, 8, 1000, 320);
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
+        ctx.fillRect(28, 28, 960, 280)
+    }
 
     // username
     let username = user.username;
