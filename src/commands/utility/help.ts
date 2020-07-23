@@ -8,7 +8,7 @@ import * as fs from 'fs';
 
 readDirs()
 setTimeout(() => {
-    member.setTitle("__**Commands**__")
+    member.setTitle("**Commands List**")
     member.setColor(3852663)
     member.addFields([
         {
@@ -33,8 +33,21 @@ setTimeout(() => {
         },
     ])
 
-    mod.setTitle("**⚔️ Staff**")
-    mod.setDescription(commands.get("staff"))
+    mod.setTitle("**Staff Commands**")
+    mod.addFields([
+        {
+            "name": "**⚙️ Config**",
+            "value": commands.get("config")
+        },
+        {
+            "name": "**🔨 Moderation**",
+            "value": commands.get("mod")
+        },
+        {
+            "name": "**📨 Suggestions**",
+            "value": commands.get("suggestions")
+        },
+    ])
     mod.setColor(4886754)
 }, 5000)
 
