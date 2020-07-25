@@ -56,7 +56,7 @@ module.exports.help = {
 };
 
 async function giveRoleToUpper (msg:Message, db:Db, role:string, level:number) {
-    let exp = utilities.expForLevel(level);
+    let exp = utilities.expForLevel(level-1);
     let guild = `exp.${msg.guild.id.toString()}`
     let list = await db.collection('user').find({ [guild]: { $gte: exp } }).toArray();
 
