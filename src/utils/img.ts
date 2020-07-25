@@ -56,53 +56,93 @@ export default async function imGenerator(user: any) {
     ctx.font = 'bold 56pt Nunito'
     ctx.textAlign = 'left'
     ctx.fillStyle = '#fff'
-    ctx.fillText(username, 328, 158)
+    ctx.fillText(username, 328, 148)
 
     // level
     let level = `Level ${user.level}`
     ctx.font = '300 34pt Nunito'
     ctx.textAlign = 'left'
     ctx.fillStyle = '#fff'
-    ctx.fillText(level, 338, 270)
+    ctx.fillText(level, 338, 240)
 
     // rank
     let rank = `#${user.positionExp} | ${user.current}/${user.max}`
     ctx.font = '300 24pt Nunito'
     ctx.textAlign = 'right'
     ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
-    ctx.fillText(rank, 964, 270)
+    ctx.fillText(rank, 964, 240)
 
     // pfp
     await make_base(ctx, user.avatar);
 
     // contour progress bar
     ctx.save();
-    makeRund(ctx, 326, 278, 650, 19, 10);
+    makeRund(ctx, 326, 248, 650, 19, 10);
 
     ctx.clip();
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-    ctx.fillRect(326, 278, 650, 19);
+    ctx.fillRect(326, 248, 650, 19);
 
     ctx.restore();
 
     // progress bar
     ctx.save();
-    makeRund(ctx, 328, 280, 646, 15, 8);
+    makeRund(ctx, 328, 250, 646, 15, 8);
 
     ctx.clip();
     ctx.fillStyle = "rgba(22, 22, 22, 0.8)";
-    ctx.fillRect(328, 280, 646, 15);
+    ctx.fillRect(328, 250, 646, 15);
 
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(328, 280, user.expBar, 15);
+    ctx.fillRect(328, 250, user.expBar, 15);
     var grad = ctx.createLinearGradient(0, 0, 1516, 0);
     grad.addColorStop(0, "transparent");
     grad.addColorStop(1, "rgba(0,0,0,0.4)");
     ctx.fillStyle = grad;
-    ctx.fillRect(328, 280, user.expBar, 15);
+    ctx.fillRect(328, 250, user.expBar, 15);
 
     ctx.restore();
+
+    // birthday icon
+    let cake_image = await loadImage("https://cdn.iwa.sh/img/cake.png")
+    ctx.save();
+    ctx.drawImage(cake_image, 338, 270, 34, 34);
+    ctx.restore();
+
+    // birthday
+    let birthday = `${user.birthday}`
+    ctx.font = '300 24pt Nunito'
+    ctx.textAlign = 'left'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)'
+    ctx.fillText(birthday, 382, 299)
+
+    // birthday format
+    let birthdayFormat = "(mm/dd)"
+    ctx.font = '300 14pt Nunito'
+    ctx.textAlign = 'left'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'
+    ctx.fillText(birthdayFormat, 472, 297)
+
+    // switch icon
+    let switch_image = await loadImage("https://cdn.iwa.sh/img/switch.png")
+    ctx.save();
+    ctx.drawImage(switch_image, 658, 272, 30, 30);
+    ctx.restore();
+
+    // switch
+    let fc = `${user.fc}`
+    ctx.font = '300 24pt Nunito'
+    ctx.textAlign = 'left'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)'
+    ctx.fillText(fc, 698, 298)
+
+    // made with love
+    let made = `made with ♥ by iwa`
+    ctx.font = '300 12pt Nunito'
+    ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
+    ctx.fillText(made, 488, 324)
 
     return new MessageAttachment(canvas.toBuffer('image/jpeg', {quality: 1}), 'rank.jpg')
 }

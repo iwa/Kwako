@@ -68,7 +68,9 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
         max: lvlInfo.max,
         userColor: memberDiscord.displayHexColor,
         userBackground: userDB.background,
-        expBar: Math.round((lvlInfo.current / lvlInfo.max) * 646)
+        expBar: Math.round((lvlInfo.current / lvlInfo.max) * 646),
+        birthday: userDB.birthday || "--/--",
+        fc: userDB.fc || "not registered"
     }
 
     if(user.userColor == '#000000') user.userColor = '#444444';
