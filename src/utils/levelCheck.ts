@@ -17,9 +17,14 @@ export default async function levelCheck (msg: Discord.Message, xp: number, db: 
 
         let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
         let levelroles:string = guildConf.levelroles || "[]";
-        let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
+        let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
 
-        if(levelrolesMap.has(after.level))
-            await msg.member.roles.add(levelrolesMap.get(after.level)).catch(() => {return});
+        let roles = levelrolesMap.get(after.level);
+
+        if (roles && roles[0]) {
+            await msg.member.roles.add(roles[0]).catch(() => {return});
+            if (roles[1])
+                await msg.member.roles.remove(roles[1]).catch(() => {return});
+        }
     }
 }

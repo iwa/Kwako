@@ -1,17 +1,17 @@
-import { Client, Message } from 'discord.js';
+import { Client, Message, Presence } from 'discord.js';
 import { Db } from 'mongodb'
 import utilities from '../../utils/utilities';
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA || process.env.SUDO == '0')) return;
-    if (args.length != 2) return;
+    if (args.length < 2) return;
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     if(!guildConf) {
         await db.collection('settings').insertOne({ '_id': msg.guild.id });
         guildConf = { '_id': msg.guild.id };
     }
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
-    let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
+    let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
 
     if(parseInt(args[0]) < 2 || parseInt(args[0]) > 50)
         return msg.channel.send(":x: > Please choose a valid level number between 2 and 50!")
@@ -25,7 +25,17 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     } else
         return msg.reply('please mention a role!')
 
-    levelrolesMap.set(parseInt(args[0]), role)
+    let previous = args[2] || null;
+    if(previous && previous.startsWith('<@&') && previous.endsWith('>')) {
+        previous = previous.slice(3, (previous.length-1))
+        let chan = await msg.guild.roles.fetch(previous);
+        if(!chan || !chan.editable)
+            return msg.channel.send(":x: > The previous role doesn't exist!")
+    } else if(previous)
+        return msg.reply('please mention a role!')
+
+
+    levelrolesMap.set(parseInt(args[0]), [role, previous]);
 
     levelroles = JSON.stringify([...levelrolesMap]);
 
@@ -33,7 +43,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
 
     await giveRoleToUpper(msg, db, role, parseInt(args[0]));
 
-    return msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}** and to members currently above this level.`);
+    await msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}** and to members currently above this level.`);
+    if (previous)
+        await msg.channel.send(`When I'll give this role, I'll remove <@&${previous}>.`)
 };
 
 module.exports.help = {
