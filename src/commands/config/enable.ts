@@ -10,9 +10,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
     let cmd: any = commands.get(args[0]) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
     if (!cmd) return;
 
-    let filtered = disabled.filter((value, index, arr) => { return value != cmd.help.name });
+    let filtered = disabled.filter((value) => { return value != cmd.help.name });
     if (cmd.help.aliases)
-        filtered = filtered.filter((value, index, arr) => { return !cmd.help.aliases.includes(value) });
+        filtered = filtered.filter((value) => { return !cmd.help.aliases.includes(value) });
 
     guildConf.disabledCommands = filtered;
 
