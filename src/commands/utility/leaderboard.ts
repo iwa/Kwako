@@ -28,6 +28,18 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         case "slaps":
             return leaderboard(bot, msg, db, 'slap')
 
+        case "glare":
+        case "glares":
+            return leaderboard(bot, msg, db, 'glare')
+
+        case "squish":
+        case "squishes":
+            return leaderboard(bot, msg, db, 'squish')
+
+        case "tickle":
+        case "tickles":
+            return leaderboard(bot, msg, db, 'tickle')
+
         default:
             msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap`", "color": 3396531 } });
             break;
