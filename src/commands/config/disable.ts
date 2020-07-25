@@ -21,7 +21,12 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
     await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
 
-    return msg.channel.send('done')
+    return msg.channel.send({
+        "embed": {
+          "title": ":no_entry: Command disabled",
+          "description": `The command \`${cmd.help.name}\` has been successfully disabled`
+        }
+      })
 };
 
 module.exports.help = {

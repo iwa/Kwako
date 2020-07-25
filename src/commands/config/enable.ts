@@ -18,7 +18,12 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
     await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
 
-    return msg.channel.send('done')
+    return msg.channel.send({
+        "embed": {
+          "title": ":white_check_mark: Command enabled",
+          "description": `The command \`${cmd.help.name}\` has been successfully enabled`
+        }
+      })
 };
 
 module.exports.help = {
