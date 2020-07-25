@@ -3,13 +3,55 @@ import { Db } from 'mongodb'
 import utilities from '../../utils/utilities'
 
 module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
-    let guild = `exp.${msg.guild.id.toString()}`
+    if (args.length > 1) return;
+
+    switch (args[0]) {
+        case "xp":
+        case "exp":
+            return leaderboard(bot, msg, db, 'exp')
+
+        case "pat":
+        case "pats":
+        case "patpat":
+        case "patpats":
+            return leaderboard(bot, msg, db, 'pat')
+
+        case "hug":
+        case "hugs":
+            return leaderboard(bot, msg, db, 'hug')
+
+        case "boop":
+        case "boops":
+            return leaderboard(bot, msg, db, 'boop')
+
+        case "slap":
+        case "slaps":
+            return leaderboard(bot, msg, db, 'slap')
+
+        default:
+            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap`", "color": 3396531 } });
+            break;
+    }
+};
+
+module.exports.help = {
+    name: 'leaderboard',
+    aliases: ['lead'],
+    usage: "leaderboard",
+    desc: "Show the exp points leaderboard of the server",
+    perms: ['EMBED_LINKS']
+};
+
+async function leaderboard (bot: Client, msg: Message, db: Db, type: string) {
+    let guild = `${type}.${msg.guild.id.toString()}`
     let leaderboard = await db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
 
+    let title = `${type.charAt(0).toUpperCase()}${type.slice(1)}`
+
     const embed = new MessageEmbed();
     embed.setColor(16114507)
-    embed.setTitle(`:trophy: **Experience Points Leaderboard**`)
+    embed.setTitle(`:trophy: **${title} Leaderboard**`)
     let desc = "";
 
     let bar = new Promise((resolve) => {
@@ -26,8 +68,11 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
                 if(n > 3)
                     desc = `${desc}**${n}.** `
 
-                let level = utilities.levelInfo(elem.exp[msg.guild.id])
-                desc = `${desc}**${member.user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
+                if (type === 'exp') {
+                    let level = utilities.levelInfo(elem.exp[msg.guild.id])
+                    desc = `${desc}**${member.user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
+                } else
+                    desc = `${desc}**${member.user.username}**\n${elem[type][msg.guild.id]} ${type}s\n`
 
             } else {
                 await db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
@@ -43,12 +88,4 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
                 console.log(`info: exp leaderboard: ${msg.author.tag}`);
             }).catch(console.error)
     });
-};
-
-module.exports.help = {
-    name: 'leaderboard',
-    aliases: ['lead'],
-    usage: "leaderboard",
-    desc: "Show the exp points leaderboard of the server",
-    perms: ['EMBED_LINKS']
-};
+}
