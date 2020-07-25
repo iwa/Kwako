@@ -25,7 +25,8 @@ const defaultSettings = {
     starboardChannel: "",
     muteRole: "",
     modLogChannel: "",
-    suggestionChannel: ""
+    suggestionChannel: "",
+    disabledCommands: [] as string[]
 }
 
 import cooldown from './events/messages/cooldown';
@@ -91,7 +92,7 @@ bot.on('message', async (msg: Discord.Message) => {
 
     if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
-    if (!cmd) return;
+    if (!cmd || guildConf.disabledCommands.includes(cmd.help.name)) return;
     else {
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
             return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
