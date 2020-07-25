@@ -113,6 +113,12 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
         }
 
+        let guild = `${type}.${msg.guild.id.toString()}`
+        let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
+        await db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: msg.mentions.members.size } }, { upsert: true });
+
+        embed.setFooter(`You have given ${(user[type][msg.guild.id] || 0) + msg.mentions.members.size} ${verb}`)
+
         return msg.channel.send(embed)
             .then(() => {
                 console.log(`info: ${type} sent by ${msg.author.tag}`);
