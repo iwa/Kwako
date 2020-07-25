@@ -49,8 +49,8 @@ export default async function imGenerator(user: any) {
 
     // username
     let username = user.username;
-    if(user.username.length > 15) {
-        username = `${user.username.slice(0, 14)}...`;
+    if(user.username.length > 13) {
+        username = `${user.username.slice(0, 12)}...`;
     }
 
     ctx.font = 'bold 56pt Nunito'
