@@ -8,37 +8,37 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     switch (args[0]) {
         case "xp":
         case "exp":
-            return leaderboard(bot, msg, db, 'exp')
+            return leaderboard(bot, msg, db, 'exp', false)
 
         case "pat":
         case "pats":
         case "patpat":
         case "patpats":
-            return leaderboard(bot, msg, db, 'pat')
+            return leaderboard(bot, msg, db, 'pat', false)
 
         case "hug":
         case "hugs":
-            return leaderboard(bot, msg, db, 'hug')
+            return leaderboard(bot, msg, db, 'hug', false)
 
         case "boop":
         case "boops":
-            return leaderboard(bot, msg, db, 'boop')
+            return leaderboard(bot, msg, db, 'boop', false)
 
         case "slap":
         case "slaps":
-            return leaderboard(bot, msg, db, 'slap')
+            return leaderboard(bot, msg, db, 'slap', false)
 
         case "glare":
         case "glares":
-            return leaderboard(bot, msg, db, 'glare')
+            return leaderboard(bot, msg, db, 'glare', false)
 
         case "squish":
         case "squishes":
-            return leaderboard(bot, msg, db, 'squish')
+            return leaderboard(bot, msg, db, 'squish', true)
 
         case "tickle":
         case "tickles":
-            return leaderboard(bot, msg, db, 'tickle')
+            return leaderboard(bot, msg, db, 'tickle', false)
 
         default:
             msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap`", "color": 3396531 } });
@@ -54,7 +54,7 @@ module.exports.help = {
     perms: ['EMBED_LINKS']
 };
 
-async function leaderboard (bot: Client, msg: Message, db: Db, type: string) {
+async function leaderboard (bot: Client, msg: Message, db: Db, type: string, e: boolean) {
     let guild = `${type}.${msg.guild.id.toString()}`
     let leaderboard = await db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
@@ -84,7 +84,7 @@ async function leaderboard (bot: Client, msg: Message, db: Db, type: string) {
                     let level = utilities.levelInfo(elem.exp[msg.guild.id])
                     desc = `${desc}**${member.user.username}**\nLevel ${level.level} (${elem.exp[msg.guild.id]} exps)\n`
                 } else
-                    desc = `${desc}**${member.user.username}**\n${elem[type][msg.guild.id]} ${type}s\n`
+                    desc = `${desc}**${member.user.username}**\n${elem[type][msg.guild.id]} ${type}${e ? "e" : ""}s\n`
 
             } else {
                 await db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
