@@ -46,6 +46,7 @@ let count = new Map([
  * @param type - Type of actions (hug, pat...)
  */
 export default async function actionsRun(bot: Client, msg: Message, args: string[], db: Db, type: string, verb: string, at: boolean) {
+    if (args.length === 0) return;
     if (args.length <= 4) {
         if (msg.mentions.everyone) return;
         if (msg.mentions.members.has(msg.author.id)) {
