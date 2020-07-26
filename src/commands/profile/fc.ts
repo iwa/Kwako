@@ -13,6 +13,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
 module.exports.help = {
     name: 'fc',
+    aliases: ['friendcode'],
     usage: "fc",
     desc: "Print your Switch Friend Code in the channel you sent the command."
 };

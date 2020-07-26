@@ -50,6 +50,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
 module.exports.help = {
     name: 'setfc',
+    aliases: ['setfriendcode'],
     usage: "setfc (your Switch FC)",
     desc: "Register your Switch Friend Code to Kwako.\nPlease enter your FC without 'SW-' at the beginning"
 };
