@@ -51,7 +51,7 @@ export default class music {
             await reply.react('✅');
             await reply.react('❌');
 
-            let collected = await reply.awaitReactions((_reaction, user) => user.id == msg.author.id, { time: 6000 })
+            let collected = await reply.awaitReactions((_reaction, user) => (_reaction.emoji.name === '✅' || _reaction.emoji.name === '❌') && (user.id === msg.author.id), { max: 1, time: 10000 })
 
             if (collected.first() == undefined) {
                 reply.delete()
