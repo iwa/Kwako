@@ -518,7 +518,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 queue.set(msg.guild.id, queu)
             }
 
-            if (queu.length == 0) {
+            if (queu.length === 0) {
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("🚪 Queue finished. Disconnecting...")
@@ -527,6 +527,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 skipReq.delete(msg.guild.id);
                 skippers.delete(msg.guild.id);
                 loop.delete(msg.guild.id);
+                loopqueue.delete(msg.guild.id);
 
                 msg.channel.send(embed)
                 voiceChannel.leave();
