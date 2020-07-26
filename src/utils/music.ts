@@ -486,7 +486,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
         return msg.channel.send(":x: > **There was an unexpected error while playing the video, please retry later**")
     })
 
-    voiceConnection.play(video, { volume: 0.8, bitrate: 96, highWaterMark: 256, fec: true, plp: 0 })
+    voiceConnection.play(video, { volume: 0.8, bitrate: 76, highWaterMark: 256, fec: true, plp: 0 })
         .on('start', async () => {
             let loo = loop.get(msg.guild.id) || false
             if (!loo) {
