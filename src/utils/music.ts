@@ -33,7 +33,7 @@ export default class music {
 
         let video_url = args[0].split('&')
 
-        if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
+        if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
 
             const playlist = await yt.getPlaylist(video_url[0]).catch(console.error)
             if (!playlist) return;
