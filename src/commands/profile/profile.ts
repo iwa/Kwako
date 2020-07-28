@@ -7,7 +7,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
     if (args.length == 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
-        if (!mention) return;
+        if (!mention || mention.bot) return;
         return profileImg(bot, msg, db, mention.id);
     } else
         return profileImg(bot, msg, db, msg.author.id);
