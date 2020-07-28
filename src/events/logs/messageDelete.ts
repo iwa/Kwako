@@ -29,7 +29,6 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
         embed.setColor(5753229);
         embed.setTimestamp(new Date());
         embed.setFooter("Date of deletion:")
-        embed.setAuthor(executor.username, executor.avatarURL({ format: 'png', dynamic: false, size: 128 }))
         if(msg.attachments.first()) {
             embed.setImage(msg.attachments.first().proxyURL);
             embed.addField('attachment', `[link](${msg.attachments.first().proxyURL})`);
