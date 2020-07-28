@@ -59,7 +59,7 @@ export default class cooldown {
                 levelCheck(msg, (user.exp[msg.guild.id]), db, exp);
 
             let amount = exp;
-            if(msg.member.premiumSinceTimestamp != null)
+            if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
                 amount *= 2;
 
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
