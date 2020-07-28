@@ -29,10 +29,10 @@ let lastGif = new Map([
 /** define the number of gifs available */
 let count = new Map([
     ['pat', 46],
-    ['hug', 47],
+    ['hug', 51],
     ['group-hug', 9],
     ['boop', 15],
-    ['slap', 9],
+    ['slap', 11],
     ['squish', 4],
     ['glare', 6],
     ['tickle', 5]
