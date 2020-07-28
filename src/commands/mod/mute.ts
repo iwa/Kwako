@@ -1,11 +1,28 @@
 import { Client, Message } from 'discord.js'
 import staff from '../../utils/staff';
+import { Db } from 'mongodb';
 
-module.exports.run = (bot: Client, msg: Message, args:string[], db:any, commands:any, guildConf:any) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[], db: Db, commands:any, guildConf:any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
     let muteRole = guildConf.muteRole;
-    if(!muteRole) return msg.channel.send(":x: > You haven't configured any muted role!")
+    if(!muteRole) {
+        await msg.member.guild.roles.create({
+            data: {
+                name: "Muted",
+                color: "#5a5a5a",
+                permissions: []
+            }
+        }).then(async role => {
+            msg.member.guild.channels.cache.forEach(async (channel) => {
+                await channel.createOverwrite(role, { SEND_MESSAGES: false, ADD_REACTIONS: false, CONNECT: false, SPEAK: false })
+                .catch(() => {return});
+            });
+            muteRole = role.id;
+            await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
+        })
+        await msg.channel.send("🔨 > A 'Muted' role has been generated.");
+    }
 
     let modLogChannel = guildConf.modLogChannel;
 
