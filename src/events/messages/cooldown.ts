@@ -60,7 +60,7 @@ export default class cooldown {
 
             let amount = exp;
             if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
-                amount *= 2;
+                amount = Math.floor(amount * 1.5);
 
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
             cooldownXP.set(msg.author.id, 1);
