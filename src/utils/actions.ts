@@ -68,7 +68,7 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
                 .catch(console.error);
         }
 
-        if (msg.mentions.members.has(bot.user.id) && type != 'slap') {
+        if (msg.mentions.members.has(bot.user.id) && !['slap', 'glare'].includes(type)) {
             let r = utilities.randomInt(reply.length)
             setTimeout(() => {
                 r - 1;
