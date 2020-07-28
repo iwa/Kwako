@@ -10,7 +10,7 @@ import { Db } from "mongodb";
 
 export default async function levelCheck (msg: Discord.Message, xp: number, db: Db, exp: number) {
     let before = utilities.levelInfo(xp);
-    let after = utilities.levelInfo((xp + exp))
+    let after = utilities.levelInfo((xp + exp));
     if(before.level != after.level) {
         if ((after.level % 5) === 0)
             await msg.reply(`you're now level ${after.level}!🎉🎉`).catch(() => {return});
