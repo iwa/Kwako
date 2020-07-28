@@ -7,7 +7,7 @@
 import { Message, User, PartialMessage, Client, TextChannel, MessageEmbed } from 'discord.js';
 let lastTimestamp: number;
 
-export default async function messageDelete(msg: Message | PartialMessage, bot: Client, modLogChannel: string, prefix: string) {
+export default async function messageDelete(msg: Message | PartialMessage, bot: Client, modLogChannel: string, prefix: string, suggestionChannel: string) {
     if (!msg.guild) return;
     if (msg.content.startsWith(prefix)) return;
 	const fetchedLogs = await msg.guild.fetchAuditLogs({
@@ -22,6 +22,7 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
 
     if (lastTimestamp === createdTimestamp) {
         if ((target as User).id === msg.author.id) return;
+        if (suggestionChannel && suggestionChannel === msg.channel.id) return;
         let channel = await bot.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message Self-deleted");
