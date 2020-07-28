@@ -20,7 +20,22 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
 
     const { executor, target, createdTimestamp } = deletionLog;
 
-    if (lastTimestamp === createdTimestamp) return;
+    if (lastTimestamp === createdTimestamp) {
+        if ((target as User).id === msg.author.id) return;
+        let channel = await bot.channels.fetch(modLogChannel);
+        let embed = new MessageEmbed();
+        embed.setTitle("Message Self-deleted");
+        embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nWhere: <#${msg.channel.id}>\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);
+        embed.setColor(5753229);
+        embed.setTimestamp(new Date());
+        embed.setFooter("Date of deletion:")
+        embed.setAuthor(executor.username, executor.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+        if(msg.attachments.first()) {
+            embed.setImage(msg.attachments.first().proxyURL);
+            embed.addField('attachment', `[link](${msg.attachments.first().proxyURL})`);
+        }
+        return (channel as TextChannel).send(embed);
+    }
     lastTimestamp = createdTimestamp;
 
 	if ((target as User).id === msg.author.id) {
