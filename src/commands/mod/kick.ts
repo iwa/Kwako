@@ -1,6 +1,6 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db:any, commands:any, guildConf:any) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
     if (args.length >= 1 && msg.channel.type != 'dm') {

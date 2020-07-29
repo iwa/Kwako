@@ -1,9 +1,9 @@
 import { Client, Message, MessageEmbed, TextChannel } from 'discord.js'
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db:any, commands:any, guildConf:any) => {
+module.exports.run = async (bot: Client, msg: Message) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
-    (msg.channel as TextChannel).permissionOverwrites.forEach(async (value, key) => {
+    (msg.channel as TextChannel).permissionOverwrites.forEach(async (value) => {
         await value.update({
             'SEND_MESSAGES': null,
             'ADD_REACTIONS': null
