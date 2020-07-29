@@ -4,7 +4,7 @@
  * @module LogMessageDelete
  * @category Events
  */
-import { Message, User, PartialMessage, Client, TextChannel, MessageEmbed } from 'discord.js';
+import { Message, User, PartialMessage, Client, TextChannel, MessageEmbed, Util } from 'discord.js';
 let lastTimestamp: number;
 
 export default async function messageDelete(msg: Message | PartialMessage, bot: Client, modLogChannel: string, prefix: string, suggestionChannel: string) {
@@ -31,6 +31,8 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
         embed.setColor(5753229);
         embed.setTimestamp(new Date());
         embed.setFooter("Date of deletion:")
+        if(msg.embeds[0])
+            embed.addField('embed', `\`\`\`markdown\n# ${Util.escapeMarkdown(msg.embeds[0].title)}\n${Util.escapeMarkdown(msg.embeds[0].description)}\`\`\``);
         if(msg.attachments.first()) {
             embed.setImage(msg.attachments.first().proxyURL);
             embed.addField('attachment', `[link](${msg.attachments.first().proxyURL})`);
@@ -48,6 +50,8 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
         embed.setTimestamp(createdTimestamp);
         embed.setFooter("Date of deletion:")
         embed.setAuthor(executor.username, executor.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+        if(msg.embeds[0])
+            embed.addField('embed', `\`\`\`markdown\n# ${Util.escapeMarkdown(msg.embeds[0].title)}\n${Util.escapeMarkdown(msg.embeds[0].description)}\`\`\``);
         if(msg.attachments.first()) {
             embed.setImage(msg.attachments.first().proxyURL);
             embed.addField('attachment', `[link](${msg.attachments.first().proxyURL})`);
