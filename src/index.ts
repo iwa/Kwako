@@ -29,6 +29,8 @@ const defaultSettings = {
     disabledCommands: [] as string[]
 }
 
+let talkedRecently = new Set();
+
 import cooldown from './events/messages/cooldown';
 import ready from './events/ready';
 import suggestion from './events/messages/suggestion';
@@ -91,12 +93,26 @@ bot.on('message', async (msg: Discord.Message) => {
     let req = args.shift().toLowerCase();
     let cmd: any = commands.get(req) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(req));
 
+    if (talkedRecently.has(msg.author.id)) {
+        const embed = new Discord.MessageEmbed()
+					.setTitle('⌛ Command Cooldown')
+					.setColor('#e67e22')
+					.setDescription(`${msg.author}, please wait 3s before sending your next command!`);
+        let sent = await msg.channel.send(embed);
+        return setTimeout(async () => { await sent.delete(); }, 3000);
+    }
     if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
     if (!cmd || disabled.includes(cmd.help.name)) return;
     else {
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
             return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
+
+        talkedRecently.add(msg.author.id);
+		setTimeout(() => {
+			talkedRecently.delete(msg.author.id);
+        }, 3000);
+
         await cmd.run(bot, msg, args, db, commands, guildConf);
     }
 });
