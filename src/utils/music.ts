@@ -32,6 +32,80 @@ export default class music {
         if (!voiceChannel.members.find((val: any) => val.id == msg.author.id)) return msg.channel.send(":x: > **You need to be connected in a voice channel before I join it !**")
 
         let video_url = args[0].split('&')
+        let playlist = await yt.getPlaylist(args[0]).catch(() => {return});
+
+        if (playlist && !video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
+            let reply = await msg.channel.send({
+                "embed": {
+                  "title": ":information_source: Your link contains both a video & a playlist link",
+                  "description": "Do you want to:\n\n:one: Add the song only\n:two: Add the entire playlist",
+                  "color": 15135077,
+                  "footer": {
+                    "text": `(playlist contains ${playlist.data.contentDetails.itemCount} videos)`
+                  }
+                }
+              })
+            await reply.react('1️⃣');
+            await reply.react('2️⃣');
+
+            let collected = await reply.awaitReactions((_reaction, user) => (_reaction.emoji.name === '1️⃣' || _reaction.emoji.name === '2️⃣' || _reaction.emoji.name === '❌') && (user.id === msg.author.id), { max: 1, time: 10000 })
+
+            if (collected.first() == undefined) {
+                reply.delete()
+                return msg.channel.send(":x: > **You didn't choose anything, request cancelled...**")
+            }
+
+            let emote = collected.first().emoji.name
+
+            reply.delete();
+            if (emote === '2️⃣') {
+                const embed = new MessageEmbed();
+                embed.setTitle("Adding all the playlist's videos to the queue...")
+                embed.setFooter(`Added by ${msg.author.username}`)
+                embed.setColor('LUMINOUS_VIVID_PINK')
+                msg.channel.send(embed)
+
+                let videos = await playlist.fetchVideos(0);
+                let errors = 0;
+
+                let bar = new Promise((resolve) => {
+                    let queu = queue.get(msg.guild.id) || [];
+                    videos.forEach(async (video: Video, index: number, array: Video[]) => {
+                        let url = video.url
+                        if (queu && !queu.find(song => song === url)) {
+                            queu.push(url)
+                        }
+                        if (index === array.length - 1){
+                            queue.set(msg.guild.id, queu)
+                            resolve();
+                        }
+                    });
+                });
+
+                bar.then(async () => {
+                    const embedDone = new MessageEmbed();
+                    embedDone.setTitle("**Done!**")
+                    embedDone.setColor('LUMINOUS_VIVID_PINK')
+
+                    if (errors > 0) embedDone.setDescription("Some videos are unavailable :(");
+
+                    msg.channel.send(embedDone)
+
+                    let connection: null | VoiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+
+                    if (!connection) {
+                        try {
+                            const voiceConnection = await voiceChannel.join();
+                            playSong(msg, voiceConnection, voiceChannel);
+                        }
+                        catch (ex) {
+                            console.error(ex)
+                        }
+                    }
+                });
+                return;
+            }
+        }
 
         if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
 
