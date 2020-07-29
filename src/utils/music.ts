@@ -64,7 +64,7 @@ export default class music {
 
             let emote = collected.first().emoji.name
 
-            if (emote != '✅') return;
+            if (emote != '✅') return reply.delete();
 
             reply.delete()
             const embed = new MessageEmbed();
