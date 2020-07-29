@@ -42,6 +42,7 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
     lastTimestamp = createdTimestamp;
 
 	if ((target as User).id === msg.author.id) {
+        if(msg.author.id === bot.user.id) return;
         let channel = await bot.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message deleted");
