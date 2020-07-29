@@ -23,6 +23,7 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
     if (lastTimestamp === createdTimestamp) {
         if ((target as User).id === msg.author.id) return;
         if (suggestionChannel && suggestionChannel === msg.channel.id) return;
+        if (msg.author.bot) return;
         let channel = await bot.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message Self-deleted");
