@@ -32,10 +32,17 @@ Pull requests, feature requests and issues are welcome.<br/>
 **Please make sure to update / rebase your PR before submitting it.** c:
 
 
+## 💛 Contributors
+
+<a href="https://github.com/iwa/Kwako/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=iwa/Kwako" />
+</a>
+
 ## ⭐️ Show your support
 
 Star this repository if you like Kwako!
 
+You can financially support me on Patreon, so I can provide the best hosting quality.<br/>
 <a href="https://www.patreon.com/iwaQwQ">
   <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="140">
 </a>
