@@ -32,12 +32,6 @@ Pull requests, feature requests and issues are welcome.<br/>
 **Please make sure to update / rebase your PR before submitting it.** c:
 
 
-## 💛 Contributors
-
-<a href="https://github.com/iwa/Kwako/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=iwa/Kwako" />
-</a>
-
 ## ⭐️ Show your support
 
 Star this repository if you like Kwako!
@@ -51,5 +45,8 @@ You can financially support me on Patreon, so I can provide the best hosting qua
 
 👤 **[@iwa](https://github.com/iwa)**
 
-## 📝 License
-> Copyright © [Pierre 'iwa'](https://github.com/iwa).
+💛 **Contributors**
+
+<a href="https://github.com/iwa/Kwako/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=iwa/Kwako" />
+</a>
