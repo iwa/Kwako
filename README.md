@@ -25,7 +25,7 @@
 
 - Create a fork and clone it
 - Make your modifications
-- Create a Pull Request
+- Create a Pull Request, with `dev` as target branch
 
 
 Pull requests, feature requests and issues are welcome.<br/>
