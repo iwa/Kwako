@@ -41,6 +41,18 @@ You can financially support me on Patreon, so I can provide the best hosting qua
   <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="140">
 </a>
 
+## 💽 Installation Guide
+
+**Requirements:**
+- Node v14
+- TypeScript
+- ffmpeg
+- MongoDB
+- Make & gcc (in order to build sodium)
+
+Follow installations guides for your OS, and then install all dependencies:<br/>
+`yarn` or `npm i`
+
 ## 👤 Author
 
 👤 **[@iwa](https://github.com/iwa)**
