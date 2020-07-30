@@ -52,7 +52,7 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
         embed.setFooter("Date of deletion:")
         embed.setAuthor(executor.username, executor.avatarURL({ format: 'png', dynamic: false, size: 128 }))
         if(msg.embeds[0])
-            embed.addField('embed', `\`\`\`markdown\n# ${Util.escapeMarkdown(msg.embeds[0].title)}\n${Util.escapeMarkdown(msg.embeds[0].description)}\`\`\``);
+            embed.addField('embed', `\`\`\`markdown\n# ${Util.escapeMarkdown(msg.embeds[0].title || " ")}\n${Util.escapeMarkdown(msg.embeds[0].description || " ")}\`\`\``);
         if(msg.attachments.first()) {
             embed.setImage(msg.attachments.first().proxyURL);
             embed.addField('attachment', `[link](${msg.attachments.first().proxyURL})`);
