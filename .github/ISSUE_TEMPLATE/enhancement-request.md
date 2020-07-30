@@ -7,10 +7,10 @@ assignees: iwa
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is.
+**To what feature your request is related to**
+Give the name of the feature
 
-**Describe the solution you'd like**
+**Describe the enhancement you'd like**
 A clear and concise description of what you want to happen.
 
 **Describe alternatives you've considered**
