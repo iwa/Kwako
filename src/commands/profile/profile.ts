@@ -36,7 +36,7 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
             positionExp: "?",
             level: 1,
             current: 0,
-            max: 25,
+            max: 100,
             userColor: memberDiscord.displayHexColor,
             userBackground: userDB.background,
             expBar: 0
