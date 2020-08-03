@@ -119,14 +119,30 @@ bot.on('message', async (msg: Discord.Message) => {
 
 
 bot.on("guildMemberAdd", async member => {
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
-    guildConf = guildConf.config || defaultSettings;
+    let guild = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+    let guildConf = guild.config || defaultSettings;
 
     let userDB = await db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
-        if(userDB.exp[member.guild.id] < 0)
+        if(userDB.exp[member.guild.id] < 0) {
             await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+            userDB.exp[member.guild.id] *= -1;
+        }
+
+        let levelroles:string = guild.levelroles || "[]";
+        let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
+        let lvl = utilities.levelInfo(userDB.exp[member.guild.id]);
+
+        levelrolesMap.forEach(async (value, key) => {
+            if(key <= lvl.level) {
+                if(member && value && value[0]) {
+                    await member.roles.add(value[0]).catch(() => {return});
+                    if (value[1])
+                        await member.roles.remove(value[1]).catch(() => {return});
+                }
+            }
+        });
     }
 
     let welcomeMessage = guildConf.welcomeMessage;
@@ -243,6 +259,7 @@ bot.on('guildMemberRemove', async member => {
 });
 
 import guildBanAdd from './events/logs/guildBanAdd';
+import utilities from "./utils/utilities";
 bot.on('guildBanAdd', async (guild, user) => {
     let guildDB = `exp.${guild.id.toString()}`
     await db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
