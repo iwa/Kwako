@@ -25,7 +25,7 @@ export default async function imGenerator(user: any) {
     ctx.fillRect(0, 0, 1016, 336)
 
     if(!user.userBackground) {
-        var grd = ctx.createLinearGradient(0, 0, 1016, 336);
+        let grd = ctx.createLinearGradient(0, 0, 1016, 336);
         grd.addColorStop(0, `${user.userColor}A6`);
         grd.addColorStop(1, `${user.userColor}`);
 
@@ -47,7 +47,7 @@ export default async function imGenerator(user: any) {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
             ctx.fillRect(28, 28, 960, 280)
         } else {
-            var grd = ctx.createLinearGradient(0, 0, 1016, 336);
+            let grd = ctx.createLinearGradient(0, 0, 1016, 336);
             grd.addColorStop(0, `${user.userColor}A6`);
             grd.addColorStop(1, `${user.userColor}`);
 
