@@ -125,7 +125,7 @@ bot.on("guildMemberAdd", async member => {
     let userDB = await db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
-        if(userDB.exp < 0)
+        if(userDB.exp[member.guild.id] < 0)
             await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
     }
 
