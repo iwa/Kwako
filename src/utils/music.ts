@@ -363,14 +363,18 @@ export default class music {
      * Stops the music
      * @param msg - Message object
      */
-    static async stop(msg: Message) {
-        let voiceChannel:VoiceChannel = msg.member.voice.channel;
+    static async stop(bot: Client, msg: Message) {
+        let dispatcher = await fetchDispatcher(bot, msg);
 
-        queue.delete(msg.guild.id)
+        if(dispatcher) {
+            let voiceChannel:VoiceChannel = msg.member.voice.channel;
 
-        await msg.react('✅');
-        voiceChannel.leave()
-        console.log(`musc: stop by ${msg.author.tag}`)
+            queue.delete(msg.guild.id)
+
+            await msg.react('✅');
+            voiceChannel.leave()
+            console.log(`musc: stop by ${msg.author.tag}`)
+        }
     }
 
     /**
