@@ -4,7 +4,7 @@
  * @module Cooldowns
  * @category Events
  */
-import { MongoClient, Db } from 'mongodb';
+import { Db } from 'mongodb';
 import { Message } from 'discord.js';
 
 import levelCheck from '../../utils/levelCheck';
