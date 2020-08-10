@@ -36,7 +36,7 @@ export default class cooldown {
                 return msg.reply({ "embed": { "title": "**Please calm down, or I'll mute you.**", "color": 13632027 } })
             else if (cooldownMsg.get(msg.author.id) == 6) {
                 await msg.member.roles.add(guildConf.muteRole)
-                let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason : spamming.**", "color": 13632027 } })
+                let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason: spamming.**", "color": 13632027 } })
                 setTimeout(async () => {
                     await msgReply.delete()
                     return msg.member.roles.remove(guildConf.muteRole)
