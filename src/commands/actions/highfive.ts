@@ -39,6 +39,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     let collected = await reply.awaitReactions((_reaction, user) => (_reaction.emoji.name === '✋') && (user.id === mention.id), { max: 1, time: 30000 })
 
     if (!collected.first()) {
+        await reply.delete().catch(() => {return});
+
         let n = utilities.randomInt(countFail)
         while (lastGifFail == n)
             n = utilities.randomInt(countFail);
@@ -52,7 +54,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     }
 
     let emote = collected.first().emoji.name
-    reply.delete();
+    await reply.delete().catch(() => {return});
 
     if (emote === '✋') {
         const embed = new MessageEmbed();
