@@ -29,7 +29,7 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
     let userDiscord = await bot.users.fetch(id)
     let memberDiscord = await msg.guild.members.fetch(id)
 
-    if (!userDB || !userDB.exp[msg.guild.id]) {
+    if (!userDB || !userDB.exp) {
         let user = {
             avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
             username: userDiscord.username,
@@ -38,8 +38,9 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
             current: 0,
             max: 100,
             userColor: memberDiscord.displayHexColor,
-            userBackground: userDB.background,
-            expBar: 0
+            expBar: 0,
+            birthday: "--/--",
+            fc: "not registered"
         }
 
         if(user.userColor == '#000000') user.userColor = '#444444';

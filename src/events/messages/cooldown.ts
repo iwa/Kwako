@@ -4,7 +4,7 @@
  * @module Cooldowns
  * @category Events
  */
-import { MongoClient, Db } from 'mongodb';
+import { Db } from 'mongodb';
 import { Message } from 'discord.js';
 
 import levelCheck from '../../utils/levelCheck';
@@ -12,7 +12,7 @@ import utils from '../../utils/utilities';
 let exp: number = 2;
 
 let cooldownMsg: Map<string, number> = new Map();
-let cooldownXP: Map<string, number> = new Map();
+let cooldownXP = new Set();
 
 /**
  * @classdesc Class used to gather every methods related to a cooldown system
@@ -36,7 +36,7 @@ export default class cooldown {
                 return msg.reply({ "embed": { "title": "**Please calm down, or I'll mute you.**", "color": 13632027 } })
             else if (cooldownMsg.get(msg.author.id) == 6) {
                 await msg.member.roles.add(guildConf.muteRole)
-                let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason : spamming.**", "color": 13632027 } })
+                let msgReply = await msg.reply({ "embed": { "title": "**You've been muted for 20 minutes. Reason: spamming.**", "color": 13632027 } })
                 setTimeout(async () => {
                     await msgReply.delete()
                     return msg.member.roles.remove(guildConf.muteRole)
@@ -55,15 +55,16 @@ export default class cooldown {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-            if(user)
-                levelCheck(msg, (user.exp[msg.guild.id]), db, exp);
+            if(user && user.exp)
+                if(user.exp[msg.guild.id])
+                    levelCheck(msg, (user.exp[msg.guild.id]), db, exp);
 
             let amount = exp;
             if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
                 amount = Math.floor(amount * 1.5);
 
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
-            cooldownXP.set(msg.author.id, 1);
+            cooldownXP.add(msg.author.id);
             return setTimeout(async () => { cooldownXP.delete(msg.author.id) }, 5000)
         }
     }

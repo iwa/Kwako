@@ -561,7 +561,10 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
     const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) });
 
     video.on('error', () => {
-        return msg.channel.send(":x: > **There was an unexpected error while playing the video, please retry later**")
+        let dispatcher = voiceConnection.dispatcher
+        loop.set(msg.guild.id, false);
+        dispatcher.end()
+        return msg.channel.send(":x: > **There was an unexpected error while playing the video**")
     })
 
     voiceConnection.play(video, { volume: 0.8, bitrate: 76, highWaterMark: 256, fec: true, plp: 0 })
