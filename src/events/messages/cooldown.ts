@@ -12,7 +12,7 @@ import utils from '../../utils/utilities';
 let exp: number = 2;
 
 let cooldownMsg: Map<string, number> = new Map();
-let cooldownXP: Map<string, number> = new Map();
+let cooldownXP = new Set();
 
 /**
  * @classdesc Class used to gather every methods related to a cooldown system
@@ -64,7 +64,7 @@ export default class cooldown {
                 amount = Math.floor(amount * 1.5);
 
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
-            cooldownXP.set(msg.author.id, 1);
+            cooldownXP.add(msg.author.id);
             return setTimeout(async () => { cooldownXP.delete(msg.author.id) }, 5000)
         }
     }
