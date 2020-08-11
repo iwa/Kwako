@@ -55,13 +55,14 @@ export default class cooldown {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
             let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-            if(user && user.exp)
-                if(user.exp[msg.guild.id])
-                    levelCheck(msg, (user.exp[msg.guild.id]), db, exp);
 
             let amount = exp;
             if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
                 amount = Math.floor(amount * 1.5);
+
+            if(user && user.exp)
+                if(user.exp[msg.guild.id])
+                    levelCheck(msg, (user.exp[msg.guild.id]), db, amount);
 
             await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
             cooldownXP.add(msg.author.id);
