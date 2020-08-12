@@ -10,7 +10,10 @@ export default async function guildBanAdd(guild: Guild, user: User | PartialUser
 	const fetchedLogs = await guild.fetchAuditLogs({
 		limit: 1,
 		type: 'MEMBER_BAN_ADD',
-	});
+    }).catch(() => {return;});
+
+    if(!fetchedLogs) return;
+
 	const banLog = fetchedLogs.entries.first();
 
 	if (!banLog) return;

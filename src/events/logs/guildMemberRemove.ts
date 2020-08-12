@@ -13,7 +13,10 @@ export default async function guildMemberRemove(member: GuildMember | PartialGu
 	const fetchedLogs = await member.guild.fetchAuditLogs({
 		limit: 1,
 		type: 'MEMBER_KICK',
-	});
+	}).catch(() => {return;});
+
+    if(!fetchedLogs) return;
+
 	const kickLog = fetchedLogs.entries.first();
 
 	if (!kickLog) return;
