@@ -119,6 +119,8 @@ bot.on('message', async (msg: Discord.Message) => {
 
 
 bot.on("guildMemberAdd", async member => {
+    if(!member.guild.available) return;
+
     let guild = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     let guildConf = guild.config || defaultSettings;
 
@@ -160,6 +162,8 @@ bot.on("guildMemberAdd", async member => {
 });
 
 bot.on('guildCreate', async guild => {
+    if(!guild.available) return;
+
     let channel = guild.channels.cache.find(val => val.name.includes('general') && val.type === 'text');
     if(channel) {
         await (channel as Discord.TextChannel).send({
@@ -212,6 +216,8 @@ bot.on("guildDelete", async guild => {
 // Starboard Event
 import starboard from './events/starboard';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+    if(!reaction.message.guild.available) return;
+
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
@@ -224,10 +230,12 @@ bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: D
 // Reaction Role Events
 import reactionRoles from './events/reactionRoles';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+    if(!reaction.message.guild.available) return;
     if (author.bot) return;
     reactionRoles.add(reaction, author, db);
 });
 bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+    if(!reaction.message.guild.available) return;
     if (author.bot) return;
     reactionRoles.remove(reaction, author, db);
 });
@@ -235,6 +243,8 @@ bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author
 // Logs channel
 import messageDelete from './events/logs/messageDelete';
 bot.on('messageDelete', async msg => {
+    if(!msg.guild.available) return;
+
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
@@ -246,6 +256,8 @@ bot.on('messageDelete', async msg => {
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
 bot.on('guildMemberRemove', async member => {
+    if(!member.guild.available) return;
+
     let guildDB = `exp.${member.guild.id.toString()}`
     await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
 
@@ -261,6 +273,8 @@ bot.on('guildMemberRemove', async member => {
 import guildBanAdd from './events/logs/guildBanAdd';
 import utilities from "./utils/utilities";
 bot.on('guildBanAdd', async (guild, user) => {
+    if(!guild.available) return;
+
     let guildDB = `exp.${guild.id.toString()}`
     await db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
 
