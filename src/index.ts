@@ -116,7 +116,7 @@ bot.on('message', async (msg: Discord.Message) => {
 			talkedRecently.delete(msg.author.id);
         }, 3000);
 
-        await cmd.run(bot, msg, args, db, commands, guildConf);
+        await cmd.run(bot, msg, args, db, log, commands, guildConf);
     }
 });
 

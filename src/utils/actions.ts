@@ -7,6 +7,7 @@
 import { Client, Message, MessageEmbed } from 'discord.js';
 import { Db } from 'mongodb';
 import utilities from './utilities'
+import { Logger } from 'pino';
 
 /** @desc Automatic replies of the bot when an action is done on it  */
 let reply = ["awww", "thank you :33", "damn you're so precious", "why are you so cute with me ?", "omg", "<3", "so cuuuute c:", "c:", "c;", ":3", "QT af :O", "^u^ thanks!", ">u<", "-u-"]
@@ -45,7 +46,7 @@ let count = new Map([
  * @param db - Database connection object
  * @param type - Type of actions (hug, pat...)
  */
-export default async function actionsRun(bot: Client, msg: Message, args: string[], db: Db, type: string, verb: string, at: boolean) {
+export default async function actionsRun(bot: Client, msg: Message, args: string[], db: Db, log: Logger, type: string, verb: string, at: boolean) {
     if (args.length === 0) return;
     if (args.length <= 4) {
         if (msg.mentions.everyone) return;
@@ -64,8 +65,8 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
 
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
             return msg.channel.send(embed)
-                .then(() => { console.log(`info: ${type} sent by ${msg.author.tag}`); })
-                .catch(console.error);
+                .then(() => { log.info({msg: type, cmd: type, author: msg.author.id, guild: msg.guild.id}); })
+                .catch(log.error);
         }
 
         if (msg.mentions.members.has(bot.user.id) && !['slap', 'glare'].includes(type)) {
@@ -122,8 +123,8 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
 
         return msg.channel.send(embed)
             .then(() => {
-                console.log(`info: ${type} sent by ${msg.author.tag}`);
+                log.info({msg: type, author: msg.author.id, guild: msg.guild.id});
             })
-            .catch(console.error);
+            .catch(log.error);
     }
 }

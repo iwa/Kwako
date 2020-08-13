@@ -1,10 +1,11 @@
 import { Client, Message, MessageReaction, User, MessageEmbed } from 'discord.js'
 import { Db } from 'mongodb'
 import utilities from '../../utils/utilities';
+import { Logger } from 'pino';
 let lastGif: number = 0, count: number = 9;
 let lastGifFail: number = 0, countFail: number = 5;
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
     if (msg.mentions.everyone) return;
     let mention = msg.mentions.users.first()
     if (!mention) return;
@@ -66,9 +67,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         await db.collection('user').updateOne({ '_id': { $eq: mention.id } }, { $inc: { highfive: 1 } });
         return msg.channel.send(embed)
             .then(() => {
-                console.log(`info: highfive`);
+                log.info({msg: 'highfive', author: msg.author.id, guild: msg.guild.id});
             })
-            .catch(console.error);
+            .catch(log.error);
     } else {
         let n = utilities.randomInt(countFail)
         while (lastGifFail == n)
