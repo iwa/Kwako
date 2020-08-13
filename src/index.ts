@@ -5,6 +5,9 @@ const commands: Discord.Collection<any, any> = new Discord.Collection();
 import * as dotenv from "dotenv";
 dotenv.config();
 
+import logger from 'pino';
+const log = logger();
+
 import * as fs from 'fs';
 import * as http from 'http';
 
@@ -38,11 +41,11 @@ import suggestion from './events/messages/suggestion';
 
 // Imports commands from the 'commands' folder
 fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
-    if (error) return console.error(error);
+    if (error) return log.error(error);
     f.forEach((f) => {
         if (f.isDirectory()) {
             fs.readdir(`./build/commands/${f.name}/`, (error, fi) => {
-                if (error) return console.error(error);
+                if (error) return log.error(error);
                 fi.forEach((fi) => {
                     if (!fi.endsWith(".js")) return;
                     let commande = require(`./commands/${f.name}/${fi}`);
@@ -58,17 +61,17 @@ fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
 });
 
 // Process related Events
-process.on('uncaughtException', exception => console.error(exception));
+process.on('uncaughtException', exception => log.error(exception));
 
 // Bot-User related Events
-bot.on('warn', console.warn);
-bot.on('shardError', console.error);
-bot.on('shardDisconnect', () => console.log("warn: bot disconnected"));
-bot.on('shardReconnecting', () => console.log("info: bot reconnecting..."));
+bot.on('warn', log.warn);
+bot.on('shardError', () => log.error);
+bot.on('shardDisconnect', () => log.warn("bot disconnected"));
+bot.on('shardReconnecting', () => log.warn("bot reconnecting"));
 bot.on('shardResume', async () => ready(bot, db));
 bot.on('shardReady', async () => {
     ready(bot, db);
-    console.log(`info: logged in as ${bot.user.username}`);
+    log.info(`logged in as ${bot.user.username}`);
 });
 
 // Message Event
@@ -204,12 +207,12 @@ bot.on('guildCreate', async guild => {
         }
     }
     await db.collection('settings').insertOne({ '_id': guild.id });
-    http.get('http://localhost:8080/api/guilds/update').on("error", console.error);
+    http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
 });
 
 bot.on("guildDelete", async guild => {
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    http.get('http://localhost:8080/api/guilds/update').on("error", console.error);
+    http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
 });
 
 
