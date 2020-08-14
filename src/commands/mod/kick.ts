@@ -34,7 +34,7 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, l
             await msg.channel.send("I can't kick this person!")
         }
 
-        log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: msg.author.id, name: msg.author.tag, reason: reason }})
+        log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: mention.id, name: mention.user.tag, reason: reason }})
     }
 };
 
