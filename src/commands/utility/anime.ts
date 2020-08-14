@@ -1,8 +1,9 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
+import { Logger } from 'pino';
 const al = require('anilist-node');
 const Anilist = new al();
 
-module.exports.run = (bot: Client, msg: Message, args: string[]) => {
+module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
     if (args.length < 1) return;
     let req = args.join(' ');
     Anilist.search('anime', req, 1, 5).then(async (data: { media: any[]; }) => {
@@ -66,10 +67,11 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
         embed.addField("Genres", info.genres.toString(), false)
         embed.setColor('BLUE')
         embed.setURL(info.siteUrl)
-        console.log(`info: anime request: ${req} by ${msg.author.tag}`)
+
+        log.info({msg: 'anime', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, request: req});
         return msg.channel.send(embed)
     }).catch((err: any) => {
-        console.error(err)
+        log.error(err)
         return msg.channel.send({ 'embed': { 'title': ":x: > **An error occured, please retry later.**" } })
     });
 };
