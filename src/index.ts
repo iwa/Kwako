@@ -5,12 +5,7 @@ const commands: Discord.Collection<any, any> = new Discord.Collection();
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import logger from 'pino';
-let options: any = { level: 'trace' };
-if (process.env.NODE_ENV !== 'production')
-    options = { level: 'trace', prettyPrint: true };
-
-const log = logger(options);
+import log from './Logger';
 
 import * as fs from 'fs';
 import * as http from 'http';
