@@ -65,7 +65,7 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
 
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
             return msg.channel.send(embed)
-                .then(() => { log.info({msg: type, cmd: type, author: msg.author.id, guild: msg.guild.id}); })
+                .then(() => { log.info({msg: type, cmd: type, author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id}); })
                 .catch(log.error);
         }
 
@@ -123,7 +123,7 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
 
         return msg.channel.send(embed)
             .then(() => {
-                log.info({msg: type, author: msg.author.id, guild: msg.guild.id});
+                log.info({msg: type, author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
             })
             .catch(log.error);
     }

@@ -24,7 +24,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await db.collection('msg').updateOne({ _id: args[0] }, { $pull: { roles: { "emote": emote } } })
 
-    log.info({msg: 'delrole', author: msg.author.id, guild: msg.guild.id})
+    log.info({msg: 'delrole', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 };
 
 module.exports.help = {

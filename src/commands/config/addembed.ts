@@ -19,7 +19,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await db.collection('msg').insertOne({ _id: sent.id, channel: sent.channel.id })
 
-    log.info({msg: 'addembed', author: msg.author.id, guild: msg.guild.id})
+    log.info({msg: 'addembed', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 };
 
 module.exports.help = {

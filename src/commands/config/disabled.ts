@@ -21,7 +21,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await msg.channel.send(embed)
 
-    log.info({msg: 'disabled', author: msg.author.id, guild: msg.guild.id})
+    log.info({msg: 'disabled', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 };
 
 module.exports.help = {

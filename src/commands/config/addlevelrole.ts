@@ -48,7 +48,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     if (previous)
         await msg.channel.send(`When I'll give this role, I'll remove <@&${previous}>.`)
 
-    log.info({msg: 'addlevelrole', author: msg.author.id, guild: msg.guild.id, level: { id: args[0], role: role }})
+    log.info({msg: 'addlevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, level: { id: args[0], role: role }})
 };
 
 module.exports.help = {

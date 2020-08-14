@@ -26,7 +26,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         }
       })
 
-    log.info({msg: 'enable', author: msg.author.id, guild: msg.guild.id})
+    log.info({msg: 'enable', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 };
 
 module.exports.help = {
