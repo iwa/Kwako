@@ -1,6 +1,7 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
     if (args.length >= 1 && msg.channel.type != 'dm') {
@@ -14,7 +15,7 @@ module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
         try {
             await msg.delete();
         } catch (error) {
-            console.error(error);
+            log.error(error);
         }
 
         args.shift();
@@ -32,6 +33,8 @@ module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
         } catch (err) {
             await msg.channel.send("I can't kick this person!")
         }
+
+        log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: msg.author.id, name: msg.author.tag, reason: reason }})
     }
 };
 

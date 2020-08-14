@@ -1,6 +1,7 @@
 import { Client, Message, MessageEmbed, TextChannel } from 'discord.js'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message) => {
+module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
     (msg.channel as TextChannel).permissionOverwrites.forEach(async (value) => {
@@ -16,8 +17,9 @@ module.exports.run = async (bot: Client, msg: Message) => {
 
     try {
         await msg.channel.send(embed);
+        log.info({msg: 'lock', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, channel: msg.channel.id})
     } catch (err) {
-        console.error(err);
+        log.error(err);
     }
 };
 

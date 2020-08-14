@@ -7,6 +7,7 @@
 import { Client, Message, MessageEmbed, Util, VoiceChannel, VoiceConnection, StreamDispatcher } from 'discord.js';
 import ytdl from 'ytdl-core';
 import { YouTube, Video } from 'popyt';
+import { Logger } from 'pino';
 const yt = new YouTube(process.env.YT_TOKEN)
 
 let queue:Map<string, string[]> = new Map();
@@ -383,7 +384,7 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async forceskip(bot: Client, msg: Message) {
+    static async forceskip(bot: Client, msg: Message, log: Logger) {
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
         let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
         let queu = queue.get(msg.guild.id);
@@ -405,7 +406,7 @@ export default class music {
 
         dispatcher.end()
 
-        return console.log(`musc: forceskip by ${msg.author.tag}`)
+        return log.info({msg: 'forceskip', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
     }
 
     /**

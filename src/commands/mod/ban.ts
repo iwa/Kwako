@@ -1,6 +1,7 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
     if (args.length >= 2 && msg.channel.type != 'dm') {
@@ -14,7 +15,7 @@ module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
         try {
             await msg.delete();
         } catch (error) {
-            console.error(error);
+            log.error(error);
         }
 
         args.shift();
@@ -24,7 +25,7 @@ module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
 
         const embed = new MessageEmbed();
         embed.setColor('RED')
-        embed.setTitle(`🚪 **${mention.user.username}** has been kicked by **${msg.author.username}**`)
+        embed.setTitle(`🔨 **${mention.user.username}** has been banned by **${msg.author.username}**`)
 
         try {
             await mention.ban({ days: 7, reason: reason });
@@ -32,6 +33,8 @@ module.exports.run = async (bot: Client, msg: Message, args:string[]) => {
         } catch (err) {
             await msg.channel.send("I can't ban this person!")
         }
+
+        log.info({msg: 'ban', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: msg.author.id, name: msg.author.tag, reason: reason }});
     }
 };
 

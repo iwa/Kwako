@@ -1,9 +1,10 @@
 import { Client, Message } from 'discord.js'
 import music from '../../utils/music'
+import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message) => {
+module.exports.run = (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
-    music.forceskip(bot, msg);
+    music.forceskip(bot, msg, log);
 };
 
 module.exports.help = {

@@ -1,8 +1,9 @@
 import { Client, Message } from 'discord.js'
 import staff from '../../utils/staff';
 import { Db } from 'mongodb';
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db: Db, commands:any, guildConf:any) => {
+module.exports.run = async (bot: Client, msg: Message, args:string[], db: Db, log: Logger, commands:any, guildConf:any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
 
     let muteRole = guildConf.muteRole;
@@ -21,12 +22,12 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db: Db, co
             muteRole = role.id;
             await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
         })
-        await msg.channel.send("🔨 > A 'Muted' role has been generated.");
+        await msg.channel.send("🛠 > A 'Muted' role has been generated.");
     }
 
     let modLogChannel = guildConf.modLogChannel;
 
-    staff.mute(bot, msg, args, muteRole, modLogChannel);
+    staff.mute(bot, msg, args, log, muteRole, modLogChannel);
 };
 
 module.exports.help = {
