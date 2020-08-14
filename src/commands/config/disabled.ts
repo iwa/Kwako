@@ -1,7 +1,7 @@
 import { Client, Message, Collection, MessageEmbed } from 'discord.js';
 import { Db } from 'mongodb'
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: any, commands: Collection<any, any>, guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     let disabled: string[] = guildConf.disabledCommands || [];
