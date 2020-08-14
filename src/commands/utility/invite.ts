@@ -1,14 +1,15 @@
 import { Client, Message } from 'discord.js';
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message) => {
+module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
     await msg.channel.send({
         "embed": {
           "title": "You can invite me to your server through this link:",
           "description": "https://kwako.iwa.sh/",
           "color": 16774804}
         })
-        .then(() => { console.log(`info: ping: ${msg.author.tag}`) })
-        .catch(console.error);
+        .then(() => { log.info({msg: 'invite', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id}) })
+        .catch(log.error);
 };
 
 module.exports.help = {

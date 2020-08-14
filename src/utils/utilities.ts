@@ -5,6 +5,7 @@
  * @category Utils
  */
 import * as Discord from "discord.js";
+import log from '../Logger';
 
 /** @desc Importing package.json to fetch the version tag */
 let packageJson = require('../../package.json')
@@ -32,7 +33,7 @@ export default class utilities {
         }
 
         try {
-            console.log(`info: info: ${msg.author.tag}`)
+            log.info({msg: 'info', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
             await msg.author.send(embed)
         } catch (ex) {
             return msg.channel.send("**:x: > Please open your DMs!**")
