@@ -62,6 +62,7 @@ fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
 
 // Process related Events
 process.on('uncaughtException', exception => log.error(exception));
+process.on('unhandledRejection', exception => log.error(exception));
 
 // Bot-User related Events
 bot.on('warn', (warn) => log.warn(warn));
