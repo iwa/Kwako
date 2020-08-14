@@ -114,3 +114,6 @@ build/
 
 # Enmap databases
 data/
+
+# Changelog
+CHANGELOG.md
