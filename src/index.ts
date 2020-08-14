@@ -6,7 +6,11 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import logger from 'pino';
-const log = logger({ level: 'trace' });
+let options: any = { level: 'trace' };
+if (process.env.NODE_ENV !== 'production')
+    options = { level: 'trace', prettyPrint: true };
+
+const log = logger(options);
 
 import * as fs from 'fs';
 import * as http from 'http';
