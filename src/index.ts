@@ -77,7 +77,8 @@ bot.on('shardReady', async () => {
 // Message Event
 bot.on('message', async (msg: Discord.Message) => {
     if (!msg) return;
-    if (!msg.guild || msg.author.bot) return;
+    if (msg.author.bot) return;
+    if (!msg.guild) return log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
     if (msg.channel.type != "text") return;
 
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
