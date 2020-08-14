@@ -7,6 +7,8 @@ let mod = new MessageEmbed();
 import * as fs from 'fs';
 import { Logger } from 'pino';
 
+import log from '../../Logger';
+
 readDirs()
 setTimeout(() => {
     member.setTitle("**Commands List**")
@@ -109,11 +111,11 @@ async function sendHelp(msg: Message, guildConf: any) {
 
 async function readDirs() {
     fs.readdir('./build/commands/', { withFileTypes: true }, async (error, f) => {
-        if (error) return console.error(error);
+        if (error) return log.error(error);
         f.forEach((f) => {
             if (f.isDirectory()) {
                 fs.readdir(`./build/commands/${f.name}/`, async (error, fi) => {
-                    if (error) return console.error(error);
+                    if (error) return log.error(error);
                     let string: string = "";
                     fi.forEach(async (fi) => {
                         string = `${string}\`${fi.slice(0, -3)}\` `;
