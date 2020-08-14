@@ -64,14 +64,14 @@ fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
 process.on('uncaughtException', exception => log.error(exception));
 
 // Bot-User related Events
-bot.on('warn', log.warn);
-bot.on('shardError', () => log.error);
-bot.on('shardDisconnect', () => log.warn("bot disconnected"));
-bot.on('shardReconnecting', () => log.warn("bot reconnecting"));
+bot.on('warn', (warn) => log.warn(warn));
+bot.on('shardError', (error) => log.error(error));
+bot.on('shardDisconnect', (event) => log.debug({msg: "bot disconnected", event: event}));
+bot.on('shardReconnecting', (event) => log.debug({msg: "bot reconnecting", event: event}));
 bot.on('shardResume', async () => ready(bot, db));
 bot.on('shardReady', async () => {
     ready(bot, db);
-    log.info(`logged in as ${bot.user.username}`);
+    log.debug(`logged in as ${bot.user.username}`);
 });
 
 // Message Event
