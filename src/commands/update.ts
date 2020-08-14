@@ -11,8 +11,12 @@ module.exports.run = async (bot: Client, msg: Message, args: string[]) => {
     await bot.user.setStatus('idle').catch(console.error);
 
     setInterval(async () => {
-        min -= 1;
-        await bot.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(console.error);
+        if(min > 1) {
+            min -= 1;
+            await bot.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(console.error);
+        } else {
+            await bot.user.setActivity(`⚠️ update soon...`, { type: 'LISTENING' }).catch(console.error);
+        }
     }, 60000);
 };
 

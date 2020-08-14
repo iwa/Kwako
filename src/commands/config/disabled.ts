@@ -1,7 +1,8 @@
 import { Client, Message, Collection, MessageEmbed } from 'discord.js';
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: Collection<any, any>, guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     let disabled: string[] = guildConf.disabledCommands || [];
@@ -18,7 +19,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
 
     embed.setDescription(desc)
 
-    return msg.channel.send(embed)
+    await msg.channel.send(embed)
+
+    log.info({msg: 'disabled', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 };
 
 module.exports.help = {

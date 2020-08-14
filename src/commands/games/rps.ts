@@ -1,7 +1,8 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities'
+import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[]) => {
+module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
     if (args.length < 1) return;
     let req = args[0].toLowerCase(), numReq, res;
 
@@ -43,8 +44,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
 
     embed.setDescription(res);
 
-    console.log(`info: rps by ${msg.author.tag}`)
-    return msg.channel.send(embed).catch(console.error)
+    log.info({msg: 'rps', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+    return msg.channel.send(embed).catch(log.error)
 };
 
 module.exports.help = {

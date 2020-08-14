@@ -1,6 +1,6 @@
 {
   "name": "kwako",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "@discordjs/opus": "^0.3.2",
     "@types/mongodb": "^3.5.18",
     "@types/node": "^14.0.27",
+    "@types/pino": "^6.3.0",
     "@types/ws": "^7.2.4",
     "anilist-node": "^1.4.0",
     "bufferutil": "^4.0.1",
@@ -29,10 +30,14 @@
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "mongodb": "^3.5.8",
+    "pino": "^6.5.1",
     "popyt": "^4.1.1",
     "sodium": "^3.0.2",
     "timespan-parser": "^1.0.2",
     "utf-8-validate": "^5.0.2",
     "ytdl-core": "^3.1.2"
+  },
+  "devDependencies": {
+    "pino-pretty": "^4.1.0"
   }
 }

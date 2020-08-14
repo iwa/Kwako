@@ -1,7 +1,8 @@
 import { Client, Message } from 'discord.js'
 import utilities from '../../utils/utilities'
+import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[]) => {
+module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
     if (args.length > 0) {
         let x = args[0]
         msg.channel.send({
@@ -10,8 +11,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
                 "color": 5601658
             }
         })
-            .then(() => { console.log(`info: roll (${x}) by ${msg.author.tag}`) })
-            .catch(console.error);
+            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, x: x}) })
+            .catch(log.error);
     } else {
         msg.channel.send({
             "embed": {
@@ -19,8 +20,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[]) => {
                 "color": 5601658
             }
         })
-            .then(() => { console.log(`info: roll (100) by ${msg.author.tag}`) })
-            .catch(console.error);
+            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, x: 100}) })
+            .catch(log.error);
     }
 };
 

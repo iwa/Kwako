@@ -1,8 +1,9 @@
 import { Client, Message } from 'discord.js'
 import { Db } from 'mongodb'
 import { loadImage } from 'canvas';
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: any, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setbackground (url)\` to set an image background in your profile card\n\n\`${guildConf.prefix}setbackground off\` to disable it and use the colored background back`,
@@ -18,7 +19,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
             try {
                 await msg.delete()
             } catch (ex) {
-                console.error(ex)
+                log.error(ex)
             }
         }
         return msg.channel.send({
@@ -75,7 +76,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
               },
               "color": 8311585
             }
-          })
+        })
+
+        log.info({msg: 'setbackground', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, image: url });
 };
 
 module.exports.help = {

@@ -5,6 +5,9 @@ let member = new MessageEmbed();
 let mod = new MessageEmbed();
 
 import * as fs from 'fs';
+import { Logger } from 'pino';
+
+import log from '../../Logger';
 
 readDirs()
 setTimeout(() => {
@@ -51,7 +54,7 @@ setTimeout(() => {
     mod.setColor(4886754)
 }, 5000)
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: Collection<any, any>, guildConf: any) => {
     if (args.length == 1) {
         let cmd: any = commands.get(args[0]) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
         if (!cmd || !cmd.help.usage) return;
@@ -75,7 +78,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
         return msg.channel.send(embed);
     } else
         sendHelp(msg, guildConf);
-    console.log(`info: help sent to ${msg.author.tag}`)
+
+    log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
 }
 
 module.exports.help = {
@@ -107,11 +111,11 @@ async function sendHelp(msg: Message, guildConf: any) {
 
 async function readDirs() {
     fs.readdir('./build/commands/', { withFileTypes: true }, async (error, f) => {
-        if (error) return console.error(error);
+        if (error) return log.error(error);
         f.forEach((f) => {
             if (f.isDirectory()) {
                 fs.readdir(`./build/commands/${f.name}/`, async (error, fi) => {
-                    if (error) return console.error(error);
+                    if (error) return log.error(error);
                     let string: string = "";
                     fi.forEach(async (fi) => {
                         string = `${string}\`${fi.slice(0, -3)}\` `;

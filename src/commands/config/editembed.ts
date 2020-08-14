@@ -1,7 +1,8 @@
 import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     let dbEmbed = await db.collection('msg').findOne({ _id: args[0] })
@@ -19,9 +20,11 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         try {
             await msg.delete()
         } catch (ex) {
-            console.error(ex)
+            log.error(ex)
         }
     }
+
+    log.info({msg: 'editembed', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 };
 
 module.exports.help = {

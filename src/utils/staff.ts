@@ -5,6 +5,7 @@
  * @category Utils
  */
 import { Client, Message, MessageEmbed, TextChannel } from 'discord.js'
+import { Logger } from 'pino';
 const timespan = require("timespan-parser")("min");
 
 export default class staff {
@@ -14,7 +15,7 @@ export default class staff {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async bulk(msg: Message, args: string[]) {
+    static async bulk(msg: Message, args: string[], log: Logger) {
         if (args.length !== 0) {
             let channel: any = msg.channel
             if (msg.channel.type !== "dm") {
@@ -22,9 +23,9 @@ export default class staff {
                 let nb = parseInt(args[0])
                 msg.channel.bulkDelete(nb)
                     .then(() => {
-                        console.log(`info: bulk delete: ${nb} in #${channel.name} by ${msg.author.tag}`)
+                        log.info({msg: 'bulk', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, bulk: { channel: channel.id, name: channel.name, x: nb }});
                     })
-                    .catch(console.error);
+                    .catch(log.error);
             }
         }
         else
@@ -38,7 +39,7 @@ export default class staff {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async mute(bot: Client, msg: Message, args: string[], muteRole: string, modLogChannel: string): Promise<void> {
+    static async mute(bot: Client, msg: Message, args: string[], log: Logger, muteRole: string, modLogChannel: string): Promise<void> {
         if (args.length >= 2 && msg.channel.type != 'dm') {
             if (msg.mentions.everyone) return;
 
@@ -52,7 +53,7 @@ export default class staff {
             try {
                 msg.delete();
             } catch (error) {
-                console.error(error);
+                log.error(error);
             }
 
             args.shift();
@@ -67,6 +68,8 @@ export default class staff {
             try {
                 await mention.roles.add(muteRole)
                 let reply = await msg.channel.send(embed)
+
+                log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 
                 if(modLogChannel) {
                     let channel = await bot.channels.fetch(modLogChannel);
@@ -85,7 +88,7 @@ export default class staff {
                     return mention.roles.remove(muteRole)
                 }, timeParsed)
             } catch (err) {
-                console.error(err);
+                log.error(err);
             }
         }
     }

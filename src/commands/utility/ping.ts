@@ -1,10 +1,11 @@
 import { Client, Message } from 'discord.js';
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message) => {
+module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
     let ping = Math.ceil(bot.ws.ping)
     await msg.channel.send(`:ping_pong: Pong ! \`${ping}ms\``)
-        .then(() => { console.log(`info: ping: ${msg.author.tag}`) })
-        .catch(console.error);
+        .then(() => { log.info({msg: 'ping', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id}) })
+        .catch(log.error);
 };
 
 module.exports.help = {

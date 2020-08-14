@@ -5,6 +5,8 @@ const commands: Discord.Collection<any, any> = new Discord.Collection();
 import * as dotenv from "dotenv";
 dotenv.config();
 
+import log from './Logger';
+
 import * as fs from 'fs';
 import * as http from 'http';
 
@@ -38,11 +40,11 @@ import suggestion from './events/messages/suggestion';
 
 // Imports commands from the 'commands' folder
 fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
-    if (error) return console.error(error);
+    if (error) return log.error(error);
     f.forEach((f) => {
         if (f.isDirectory()) {
             fs.readdir(`./build/commands/${f.name}/`, (error, fi) => {
-                if (error) return console.error(error);
+                if (error) return log.error(error);
                 fi.forEach((fi) => {
                     if (!fi.endsWith(".js")) return;
                     let commande = require(`./commands/${f.name}/${fi}`);
@@ -58,23 +60,25 @@ fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
 });
 
 // Process related Events
-process.on('uncaughtException', exception => console.error(exception));
+process.on('uncaughtException', exception => log.error(exception));
+process.on('unhandledRejection', exception => log.error(exception));
 
 // Bot-User related Events
-bot.on('warn', console.warn);
-bot.on('shardError', console.error);
-bot.on('shardDisconnect', () => console.log("warn: bot disconnected"));
-bot.on('shardReconnecting', () => console.log("info: bot reconnecting..."));
+bot.on('warn', (warn) => log.warn(warn));
+bot.on('shardError', (error) => log.error(error));
+bot.on('shardDisconnect', (event) => log.debug({msg: "bot disconnected", event: event}));
+bot.on('shardReconnecting', (event) => log.debug({msg: "bot reconnecting", event: event}));
 bot.on('shardResume', async () => ready(bot, db));
 bot.on('shardReady', async () => {
     ready(bot, db);
-    console.log(`info: logged in as ${bot.user.username}`);
+    log.debug(`logged in as ${bot.user.username}`);
 });
 
 // Message Event
 bot.on('message', async (msg: Discord.Message) => {
     if (!msg) return;
-    if (!msg.guild || msg.author.bot) return;
+    if (msg.author.bot) return;
+    if (!msg.guild) return log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
     if (msg.channel.type != "text") return;
 
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
@@ -113,12 +117,14 @@ bot.on('message', async (msg: Discord.Message) => {
 			talkedRecently.delete(msg.author.id);
         }, 3000);
 
-        await cmd.run(bot, msg, args, db, commands, guildConf);
+        await cmd.run(bot, msg, args, db, log, commands, guildConf);
     }
 });
 
 
 bot.on("guildMemberAdd", async member => {
+    if(!member.guild.available) return;
+
     let guild = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     let guildConf = guild.config || defaultSettings;
 
@@ -160,6 +166,8 @@ bot.on("guildMemberAdd", async member => {
 });
 
 bot.on('guildCreate', async guild => {
+    if(!guild.available) return;
+
     let channel = guild.channels.cache.find(val => val.name.includes('general') && val.type === 'text');
     if(channel) {
         await (channel as Discord.TextChannel).send({
@@ -200,18 +208,23 @@ bot.on('guildCreate', async guild => {
         }
     }
     await db.collection('settings').insertOne({ '_id': guild.id });
-    http.get('http://localhost:8080/api/guilds/update').on("error", console.error);
+    http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
+
+    log.info({msg: 'new guild', guild: guild.id});
 });
 
 bot.on("guildDelete", async guild => {
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    http.get('http://localhost:8080/api/guilds/update').on("error", console.error);
+    http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
+    log.info({msg: 'guild removed', guild: guild.id});
 });
 
 
 // Starboard Event
 import starboard from './events/starboard';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+    if(!reaction.message.guild.available) return;
+
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
@@ -224,10 +237,12 @@ bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: D
 // Reaction Role Events
 import reactionRoles from './events/reactionRoles';
 bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+    if(!reaction.message.guild.available) return;
     if (author.bot) return;
     reactionRoles.add(reaction, author, db);
 });
 bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+    if(!reaction.message.guild.available) return;
     if (author.bot) return;
     reactionRoles.remove(reaction, author, db);
 });
@@ -235,6 +250,8 @@ bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author
 // Logs channel
 import messageDelete from './events/logs/messageDelete';
 bot.on('messageDelete', async msg => {
+    if(!msg.guild.available) return;
+
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
@@ -246,6 +263,8 @@ bot.on('messageDelete', async msg => {
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
 bot.on('guildMemberRemove', async member => {
+    if(!member.guild.available) return;
+
     let guildDB = `exp.${member.guild.id.toString()}`
     await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
 
@@ -261,6 +280,8 @@ bot.on('guildMemberRemove', async member => {
 import guildBanAdd from './events/logs/guildBanAdd';
 import utilities from "./utils/utilities";
 bot.on('guildBanAdd', async (guild, user) => {
+    if(!guild.available) return;
+
     let guildDB = `exp.${guild.id.toString()}`
     await db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
 

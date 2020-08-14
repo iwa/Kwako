@@ -1,7 +1,8 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: any, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setbirthday (your birthday, mm/dd)\` to register your birthday in your profile card\n\n\`${guildConf.prefix}setbirthday off\` to remove it`,
@@ -17,7 +18,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
             try {
                 await msg.delete()
             } catch (ex) {
-                console.error(ex)
+                log.error(ex)
             }
         }
         return msg.channel.send({
@@ -50,10 +51,10 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
         embed.setColor('AQUA')
 
         try {
-            console.log(`info: birthday of ${msg.author.tag} set on ${today}`)
-            return await msg.channel.send(embed);
+            log.info({msg: 'setbirthday', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, date: today});
+            return msg.channel.send(embed);
         } catch (err) {
-            console.error(err);
+            log.error(err);
         }
     } else
         return msg.channel.send({ "embed": { "title": ":x: > **Date format is invalid! Please enter your birthday in mm/dd format.", "color": 13632027 } });

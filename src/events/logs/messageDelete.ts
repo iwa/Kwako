@@ -13,7 +13,10 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
 	const fetchedLogs = await msg.guild.fetchAuditLogs({
 		limit: 1,
 		type: 'MESSAGE_DELETE',
-	});
+	}).catch(() => {return;});
+
+    if(!fetchedLogs) return;
+
 	const deletionLog = fetchedLogs.entries.first();
 
 	if (!deletionLog) return;

@@ -1,9 +1,10 @@
 import { Client, Message } from 'discord.js'
 import { Db } from 'mongodb'
 import actionsRun from '../../utils/actions';
+import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
-    actionsRun(bot, msg, args, db, 'hug', 'hugs', false);
+module.exports.run = (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+    actionsRun(bot, msg, args, db, log, 'hug', 'hugs', false);
 };
 
 module.exports.help = {

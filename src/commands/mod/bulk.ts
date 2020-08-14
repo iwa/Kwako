@@ -1,9 +1,10 @@
 import { Client, Message } from 'discord.js'
 import staff from '../../utils/staff';
+import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[]) => {
+module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
-    staff.bulk(msg, args);
+    staff.bulk(msg, args, log);
 };
 
 module.exports.help = {

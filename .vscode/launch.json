@@ -12,7 +12,8 @@
             "preLaunchTask": "tsc: build",
             "outFiles": [
                 "${workspaceFolder}/build/**/*.js"
-            ]
+            ],
+            "outputCapture": "std"
         }
     ]
 }
