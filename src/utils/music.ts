@@ -25,7 +25,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async play(bot: Client, msg: Message, args: string[]) {
+    static async play(bot: Client, msg: Message, args: string[], log: Logger) {
         if (!args[0]) return;
 
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
@@ -97,7 +97,7 @@ export default class music {
                     if (!connection) {
                         try {
                             const voiceConnection = await voiceChannel.join();
-                            playSong(msg, voiceConnection, voiceChannel);
+                            playSong(msg, voiceConnection, voiceChannel, log);
                         }
                         catch (ex) {
                             console.error(ex)
@@ -179,7 +179,7 @@ export default class music {
                 if (!connection) {
                     try {
                         const voiceConnection = await voiceChannel.join();
-                        playSong(msg, voiceConnection, voiceChannel);
+                        playSong(msg, voiceConnection, voiceChannel, log);
                     }
                     catch (ex) {
                         console.error(ex)
@@ -188,7 +188,7 @@ export default class music {
             });
         } else {
             if (ytdl.validateURL(video_url[0])) {
-                launchPlay(msg, voiceChannel, video_url[0])
+                launchPlay(msg, voiceChannel, video_url[0], log)
             } else {
                 let keywords = args.join(' ')
 
@@ -202,7 +202,7 @@ export default class music {
                 if (!video) return;
                 if (!ytdl.validateURL(video)) return;
 
-                launchPlay(msg, voiceChannel, video)
+                launchPlay(msg, voiceChannel, video, log)
             }
         }
     }
@@ -212,7 +212,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async remove(msg: Message, args: string[]) {
+    static async remove(msg: Message, args: string[], log: Logger) {
         let queueID: number = parseInt(args[0]);
 
         if (isNaN(queueID)) return;
@@ -231,7 +231,7 @@ export default class music {
 
         msg.channel.send(embed)
 
-        console.log(`musc: remove from queue: ${msg.author.tag} removed ${data.title}`)
+        log.info({msg: 'remove', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, song: { title: data.title, url: data.shortUrl }});
         queu.splice(queueID, 1);
         queue.set(msg.guild.id, queu);
     }
@@ -241,7 +241,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async list(msg: Message) {
+    static async list(msg: Message, log: Logger) {
         let queu = queue.get(msg.guild.id) || [];
         if (queu.length < 0) return;
 
@@ -251,7 +251,7 @@ export default class music {
         if (queu.length <= 1) {
             embed.setTitle("**:cd: The queue is empty.**")
             msg.channel.send(embed);
-            console.log(`musc: show queue by ${msg.author.tag}`)
+            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
         } else {
             msg.channel.startTyping();
             embed.setTitle("**:cd: Music Queue**")
@@ -288,7 +288,7 @@ export default class music {
 
             msg.channel.send(embed);
             msg.channel.stopTyping(true);
-            console.log(`musc: show queue by ${msg.author.tag}`)
+            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
         }
     }
 
@@ -297,7 +297,7 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async skip(bot: Client, msg: Message) {
+    static async skip(bot: Client, msg: Message, log: Logger) {
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
         let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
         let queu = queue.get(msg.guild.id);
@@ -323,7 +323,7 @@ export default class music {
             embed.setAuthor("Your voteskip has been registered!", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
             msg.channel.send(embed)
 
-            console.log(`info: voteskip by ${msg.author.tag}`)
+            log.info({msg: 'voteskip', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
 
             if (reqs >= Math.ceil((voiceChannel.members.size - 1) / 2)) {
                 let dispatcher = voiceConnection.dispatcher
@@ -333,11 +333,11 @@ export default class music {
                 msg.channel.send(embed)
                 loop.set(msg.guild.id, false);
                 dispatcher.end()
-                console.log(`musc: skipping song`)
+                log.info({msg: 'skipping song', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
             } else {
                 const embed = new MessageEmbed();
                 embed.setColor('BRIGHT_RED')
-                embed.setTitle("You need **" + (Math.ceil((voiceChannel.members.size - 1) / 2) - reqs) + "** more skip vote to skip!")
+                embed.setTitle(`You need **${(Math.ceil((voiceChannel.members.size - 1) / 2) - reqs)}** more skip vote to skip!`)
                 msg.channel.send(embed)
             }
         } else {
@@ -352,19 +352,19 @@ export default class music {
      * Clears the queue
      * @param msg - Message object
      */
-    static async clear(msg: Message) {
+    static async clear(msg: Message, log: Logger) {
         queue.delete(msg.guild.id)
 
         await msg.react('✅');
 
-        console.log(`musc: clear queue by ${msg.author.tag}`)
+        log.info({msg: 'clear', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
     }
 
     /**
      * Stops the music
      * @param msg - Message object
      */
-    static async stop(bot: Client, msg: Message) {
+    static async stop(bot: Client, msg: Message, log: Logger) {
         let dispatcher = await fetchDispatcher(bot, msg);
 
         if(dispatcher) {
@@ -374,7 +374,7 @@ export default class music {
 
             await msg.react('✅');
             voiceChannel.leave()
-            console.log(`musc: stop by ${msg.author.tag}`)
+            log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
         }
     }
 
@@ -413,18 +413,18 @@ export default class music {
      * Enables / Disables looping the current song
      * @param msg - Message object
      */
-    static loop(msg: Message) {
+    static loop(msg: Message, log: Logger) {
         let loo = loop.get(msg.guild.id) || false
         if (!loo) {
             loop.set(msg.guild.id, true)
-            console.log(`info: loop enabled by ${msg.author.tag}`)
+            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: true})
             const embed = new MessageEmbed();
             embed.setAuthor("🔂 Looping the current song...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         } else if (loo) {
             loop.set(msg.guild.id, false)
-            console.log(`info: loop disabled by ${msg.author.tag}`)
+            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: false})
             const embed = new MessageEmbed();
             embed.setAuthor("This song will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
@@ -432,18 +432,18 @@ export default class music {
         }
     }
 
-    static loopqueue(msg: Message) {
+    static loopqueue(msg: Message, log: Logger) {
         let loo = loopqueue.get(msg.guild.id) || false
         if (!loo) {
             loopqueue.set(msg.guild.id, true)
-            console.log(`info: loop enabled by ${msg.author.tag}`)
+            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: true})
             const embed = new MessageEmbed();
             embed.setAuthor("🔁 Looping the queue...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         } else if (loo) {
             loopqueue.set(msg.guild.id, false)
-            console.log(`info: loop disabled by ${msg.author.tag}`)
+            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: false})
             const embed = new MessageEmbed();
             embed.setAuthor("The queue will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
@@ -456,7 +456,7 @@ export default class music {
      * @param msg - Message object
      * @param bot - Discord Client object
      */
-    static async np(msg: Message, bot: Client) {
+    static async np(msg: Message, bot: Client, log: Logger) {
         let voiceConnection = bot.voice.connections.find(val => val.channel.guild.id === msg.guild.id);
         let queu = queue.get(msg.guild.id);
 
@@ -499,7 +499,7 @@ export default class music {
 
         msg.channel.send(embed)
         msg.channel.stopTyping(true);
-        console.log(`info: nowplaying by ${msg.author.tag}`)
+        log.info({msg: 'nowplaying', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
     }
 
     /**
@@ -507,13 +507,15 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async pause(bot: Client, msg: Message) {
+    static async pause(bot: Client, msg: Message, log: Logger) {
         let dispatcher = await fetchDispatcher(bot, msg);
 
         if(dispatcher) {
             dispatcher.pause(false);
             await msg.react('✅');
         }
+
+        log.info({msg: 'pause', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
     }
 
     /**
@@ -521,16 +523,18 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async resume(bot: Client, msg: Message) {
+    static async resume(bot: Client, msg: Message, log: Logger) {
         let dispatcher = await fetchDispatcher(bot, msg);
 
         if(dispatcher) {
             dispatcher.resume();
             await msg.react('✅');
         }
+
+        log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
     }
 
-    static async shuffle(bot: Client, msg: Message) {
+    static async shuffle(bot: Client, msg: Message, log: Logger) {
         let dispatcher = await fetchDispatcher(bot, msg);
 
         if(dispatcher) {
@@ -548,6 +552,8 @@ export default class music {
             queue.set(msg.guild.id, queu)
             await msg.react('✅');
         }
+
+        log.info({msg: 'shuffle', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
     }
 }
 
@@ -557,7 +563,7 @@ export default class music {
  * @param voiceConnection - Voice connection of the bot
  * @param voiceChannel - The voice channel where the bot should be connected in
  */
-async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
+async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel, log: Logger) {
     let queu = queue.get(msg.guild.id);
     const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) });
 
@@ -587,7 +593,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
                 msg.channel.send(embed)
-                console.log(`musc: playing: ${Util.escapeMarkdown(videoData.title)}`)
+                log.info({msg: 'music playing', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, song: { name: Util.escapeMarkdown(videoData.title), url: videoData.shortUrl}});
             }
         }).on('finish', () => {
             let loo = loop.get(msg.guild.id) || false
@@ -616,7 +622,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
             } else {
                 skipReq.delete(msg.guild.id);
                 skippers.delete(msg.guild.id);
-                playSong(msg, voiceConnection, voiceChannel)
+                playSong(msg, voiceConnection, voiceChannel, log)
             }
         }).on('error', console.error);
 }
@@ -629,7 +635,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
  * @param video_url - The video url to check and play
  * @param data - Youtube Stream data infos
  */
-async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string) {
+async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string, log: Logger) {
     msg.channel.startTyping();
     let error = false, data;
     let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
@@ -663,13 +669,13 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
         embed.setColor('LUMINOUS_VIVID_PINK')
         msg.channel.stopTyping()
         await msg.channel.send(embed)
-        console.log(`musc: add to queue: ${msg.author.tag} added ${data.videoDetails.title}`)
+        log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, song: { name: Util.escapeMarkdown(data.videoDetails.title), url: data.videoDetails.video_url}});
     }
     else {
         msg.channel.stopTyping()
         try {
             const voiceConnection = await voiceChannel.join();
-            playSong(msg, voiceConnection, voiceChannel);
+            playSong(msg, voiceConnection, voiceChannel, log);
         }
         catch (ex) {
             console.error(ex)
