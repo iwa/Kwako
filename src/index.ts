@@ -6,7 +6,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import logger from 'pino';
-const log = logger();
+const log = logger({ level: 'trace' });
 
 import * as fs from 'fs';
 import * as http from 'http';
