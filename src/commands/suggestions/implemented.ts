@@ -1,7 +1,8 @@
 import { Client, Message, TextChannel, MessageEmbed } from 'discord.js';
 import { Db } from 'mongodb';
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: any, guildConf: { suggestionChannel: string; }) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: { suggestionChannel: string; }) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     let guild: { _id: string, suggestions: string[] } = await db.collection('suggestions').findOne({ _id: msg.guild.id }) || null;
@@ -35,6 +36,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
     }
 
     await suggestion.edit(embed);
+
+    log.info({msg: 'implemented', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
+
     return msg.react('✅');
 };
 
