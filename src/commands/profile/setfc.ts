@@ -1,7 +1,8 @@
 import { Client, Message, MessageEmbed } from 'discord.js'
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: any, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setfc (Switch Friend Code)\` to register your FC in your profile card\n\n\`${guildConf.prefix}setfc off\` to remove it`,
@@ -17,9 +18,10 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
             try {
                 await msg.delete()
             } catch (ex) {
-                console.error(ex)
+                log.error(ex)
             }
         }
+        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, fc: 'off'});
         return msg.channel.send({
             "embed": {
               "author": {
@@ -41,10 +43,10 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, c
     embed.setTitle(`**${content}**`)
     embed.setColor('AQUA')
     try {
-        console.log(`info: switch fc of ${msg.author.tag} set`)
-        return await msg.channel.send(embed);
+        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, fc: content});
+        return msg.channel.send(embed);
     } catch (err) {
-        console.error(err);
+        log.error(err);
     }
 };
 

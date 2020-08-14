@@ -1,16 +1,17 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
+import { Client, Message } from 'discord.js'
 import { Db } from 'mongodb'
 import imGenerator from '../../utils/img';
 import utilities from '../../utils/utilities'
+import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: Db) => {
+module.exports.run = (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
     if (args.length == 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
         if (!mention || mention.bot) return;
-        return profileImg(bot, msg, db, mention.id);
+        return profileImg(bot, msg, db, log, mention.id);
     } else
-        return profileImg(bot, msg, db, msg.author.id);
+        return profileImg(bot, msg, db, log, msg.author.id);
 };
 
 module.exports.help = {
@@ -21,7 +22,7 @@ module.exports.help = {
     perms: ['SEND_MESSAGES', 'ATTACH_FILES']
 };
 
-async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
+async function profileImg(bot: Client, msg: Message, db: Db, log: Logger, id: string) {
     let userDB = await db.collection('user').findOne({ '_id': { $eq: id } });
 
     msg.channel.startTyping();
@@ -47,10 +48,10 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
         let file = await imGenerator(user);
 
         try {
-            console.log(`info: profile by ${msg.author.tag}`)
+            log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: userDiscord.id, name: userDiscord.tag }});
             return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
         } catch (err) {
-            console.error(err)
+            log.error(err)
             return msg.channel.send(":x: > An error occured. Please retry later.")
         }
     }
@@ -78,10 +79,10 @@ async function profileImg(bot: Client, msg: Message, db: Db, id: string) {
     let file = await imGenerator(user);
 
     try {
-        console.log(`info: profile by ${msg.author.tag}`)
+        log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: userDiscord.id, name: userDiscord.tag }});
         return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
     } catch (err) {
-        console.error(err)
+        log.error(err)
         return msg.channel.send(":x: > An error occured. Please retry later.")
     }
 }

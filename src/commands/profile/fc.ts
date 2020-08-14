@@ -1,14 +1,18 @@
 import { Client, Message } from 'discord.js'
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, commands: any, guildConf: any) => {
-    if (args.length == 1) {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
+    if (args.length === 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
         if (!mention) return;
+        log.info({msg: 'fc', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: mention.id, name: mention.tag }});
         return printFc(bot, msg, db, mention.id, guildConf.prefix);
-    } else
+    } else {
+        log.info({msg: 'fc', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: msg.author.id, name: msg.author.tag, }});
         return printFc(bot, msg, db, msg.author.id, guildConf.prefix);
+    }
 };
 
 module.exports.help = {
