@@ -1,8 +1,9 @@
 import { Client, Message, Presence } from 'discord.js';
 import { Db } from 'mongodb'
 import utilities from '../../utils/utilities';
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length < 2) return;
     let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
@@ -46,6 +47,8 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
     await msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}** and to members currently above this level.`);
     if (previous)
         await msg.channel.send(`When I'll give this role, I'll remove <@&${previous}>.`)
+
+    log.info({msg: 'addlevelrole', author: msg.author.id, guild: msg.guild.id, level: { id: args[0], role: role }})
 };
 
 module.exports.help = {

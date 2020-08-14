@@ -1,7 +1,8 @@
 import { Client, Message, Collection } from 'discord.js';
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: any, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: Collection<any, any>, guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length != 1) return;
 
@@ -18,12 +19,14 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
 
-    return msg.channel.send({
+    await msg.channel.send({
         "embed": {
           "title": ":white_check_mark: Command enabled",
           "description": `The command \`${cmd.help.name}\` has been successfully enabled`
         }
       })
+
+    log.info({msg: 'enable', author: msg.author.id, guild: msg.guild.id})
 };
 
 module.exports.help = {

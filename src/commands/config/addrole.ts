@@ -1,7 +1,8 @@
 import { Client, Message } from 'discord.js';
 import { Db } from 'mongodb'
+import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) => {
+module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length != 3) return;
 
@@ -29,11 +30,13 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db) =
         try {
             await msg.delete()
         } catch (ex) {
-            console.error(ex)
+            log.error(ex)
         }
     }
 
     await db.collection('msg').updateOne({ _id: args[0] }, { $push: { roles: { "id": role, "emote": emote } } })
+
+    log.info({msg: 'addrole', author: msg.author.id, guild: msg.guild.id, role: { id: role, emote: emote }})
 };
 
 module.exports.help = {
