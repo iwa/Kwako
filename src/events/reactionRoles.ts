@@ -4,8 +4,8 @@
  * @module ReactionRoles
  * @category Events
  */
+import Kwako from '../Client';
 import { MessageReaction, User } from "discord.js";
-import { Db } from 'mongodb';
 
 /**
  * @class reactionRoles class
@@ -17,8 +17,8 @@ export default class reactionRoles {
      * @param {MessageReaction} reaction
      * @param {User} author
      */
-    static async add(reaction: MessageReaction, author: User, db: Db) {
-        let msg = await db.collection('msg').findOne({ _id: reaction.message.id })
+    static async add(reaction: MessageReaction, author: User) {
+        let msg = await Kwako.db.collection('msg').findOne({ _id: reaction.message.id })
         if (!msg) return;
 
         let role = msg.roles.find((val: any) => val.emote == reaction.emoji.name)
@@ -34,8 +34,8 @@ export default class reactionRoles {
      * @param {MessageReaction} reaction
      * @param {User} author
      */
-    static async remove(reaction: MessageReaction, author: User, db: Db) {
-        let msg = await db.collection('msg').findOne({ _id: reaction.message.id })
+    static async remove(reaction: MessageReaction, author: User) {
+        let msg = await Kwako.db.collection('msg').findOne({ _id: reaction.message.id })
         if (!msg) return;
 
         let role = msg.roles.find((val: any) => val.emote == reaction.emoji.name)

@@ -1,25 +1,10 @@
-import * as Discord from "discord.js";
-const bot: Discord.Client = new Discord.Client()
-const commands: Discord.Collection<any, any> = new Discord.Collection();
-
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import log from './Logger';
+import Kwako from './Client';
 
-import * as fs from 'fs';
-import * as http from 'http';
-
-import { MongoClient, Db } from 'mongodb';
-
-// MongoDB constants
-const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
-let mongod: MongoClient, db: Db;
-
-(async () => {
-    mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
-    db = mongod.db(dbName);
-})()
+import { MessageReaction, User, Message, MessageEmbed, TextChannel } from 'discord.js';
+import http from 'http';
 
 const defaultSettings = {
     prefix: "!",
@@ -37,68 +22,46 @@ import cooldown from './events/messages/cooldown';
 import ready from './events/ready';
 import suggestion from './events/messages/suggestion';
 
-
-// Imports commands from the 'commands' folder
-fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
-    if (error) return log.error(error);
-    f.forEach((f) => {
-        if (f.isDirectory()) {
-            fs.readdir(`./build/commands/${f.name}/`, (error, fi) => {
-                if (error) return log.error(error);
-                fi.forEach((fi) => {
-                    if (!fi.endsWith(".js")) return;
-                    let commande = require(`./commands/${f.name}/${fi}`);
-                    commands.set(commande.help.name, commande);
-                })
-            })
-        } else {
-            if (!f.name.endsWith(".js")) return;
-            let commande = require(`./commands/${f.name}`);
-            commands.set(commande.help.name, commande);
-        }
-    });
-});
-
 // Process related Events
-process.on('uncaughtException', exception => log.error(exception));
-process.on('unhandledRejection', exception => log.error(exception));
+process.on('uncaughtException', exception => Kwako.log.error(exception));
+process.on('unhandledRejection', exception => Kwako.log.error(exception));
 
 // Bot-User related Events
-bot.on('warn', (warn) => log.warn(warn));
-bot.on('shardError', (error) => log.error(error));
-bot.on('shardDisconnect', (event) => log.debug({msg: "bot disconnected", event: event}));
-bot.on('shardReconnecting', (event) => log.debug({msg: "bot reconnecting", event: event}));
-bot.on('shardResume', async () => ready(bot, db));
-bot.on('shardReady', async () => {
-    ready(bot, db);
-    log.debug(`logged in as ${bot.user.username}`);
+Kwako.on('warn', (warn) => Kwako.log.warn(warn));
+Kwako.on('shardError', (error) => Kwako.log.error(error));
+Kwako.on('shardDisconnect', (event) => Kwako.log.debug({msg: "Kwako disconnected", event: event}));
+Kwako.on('shardReconnecting', (event) => Kwako.log.debug({msg: "Kwako reconnecting", event: event}));
+Kwako.on('shardResume', async () => ready());
+Kwako.on('shardReady', async () => {
+    ready();
+    Kwako.log.debug(`logged in as ${Kwako.user.username}`);
 });
 
 // Message Event
-bot.on('message', async (msg: Discord.Message) => {
+Kwako.on('message', async (msg: Message) => {
     if (!msg) return;
     if (msg.author.bot) return;
-    if (!msg.guild) return log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
+    if (!msg.guild) return Kwako.log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
     if (msg.channel.type != "text") return;
 
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
     let disabled: string[] = guildConf.disabledCommands || [];
 
     await cooldown.message(msg, guildConf);
 
     if (msg.channel.id === guildConf.suggestionChannel)
-        return suggestion(bot, msg, db);
+        return suggestion(Kwako, msg);
 
     if (!msg.content.startsWith(guildConf.prefix))
-        return cooldown.exp(msg, db);
+        return cooldown.exp(msg);
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
-    let cmd: any = commands.get(req) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(req));
+    let cmd: any = Kwako.commands.get(req) || Kwako.commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(req));
 
     if (talkedRecently.has(msg.author.id)) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new MessageEmbed()
 					.setTitle('⌛ Command Cooldown')
 					.setColor('#e67e22')
 					.setDescription(`${msg.author}, please wait 3s before sending your next command!`);
@@ -119,24 +82,24 @@ bot.on('message', async (msg: Discord.Message) => {
             }, 3000);
         }
 
-        await cmd.run(bot, msg, args, db, log, commands, guildConf);
+        await cmd.run(msg, args, guildConf);
     }
 });
 
 
-bot.on("guildMemberAdd", async member => {
+Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
-    let guild = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     let guildConf = guild.config || defaultSettings;
 
-    let userDB = await db.collection('user').findOne({ _id: member.id });
+    let userDB = await Kwako.db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
         if(!userDB.exp) return;
 
         if(userDB.exp[member.guild.id] < 0) {
-            await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+            await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
             userDB.exp[member.guild.id] *= -1;
         }
 
@@ -171,12 +134,12 @@ bot.on("guildMemberAdd", async member => {
     }
 });
 
-bot.on('guildCreate', async guild => {
+Kwako.on('guildCreate', async guild => {
     if(!guild.available) return;
 
     let channel = guild.channels.cache.find(val => val.name.includes('general') && val.type === 'text');
     if(channel) {
-        await (channel as Discord.TextChannel).send({
+        await (channel as TextChannel).send({
             "embed": {
               "title": "Hey, thanks for inviting me!",
               "description": "Here are some useful tips to begin with:",
@@ -209,96 +172,96 @@ bot.on('guildCreate', async guild => {
             }
           }).catch(() => {return;})
         if(!guild.me.permissions.has(305523776)) {
-            await (channel as Discord.TextChannel).send('Hey, thanks for inviting me!\n\nCheck out the official website to configure me:\nhttps://kwako.iwa.sh/').catch(() => {return;})
-            await (channel as Discord.TextChannel).send(':x: **Some needed perms are unavailable. Please give me all the required permissions or I won\'t be able to work normally.**').catch(() => {return;})
+            await (channel as TextChannel).send('Hey, thanks for inviting me!\n\nCheck out the official website to configure me:\nhttps://kwako.iwa.sh/').catch(() => {return;})
+            await (channel as TextChannel).send(':x: **Some needed perms are unavailable. Please give me all the required permissions or I won\'t be able to work normally.**').catch(() => {return;})
         }
     }
-    await db.collection('settings').insertOne({ '_id': guild.id });
-    http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
+    await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
+    http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
 
-    log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
+    Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
-bot.on("guildDelete", async guild => {
-    await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
-    log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
+Kwako.on("guildDelete", async guild => {
+    await Kwako.db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
+    http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
+    Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
 
 // Starboard Event
 import starboard from './events/starboard';
-bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) => {
     if(!reaction.message.guild.available) return;
 
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let starboardChannel = guildConf.starboardChannel;
     if(!starboardChannel) return;
 
-    await starboard.check(reaction, author, bot, starboardChannel);
+    await starboard.check(reaction, author, Kwako, starboardChannel);
 });
 
 // Reaction Role Events
 import reactionRoles from './events/reactionRoles';
-bot.on('messageReactionAdd', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) => {
     if(!reaction.message.guild.available) return;
     if (author.bot) return;
-    reactionRoles.add(reaction, author, db);
+    reactionRoles.add(reaction, author);
 });
-bot.on('messageReactionRemove', async (reaction: Discord.MessageReaction, author: Discord.User) => {
+Kwako.on('messageReactionRemove', async (reaction: MessageReaction, author: User) => {
     if(!reaction.message.guild.available) return;
     if (author.bot) return;
-    reactionRoles.remove(reaction, author, db);
+    reactionRoles.remove(reaction, author);
 });
 
 // Logs channel
 import messageDelete from './events/logs/messageDelete';
-bot.on('messageDelete', async msg => {
+Kwako.on('messageDelete', async msg => {
     if(!msg.guild.available) return;
 
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-    return messageDelete(msg, bot, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+    return messageDelete(msg, Kwako, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
-bot.on('guildMemberRemove', async member => {
+Kwako.on('guildMemberRemove', async member => {
     if(!member.guild.available) return;
 
     let guildDB = `exp.${member.guild.id.toString()}`
-    await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+    await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
 
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-	return guildMemberRemove(member, bot, modLogChannel);
+	return guildMemberRemove(member, Kwako, modLogChannel);
 });
 
 import guildBanAdd from './events/logs/guildBanAdd';
 import utilities from "./utils/utilities";
-bot.on('guildBanAdd', async (guild, user) => {
+Kwako.on('guildBanAdd', async (guild, user) => {
     if(!guild.available) return;
 
     let guildDB = `exp.${guild.id.toString()}`
-    await db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
+    await Kwako.db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
 
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-	return guildBanAdd(guild, user, bot, modLogChannel);
+	return guildBanAdd(guild, user, Kwako, modLogChannel);
 });
 
 // Login
-bot.login(process.env.TOKEN)
+Kwako.start(process.env.TOKEN);
