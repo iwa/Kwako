@@ -144,8 +144,6 @@ bot.on("guildMemberAdd", async member => {
         let exp = userDB.exp[member.guild.id] || 0;
         let lvl = utilities.levelInfo(exp);
 
-        log.debug({exp:`${exp}`, dbexp: userDB.exp})
-
         levelrolesMap.forEach(async (value, key) => {
             if(key <= lvl.level) {
                 if(member && value && value[0]) {
