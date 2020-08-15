@@ -112,10 +112,12 @@ bot.on('message', async (msg: Discord.Message) => {
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
             return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
 
-        talkedRecently.add(msg.author.id);
-		setTimeout(() => {
-			talkedRecently.delete(msg.author.id);
-        }, 3000);
+        if (!msg.member.hasPermission('MANAGE_GUILD')) {
+            talkedRecently.add(msg.author.id);
+		    setTimeout(() => {
+		    	talkedRecently.delete(msg.author.id);
+            }, 3000);
+        }
 
         await cmd.run(bot, msg, args, db, log, commands, guildConf);
     }
