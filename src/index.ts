@@ -131,6 +131,8 @@ bot.on("guildMemberAdd", async member => {
     let userDB = await db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
+        if(!userDB.exp) return;
+
         if(userDB.exp[member.guild.id] < 0) {
             await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
             userDB.exp[member.guild.id] *= -1;
@@ -138,7 +140,11 @@ bot.on("guildMemberAdd", async member => {
 
         let levelroles:string = guild.levelroles || "[]";
         let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
-        let lvl = utilities.levelInfo(userDB.exp[member.guild.id]);
+
+        let exp = userDB.exp[member.guild.id] || 0;
+        let lvl = utilities.levelInfo(exp);
+
+        log.debug({exp:`${exp}`, dbexp: userDB.exp})
 
         levelrolesMap.forEach(async (value, key) => {
             if(key <= lvl.level) {
