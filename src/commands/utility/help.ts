@@ -67,10 +67,11 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         embed.addField("Usage", `\`${guildConf.prefix}${cmd.help.usage}\``, true);
 
         if (cmd.help.aliases) {
+            let aliases = [...cmd.help.aliases]
             for(let i = 0; i < cmd.help.aliases.length; i++)
-                cmd.help.aliases[i] = `${guildConf.prefix}${cmd.help.aliases[i]}`;
+                aliases[i] = `${guildConf.prefix}${cmd.help.aliases[i]}`;
 
-            embed.addField("Aliases", `${cmd.help.aliases.toString()}`, true);
+            embed.addField("Aliases", `${aliases.toString()}`, true);
         }
 
         embed.addField("Description", `${cmd.help.desc}`);
@@ -79,7 +80,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     } else
         sendHelp(msg, guildConf);
 
-    log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
+    log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
 }
 
 module.exports.help = {

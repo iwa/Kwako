@@ -24,7 +24,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await msg.channel.send(`I'll no longer give a role when members achieve the level **${args[0]}**.`);
 
-    log.info({msg: 'dellevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, level: args[0]})
+    log.info({msg: 'dellevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, level: args[0]})
 };
 
 module.exports.help = {

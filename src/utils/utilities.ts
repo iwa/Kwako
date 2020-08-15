@@ -33,7 +33,7 @@ export default class utilities {
         }
 
         try {
-            log.info({msg: 'info', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
+            log.info({msg: 'info', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
             await msg.author.send(embed)
         } catch (ex) {
             return msg.channel.send("**:x: > Please open your DMs!**")

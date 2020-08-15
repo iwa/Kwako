@@ -112,10 +112,12 @@ bot.on('message', async (msg: Discord.Message) => {
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
             return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
 
-        talkedRecently.add(msg.author.id);
-		setTimeout(() => {
-			talkedRecently.delete(msg.author.id);
-        }, 3000);
+        if (!msg.member.hasPermission('MANAGE_GUILD')) {
+            talkedRecently.add(msg.author.id);
+		    setTimeout(() => {
+		    	talkedRecently.delete(msg.author.id);
+            }, 3000);
+        }
 
         await cmd.run(bot, msg, args, db, log, commands, guildConf);
     }
@@ -131,6 +133,8 @@ bot.on("guildMemberAdd", async member => {
     let userDB = await db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
+        if(!userDB.exp) return;
+
         if(userDB.exp[member.guild.id] < 0) {
             await db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
             userDB.exp[member.guild.id] *= -1;
@@ -138,7 +142,9 @@ bot.on("guildMemberAdd", async member => {
 
         let levelroles:string = guild.levelroles || "[]";
         let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
-        let lvl = utilities.levelInfo(userDB.exp[member.guild.id]);
+
+        let exp = userDB.exp[member.guild.id] || 0;
+        let lvl = utilities.levelInfo(exp);
 
         levelrolesMap.forEach(async (value, key) => {
             if(key <= lvl.level) {
@@ -210,13 +216,13 @@ bot.on('guildCreate', async guild => {
     await db.collection('settings').insertOne({ '_id': guild.id });
     http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
 
-    log.info({msg: 'new guild', guild: guild.id});
+    log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 bot.on("guildDelete", async guild => {
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
     http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
-    log.info({msg: 'guild removed', guild: guild.id});
+    log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
 

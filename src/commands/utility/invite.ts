@@ -8,7 +8,7 @@ module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: 
           "description": "https://kwako.iwa.sh/",
           "color": 16774804}
         })
-        .then(() => { log.info({msg: 'invite', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id}) })
+        .then(() => { log.info({msg: 'invite', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }}) })
         .catch(log.error);
 };
 

@@ -37,7 +37,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await suggestion.edit(embed);
 
-    log.info({msg: 'implemented', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
+    log.info({msg: 'implemented', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
 
     return msg.react('✅');
 };

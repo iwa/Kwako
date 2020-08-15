@@ -36,7 +36,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await db.collection('msg').updateOne({ _id: args[0] }, { $push: { roles: { "id": role, "emote": emote } } })
 
-    log.info({msg: 'addrole', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, role: { id: role, emote: emote }})
+    log.info({msg: 'addrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, role: { id: role, emote: emote }})
 };
 
 module.exports.help = {

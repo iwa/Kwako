@@ -98,7 +98,7 @@ async function leaderboard (bot: Client, msg: Message, db: Db, log: Logger, type
         embed.setDescription(desc)
         msg.channel.send(embed)
             .then(() => {
-                log.info({msg: 'leaderboard', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, type: type});
+                log.info({msg: 'leaderboard', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, type: type});
             }).catch(log.error)
     });
 }

@@ -231,7 +231,7 @@ export default class music {
 
         msg.channel.send(embed)
 
-        log.info({msg: 'remove', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, song: { title: data.title, url: data.shortUrl }});
+        log.info({msg: 'remove', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { title: data.title, url: data.shortUrl }});
         queu.splice(queueID, 1);
         queue.set(msg.guild.id, queu);
     }
@@ -251,7 +251,7 @@ export default class music {
         if (queu.length <= 1) {
             embed.setTitle("**:cd: The queue is empty.**")
             msg.channel.send(embed);
-            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
         } else {
             msg.channel.startTyping();
             embed.setTitle("**:cd: Music Queue**")
@@ -288,7 +288,7 @@ export default class music {
 
             msg.channel.send(embed);
             msg.channel.stopTyping(true);
-            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
         }
     }
 
@@ -323,7 +323,7 @@ export default class music {
             embed.setAuthor("Your voteskip has been registered!", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
             msg.channel.send(embed)
 
-            log.info({msg: 'voteskip', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+            log.info({msg: 'voteskip', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
             if (reqs >= Math.ceil((voiceChannel.members.size - 1) / 2)) {
                 let dispatcher = voiceConnection.dispatcher
@@ -333,7 +333,7 @@ export default class music {
                 msg.channel.send(embed)
                 loop.set(msg.guild.id, false);
                 dispatcher.end()
-                log.info({msg: 'skipping song', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+                log.info({msg: 'skipping song', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
             } else {
                 const embed = new MessageEmbed();
                 embed.setColor('BRIGHT_RED')
@@ -357,7 +357,7 @@ export default class music {
 
         await msg.react('✅');
 
-        log.info({msg: 'clear', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+        log.info({msg: 'clear', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
@@ -374,7 +374,7 @@ export default class music {
 
             await msg.react('✅');
             voiceChannel.leave()
-            log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+            log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
         }
     }
 
@@ -406,7 +406,7 @@ export default class music {
 
         dispatcher.end()
 
-        return log.info({msg: 'forceskip', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+        return log.info({msg: 'forceskip', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
@@ -417,14 +417,14 @@ export default class music {
         let loo = loop.get(msg.guild.id) || false
         if (!loo) {
             loop.set(msg.guild.id, true)
-            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: true})
+            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
             const embed = new MessageEmbed();
             embed.setAuthor("🔂 Looping the current song...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         } else if (loo) {
             loop.set(msg.guild.id, false)
-            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: false})
+            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
             const embed = new MessageEmbed();
             embed.setAuthor("This song will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
@@ -436,14 +436,14 @@ export default class music {
         let loo = loopqueue.get(msg.guild.id) || false
         if (!loo) {
             loopqueue.set(msg.guild.id, true)
-            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: true})
+            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
             const embed = new MessageEmbed();
             embed.setAuthor("🔁 Looping the queue...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         } else if (loo) {
             loopqueue.set(msg.guild.id, false)
-            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, enable: false})
+            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
             const embed = new MessageEmbed();
             embed.setAuthor("The queue will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
@@ -499,7 +499,7 @@ export default class music {
 
         msg.channel.send(embed)
         msg.channel.stopTyping(true);
-        log.info({msg: 'nowplaying', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+        log.info({msg: 'nowplaying', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
@@ -515,7 +515,7 @@ export default class music {
             await msg.react('✅');
         }
 
-        log.info({msg: 'pause', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+        log.info({msg: 'pause', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
@@ -531,7 +531,7 @@ export default class music {
             await msg.react('✅');
         }
 
-        log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+        log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     static async shuffle(bot: Client, msg: Message, log: Logger) {
@@ -553,7 +553,7 @@ export default class music {
             await msg.react('✅');
         }
 
-        log.info({msg: 'shuffle', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+        log.info({msg: 'shuffle', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 }
 
@@ -593,7 +593,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
                 msg.channel.send(embed)
-                log.info({msg: 'music playing', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, song: { name: Util.escapeMarkdown(videoData.title), url: videoData.shortUrl}});
+                log.info({msg: 'music playing', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(videoData.title), url: videoData.shortUrl}});
             }
         }).on('finish', () => {
             let loo = loop.get(msg.guild.id) || false
@@ -669,7 +669,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
         embed.setColor('LUMINOUS_VIVID_PINK')
         msg.channel.stopTyping()
         await msg.channel.send(embed)
-        log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, song: { name: Util.escapeMarkdown(data.videoDetails.title), url: data.videoDetails.video_url}});
+        log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(data.videoDetails.title), url: data.videoDetails.video_url}});
     }
     else {
         msg.channel.stopTyping()

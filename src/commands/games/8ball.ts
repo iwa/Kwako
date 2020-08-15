@@ -10,7 +10,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: any, 
     const embed = new MessageEmbed();
     embed.setTitle(`🎱 ${reply[r]}`)
     embed.setColor('GREY')
-    log.info({msg: '8ball', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+    log.info({msg: '8ball', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     return msg.channel.send(embed)
 };
 
