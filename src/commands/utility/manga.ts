@@ -67,7 +67,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
         embed.setColor('BLUE')
         embed.setURL(info.siteUrl)
 
-        log.info({msg: 'manga', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, request: req});
+        log.info({msg: 'manga', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, request: req});
         return msg.channel.send(embed)
     }).catch((err: any) => {
         log.error(err)

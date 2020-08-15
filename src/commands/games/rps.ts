@@ -44,7 +44,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
 
     embed.setDescription(res);
 
-    log.info({msg: 'rps', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+    log.info({msg: 'rps', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     return msg.channel.send(embed).catch(log.error)
 };
 

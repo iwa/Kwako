@@ -23,7 +23,7 @@ export default class staff {
                 let nb = parseInt(args[0])
                 msg.channel.bulkDelete(nb)
                     .then(() => {
-                        log.info({msg: 'bulk', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, bulk: { channel: channel.id, name: channel.name, x: nb }});
+                        log.info({msg: 'bulk', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, bulk: { channel: channel.id, name: channel.name, x: nb }});
                     })
                     .catch(log.error);
             }
@@ -69,7 +69,7 @@ export default class staff {
                 await mention.roles.add(muteRole)
                 let reply = await msg.channel.send(embed)
 
-                log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+                log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
                 if(modLogChannel) {
                     let channel = await bot.channels.fetch(modLogChannel);

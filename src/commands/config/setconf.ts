@@ -6,7 +6,7 @@ module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: 
 
     await msg.channel.send(`**☁️ Please now use Kwako Web Dashboard to configure the bot**\nhttps://kwako.iwa.sh`);
 
-    log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id})
+    log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 };
 
 module.exports.help = {

@@ -34,7 +34,7 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, l
             await msg.channel.send("I can't ban this person!")
         }
 
-        log.info({msg: 'ban', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: mention.id, name: mention.user.tag, reason: reason }});
+        log.info({msg: 'ban', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }});
     }
 };
 

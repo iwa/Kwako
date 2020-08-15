@@ -19,7 +19,7 @@ module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: 
 
     return msg.channel.send(embed)
         .then(() => {
-            log.info({msg: 'cry', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
+            log.info({msg: 'cry', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
         })
         .catch(console.error);
 };

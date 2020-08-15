@@ -51,7 +51,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         embed.setColor('AQUA')
 
         try {
-            log.info({msg: 'setbirthday', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, date: today});
+            log.info({msg: 'setbirthday', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, date: today});
             return msg.channel.send(embed);
         } catch (err) {
             log.error(err);

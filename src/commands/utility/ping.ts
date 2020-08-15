@@ -4,7 +4,7 @@ import { Logger } from 'pino';
 module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
     let ping = Math.ceil(bot.ws.ping)
     await msg.channel.send(`:ping_pong: Pong ! \`${ping}ms\``)
-        .then(() => { log.info({msg: 'ping', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id}) })
+        .then(() => { log.info({msg: 'ping', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }}) })
         .catch(log.error);
 };
 

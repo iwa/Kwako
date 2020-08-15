@@ -21,7 +21,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
                 log.error(ex)
             }
         }
-        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, fc: 'off'});
+        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, fc: 'off'});
         return msg.channel.send({
             "embed": {
               "author": {
@@ -43,7 +43,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     embed.setTitle(`**${content}**`)
     embed.setColor('AQUA')
     try {
-        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, fc: content});
+        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, fc: content});
         return msg.channel.send(embed);
     } catch (err) {
         log.error(err);

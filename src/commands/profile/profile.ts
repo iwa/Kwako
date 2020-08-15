@@ -48,7 +48,7 @@ async function profileImg(bot: Client, msg: Message, db: Db, log: Logger, id: st
         let file = await imGenerator(user);
 
         try {
-            log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: userDiscord.id, name: userDiscord.tag }});
+            log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
             return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
         } catch (err) {
             log.error(err)
@@ -79,7 +79,7 @@ async function profileImg(bot: Client, msg: Message, db: Db, log: Logger, id: st
     let file = await imGenerator(user);
 
     try {
-        log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, target: { id: userDiscord.id, name: userDiscord.tag }});
+        log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
         return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
     } catch (err) {
         log.error(err)

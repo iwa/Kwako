@@ -17,7 +17,7 @@ module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: 
 
     try {
         await msg.channel.send(embed);
-        log.info({msg: 'lock', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, channel: msg.channel.id})
+        log.info({msg: 'lock', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, channel: msg.channel.id})
     } catch (err) {
         log.error(err);
     }

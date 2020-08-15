@@ -80,7 +80,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     } else
         sendHelp(msg, guildConf);
 
-    log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id});
+    log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
 }
 
 module.exports.help = {

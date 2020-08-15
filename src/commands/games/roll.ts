@@ -11,7 +11,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
                 "color": 5601658
             }
         })
-            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, x: x}) })
+            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: x}) })
             .catch(log.error);
     } else {
         msg.channel.send({
@@ -20,7 +20,7 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
                 "color": 5601658
             }
         })
-            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: msg.guild.id, x: 100}) })
+            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: 100}) })
             .catch(log.error);
     }
 };

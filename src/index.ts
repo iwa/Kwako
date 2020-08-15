@@ -216,13 +216,13 @@ bot.on('guildCreate', async guild => {
     await db.collection('settings').insertOne({ '_id': guild.id });
     http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
 
-    log.info({msg: 'new guild', guild: guild.id});
+    log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 bot.on("guildDelete", async guild => {
     await db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
     http.get('http://localhost:8080/api/guilds/update').on("error", log.error);
-    log.info({msg: 'guild removed', guild: guild.id});
+    log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
 
