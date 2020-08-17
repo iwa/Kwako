@@ -21,7 +21,7 @@ export default class reactionRoles {
         let msg = await Kwako.db.collection('msg').findOne({ _id: reaction.message.id })
         if (!msg) return;
 
-        let role = msg.roles.find((val: any) => val.emote == reaction.emoji.name)
+        let role = msg.roles.find((val: any) => val.emote === reaction.emoji.name || val.emote === reaction.emoji.id)
         if (!role) return;
 
         let member = reaction.message.guild.member(author)
@@ -38,7 +38,7 @@ export default class reactionRoles {
         let msg = await Kwako.db.collection('msg').findOne({ _id: reaction.message.id })
         if (!msg) return;
 
-        let role = msg.roles.find((val: any) => val.emote == reaction.emoji.name)
+        let role = msg.roles.find((val: any) => val.emote === reaction.emoji.name || val.emote === reaction.emoji.id)
         if (!role) return;
 
         let member = reaction.message.guild.member(author)

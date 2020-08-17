@@ -11,6 +11,9 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     let embed = await msg.channel.messages.fetch(args[0])
 
     let emote = args[1]
+    if((emote.startsWith('<:') || emote.startsWith('<a:')) && emote.endsWith('>'))
+        emote = emote.slice(emote.length-19, emote.length-1);
+
     try {
         embed.react(emote)
     } catch (ex) {
