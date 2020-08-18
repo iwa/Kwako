@@ -1,12 +1,12 @@
-import { Client, Message } from 'discord.js';
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
+module.exports.run = async (msg: Message) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return msg.delete();
 
     await msg.channel.send(`**☁️ Please now use Kwako Web Dashboard to configure the bot**\nhttps://kwako.iwa.sh`);
 
-    log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+    Kwako.log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 };
 
 module.exports.help = {

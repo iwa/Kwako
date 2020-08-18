@@ -1,8 +1,8 @@
-import { Client, Message } from 'discord.js'
+import Kwako from '../../Client'
+import { Message } from 'discord.js'
 import utilities from '../../utils/utilities'
-import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
+module.exports.run = (msg: Message, args: string[]) => {
     if (args.length > 0) {
         let x = args[0]
         msg.channel.send({
@@ -11,8 +11,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
                 "color": 5601658
             }
         })
-            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: x}) })
-            .catch(log.error);
+            .then(() => { Kwako.log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: x}) })
+            .catch(Kwako.log.error);
     } else {
         msg.channel.send({
             "embed": {
@@ -20,8 +20,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
                 "color": 5601658
             }
         })
-            .then(() => { log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: 100}) })
-            .catch(log.error);
+            .then(() => { Kwako.log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: 100}) })
+            .catch(Kwako.log.error);
     }
 };
 

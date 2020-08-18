@@ -4,30 +4,29 @@
  * @module ReadyFunction
  * @category Events
  */
-import { Client, TextChannel } from 'discord.js';
-import { Db } from 'mongodb';
+import Kwako from '../Client';
+import { TextChannel } from 'discord.js';
 
 let { version } = require('../../package.json');
 
 /**
  * - Sets bot activity
  * - Cache all messages needed for Reaction Roles system
- * @param {Client} bot - Discord Client object
  */
-export default async function ready(bot: Client, db: Db) {
-    await bot.user.setActivity(`kwako.iwa.sh | v${version}`, { type: 'WATCHING' }).catch(console.error);
-    await bot.user.setStatus("online").catch(console.error)
+export default async function ready() {
+    await Kwako.user.setActivity(`kwako.iwa.sh | v${version}`, { type: 'WATCHING' }).catch(Kwako.log.error);
+    await Kwako.user.setStatus("online").catch(Kwako.log.error)
 
-    let allMsg = db.collection('msg').find()
+    let allMsg = Kwako.db.collection('msg').find()
     if(allMsg) {
         allMsg.forEach(async elem => {
-            let channel = await bot.channels.fetch(elem.channel).catch(() => {return});
+            let channel = await Kwako.channels.fetch(elem.channel).catch(() => {return});
             if(channel && channel.type === 'text') {
                 let msg = await (channel as TextChannel).messages.fetch(elem._id, true).catch(() => {return});
                 if(!msg)
-                    await db.collection('msg').deleteOne({ _id: elem._id });
+                    await Kwako.db.collection('msg').deleteOne({ _id: elem._id });
             } else
-                await db.collection('msg').deleteOne({ _id: elem._id });
+                await Kwako.db.collection('msg').deleteOne({ _id: elem._id });
         });
     }
 }

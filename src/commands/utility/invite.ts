@@ -1,15 +1,15 @@
-import { Client, Message } from 'discord.js';
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
+module.exports.run = async (msg: Message) => {
     await msg.channel.send({
         "embed": {
           "title": "You can invite me to your server through this link:",
           "description": "https://kwako.iwa.sh/",
           "color": 16774804}
         })
-        .then(() => { log.info({msg: 'invite', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }}) })
-        .catch(log.error);
+        .then(() => { Kwako.log.info({msg: 'invite', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }}) })
+        .catch(Kwako.log.error);
 };
 
 module.exports.help = {

@@ -4,9 +4,10 @@
  * @module LogGuildMemberRemove
  * @category Events
  */
-import { User, Client, TextChannel, MessageEmbed, GuildMember, PartialGuildMember } from 'discord.js';
+import Kwako from '../../Client'
+import { User, TextChannel, MessageEmbed, GuildMember, PartialGuildMember } from 'discord.js';
 
-export default async function guildMemberRemove(member: GuildMember | PartialGuildMember, bot: Client, modLogChannel: string) {
+export default async function guildMemberRemove(member: GuildMember | PartialGuildMember, modLogChannel: string) {
     let isBan = await member.guild.fetchBan(member.id).catch(() => {return});
     if(isBan) return;
 
@@ -24,7 +25,7 @@ export default async function guildMemberRemove(member: GuildMember | PartialGu
 	const { executor, target, createdTimestamp, reason } = kickLog;
 
 	if ((target as User).id === member.id) {
-        let channel = await bot.channels.fetch(modLogChannel);
+        let channel = await Kwako.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Member kicked");
         embed.setDescription(`Who: ${member.user.tag} (<@${member.id}>)\nBy: ${executor.tag} (<@${executor.id}>)\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);

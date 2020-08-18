@@ -1,13 +1,12 @@
-import { Client, Message } from 'discord.js';
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length != 1) return;
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     if(!guildConf) {
-        await db.collection('settings').insertOne({ '_id': msg.guild.id });
+        await Kwako.db.collection('settings').insertOne({ '_id': msg.guild.id });
         guildConf = { '_id': msg.guild.id };
     }
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
@@ -20,11 +19,11 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     levelroles = JSON.stringify([...levelrolesMap]);
 
-    await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
     await msg.channel.send(`I'll no longer give a role when members achieve the level **${args[0]}**.`);
 
-    log.info({msg: 'dellevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, level: args[0]})
+    Kwako.log.info({msg: 'dellevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, level: args[0]})
 };
 
 module.exports.help = {

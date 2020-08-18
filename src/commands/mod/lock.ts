@@ -1,8 +1,8 @@
-import { Client, Message, MessageEmbed, TextChannel } from 'discord.js'
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message, MessageEmbed, TextChannel } from 'discord.js'
 
-module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
-    if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
+module.exports.run = async (msg: Message) => {
+    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
 
     (msg.channel as TextChannel).permissionOverwrites.forEach(async (value) => {
         await value.update({
@@ -17,9 +17,9 @@ module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: 
 
     try {
         await msg.channel.send(embed);
-        log.info({msg: 'lock', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, channel: msg.channel.id})
+        Kwako.log.info({msg: 'lock', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, channel: msg.channel.id})
     } catch (err) {
-        log.error(err);
+        Kwako.log.error(err);
     }
 };
 

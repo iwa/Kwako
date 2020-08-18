@@ -1,14 +1,13 @@
-import { Client, Message, Collection } from 'discord.js';
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length != 1) return;
 
     let disabled: string[] = guildConf.disabledCommands || [];
 
-    let cmd: any = commands.get(args[0]) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
+    let cmd: any = Kwako.commands.get(args[0]) || Kwako.commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
     if (!cmd) return;
 
     disabled.push(cmd.help.name);
@@ -20,7 +19,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     guildConf.disabledCommands = disabled;
 
-    await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
 
     await msg.channel.send({
         "embed": {
@@ -29,7 +28,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         }
       })
 
-    log.info({msg: 'disable', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, command: cmd.help.name})
+    Kwako.log.info({msg: 'disable', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, command: cmd.help.name})
 };
 
 module.exports.help = {
