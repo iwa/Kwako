@@ -4,7 +4,7 @@
  * @module Cooldowns
  * @category Events
  */
-import { Db } from 'mongodb';
+import Kwako from '../../Client'
 import { Message } from 'discord.js';
 
 import levelCheck from '../../utils/levelCheck';
@@ -51,10 +51,10 @@ export default class cooldown {
      * @param mongod - MongoDB Client
      * @param db - Database connection
      */
-    static async exp(msg: Message, db: Db) {
+    static async exp(msg: Message) {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id.toString()}`
-            let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
+            let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
 
             let amount = exp;
             if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
@@ -62,9 +62,9 @@ export default class cooldown {
 
             if(user && user.exp)
                 if(user.exp[msg.guild.id])
-                    levelCheck(msg, (user.exp[msg.guild.id]), db, amount);
+                    levelCheck(msg, (user.exp[msg.guild.id]), amount);
 
-            await db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
+            await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
             cooldownXP.add(msg.author.id);
             return setTimeout(async () => { cooldownXP.delete(msg.author.id) }, 5000)
         }

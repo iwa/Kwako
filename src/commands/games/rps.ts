@@ -1,8 +1,8 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities'
-import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
+module.exports.run = (msg: Message, args: string[]) => {
     if (args.length < 1) return;
     let req = args[0].toLowerCase(), numReq, res;
 
@@ -44,8 +44,8 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
 
     embed.setDescription(res);
 
-    log.info({msg: 'rps', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
-    return msg.channel.send(embed).catch(log.error)
+    Kwako.log.info({msg: 'rps', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+    return msg.channel.send(embed).catch(Kwako.log.error)
 };
 
 module.exports.help = {

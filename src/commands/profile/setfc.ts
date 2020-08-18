@@ -1,8 +1,7 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setfc (Switch Friend Code)\` to register your FC in your profile card\n\n\`${guildConf.prefix}setfc off\` to remove it`,
@@ -13,15 +12,15 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     let content = args[0]
 
     if (content === 'off') {
-        await db.collection('user').updateOne({ _id: msg.author.id }, { $set: { fc: null }}, { upsert: true });
+        await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $set: { fc: null }}, { upsert: true });
         if (msg.deletable) {
             try {
                 await msg.delete()
             } catch (ex) {
-                log.error(ex)
+                Kwako.log.error(ex)
             }
         }
-        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, fc: 'off'});
+        Kwako.log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, fc: 'off'});
         return msg.channel.send({
             "embed": {
               "author": {
@@ -37,16 +36,16 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         return msg.channel.send({ "embed": { "title": ":x: > **Switch Friend Code format invalid!** Please enter your FC without the 'SW-' at the beginning", "color": 13632027 } });
     }
 
-    await db.collection('user').updateOne({ _id: msg.author.id }, { $set: { fc: content } }, { upsert: true });
+    await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $set: { fc: content } }, { upsert: true });
     const embed = new MessageEmbed();
     embed.setAuthor("Your Switch FC is now set to : ", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
     embed.setTitle(`**${content}**`)
     embed.setColor('AQUA')
     try {
-        log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, fc: content});
+        Kwako.log.info({msg: 'setfc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, fc: content});
         return msg.channel.send(embed);
     } catch (err) {
-        log.error(err);
+        Kwako.log.error(err);
     }
 };
 

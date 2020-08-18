@@ -1,6 +1,6 @@
 {
   "name": "kwako",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -20,22 +20,22 @@
   "homepage": "https://github.com/iwa/Kwako#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
-    "@types/mongodb": "^3.5.18",
+    "@types/mongodb": "^3.5.26",
     "@types/node": "^14.0.27",
     "@types/pino": "^6.3.0",
     "@types/ws": "^7.2.4",
     "anilist-node": "^1.4.0",
     "bufferutil": "^4.0.1",
     "canvas": "^2.6.1",
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
-    "mongodb": "^3.5.8",
+    "mongodb": "^3.6.0",
     "pino": "^6.5.1",
     "popyt": "^4.1.1",
     "sodium": "^3.0.2",
     "timespan-parser": "^1.0.2",
     "utf-8-validate": "^5.0.2",
-    "ytdl-core": "^3.1.2"
+    "ytdl-core": "^3.2.1"
   },
   "devDependencies": {
     "pino-pretty": "^4.1.0"

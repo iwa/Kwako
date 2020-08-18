@@ -1,11 +1,10 @@
-import { Client, Message, TextChannel, MessageEmbed } from 'discord.js';
-import { Db } from 'mongodb';
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message, TextChannel, MessageEmbed } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: { suggestionChannel: string; }) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: { suggestionChannel: string; }) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
-    let guild: { _id: string, suggestions: string[] } = await db.collection('suggestions').findOne({ _id: msg.guild.id }) || null;
+    let guild: { _id: string, suggestions: string[] } = await Kwako.db.collection('suggestions').findOne({ _id: msg.guild.id }) || null;
     if(!guild || !guild.suggestions)
         return msg.react('❌');
 
@@ -13,7 +12,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     if(!message)
         return msg.react('❌');
 
-    let channel = await bot.channels.fetch(guildConf.suggestionChannel);
+    let channel = await Kwako.channels.fetch(guildConf.suggestionChannel);
     let suggestion = await (channel as TextChannel).messages.fetch(message)
 
     let embed = suggestion.embeds[0];
@@ -37,7 +36,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await suggestion.edit(embed);
 
-    log.info({msg: 'implemented', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
+    Kwako.log.info({msg: 'implemented', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
 
     return msg.react('✅');
 };

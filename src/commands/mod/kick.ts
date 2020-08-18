@@ -1,8 +1,8 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 
-module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, log: Logger) => {
-    if ((!msg.member.hasPermission('MANAGE_GUILD')) && (msg.author.id != process.env.IWA && process.env.SUDO === '0')) return;
+module.exports.run = async (msg: Message, args:string[]) => {
+    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
 
     if (args.length >= 1 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
@@ -10,12 +10,12 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, l
         let mention = msg.mentions.members.first()
 
         if (!mention) return;
-        if (mention.id === msg.author.id || mention.id === bot.user.id) return;
+        if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
 
         try {
             await msg.delete();
         } catch (error) {
-            log.error(error);
+            Kwako.log.error(error);
         }
 
         args.shift();
@@ -34,7 +34,7 @@ module.exports.run = async (bot: Client, msg: Message, args:string[], db: any, l
             await msg.channel.send("I can't kick this person!")
         }
 
-        log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
+        Kwako.log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
     }
 };
 

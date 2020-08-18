@@ -1,17 +1,16 @@
-import { Client, Message } from 'discord.js'
-import { Db } from 'mongodb'
+import Kwako from '../../Client'
+import { Message } from 'discord.js'
 import imGenerator from '../../utils/img';
 import utilities from '../../utils/utilities'
-import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = (msg: Message, args: string[]) => {
     if (args.length == 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
         if (!mention || mention.bot) return;
-        return profileImg(bot, msg, db, log, mention.id);
+        return profileImg(msg, mention.id);
     } else
-        return profileImg(bot, msg, db, log, msg.author.id);
+        return profileImg(msg, msg.author.id);
 };
 
 module.exports.help = {
@@ -22,12 +21,12 @@ module.exports.help = {
     perms: ['SEND_MESSAGES', 'ATTACH_FILES']
 };
 
-async function profileImg(bot: Client, msg: Message, db: Db, log: Logger, id: string) {
-    let userDB = await db.collection('user').findOne({ '_id': { $eq: id } });
+async function profileImg(msg: Message, id: string) {
+    let userDB = await Kwako.db.collection('user').findOne({ '_id': { $eq: id } });
 
     msg.channel.startTyping();
 
-    let userDiscord = await bot.users.fetch(id)
+    let userDiscord = await Kwako.users.fetch(id)
     let memberDiscord = await msg.guild.members.fetch(id)
 
     if (!userDB || !userDB.exp) {
@@ -48,16 +47,16 @@ async function profileImg(bot: Client, msg: Message, db: Db, log: Logger, id: st
         let file = await imGenerator(user);
 
         try {
-            log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
+            Kwako.log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
             return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
         } catch (err) {
-            log.error(err)
+            Kwako.log.error(err)
             return msg.channel.send(":x: > An error occured. Please retry later.")
         }
     }
 
     let guild = `exp.${msg.guild.id.toString()}`
-    let leadXP = await db.collection('user').find().sort({ [guild]: -1 }).toArray();
+    let leadXP = await Kwako.db.collection('user').find().sort({ [guild]: -1 }).toArray();
 
     let lvlInfo = utilities.levelInfo(userDB.exp[msg.guild.id]);
 
@@ -79,10 +78,10 @@ async function profileImg(bot: Client, msg: Message, db: Db, log: Logger, id: st
     let file = await imGenerator(user);
 
     try {
-        log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
+        Kwako.log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
         return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
     } catch (err) {
-        log.error(err)
+        Kwako.log.error(err)
         return msg.channel.send(":x: > An error occured. Please retry later.")
     }
 }

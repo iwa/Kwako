@@ -1,9 +1,8 @@
-import { Client, Message } from 'discord.js'
+import { Message } from 'discord.js'
 import music from '../../utils/music'
-import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
-    music.play(bot, msg, args, log);
+module.exports.run = (msg: Message, args: string[]) => {
+    music.play(msg, args);
 };
 
 module.exports.help = {

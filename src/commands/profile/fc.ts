@@ -1,17 +1,16 @@
-import { Client, Message } from 'discord.js'
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message } from 'discord.js'
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (args.length === 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
         if (!mention) return;
-        log.info({msg: 'fc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.tag }});
-        return printFc(bot, msg, db, mention.id, guildConf.prefix);
+        Kwako.log.info({msg: 'fc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.tag }});
+        return printFc(msg, mention.id, guildConf.prefix);
     } else {
-        log.info({msg: 'fc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: msg.author.id, name: msg.author.tag, }});
-        return printFc(bot, msg, db, msg.author.id, guildConf.prefix);
+        Kwako.log.info({msg: 'fc', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: msg.author.id, name: msg.author.tag, }});
+        return printFc(msg, msg.author.id, guildConf.prefix);
     }
 };
 
@@ -22,9 +21,9 @@ module.exports.help = {
     desc: "Print your Switch Friend Code in the channel you sent the command."
 };
 
-async function printFc(bot: Client, msg: Message, db: Db, id: string, prefix: string) {
-    let user = await db.collection('user').findOne({ '_id': { $eq: id } });
-    let member = await bot.users.fetch(id);
+async function printFc(msg: Message, id: string, prefix: string) {
+    let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: id } });
+    let member = await Kwako.users.fetch(id);
     let avatar = member.avatarURL({ format: 'png', dynamic: false, size: 128 })
     if (!user.fc && msg.mentions.users.size === 0)
         return msg.channel.send({

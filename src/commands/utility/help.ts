@@ -1,13 +1,10 @@
-import { Client, Message, Collection, MessageEmbed } from 'discord.js';
-import { Db } from 'mongodb';
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js';
 let commands = new Map();
 let member = new MessageEmbed();
 let mod = new MessageEmbed();
 
 import * as fs from 'fs';
-import { Logger } from 'pino';
-
-import log from '../../Logger';
 
 readDirs()
 setTimeout(() => {
@@ -54,9 +51,9 @@ setTimeout(() => {
     mod.setColor(4886754)
 }, 5000)
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (args.length == 1) {
-        let cmd: any = commands.get(args[0]) || commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
+        let cmd: any = Kwako.commands.get(args[0]) || Kwako.commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
         if (!cmd || !cmd.help.usage) return;
         if (cmd.help.staff && !msg.member.hasPermission('MANAGE_GUILD')) return;
 
@@ -80,7 +77,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     } else
         sendHelp(msg, guildConf);
 
-    log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
+    Kwako.log.info({msg: 'help', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
 }
 
 module.exports.help = {
@@ -112,11 +109,11 @@ async function sendHelp(msg: Message, guildConf: any) {
 
 async function readDirs() {
     fs.readdir('./build/commands/', { withFileTypes: true }, async (error, f) => {
-        if (error) return log.error(error);
+        if (error) return Kwako.log.error(error);
         f.forEach((f) => {
             if (f.isDirectory()) {
                 fs.readdir(`./build/commands/${f.name}/`, async (error, fi) => {
-                    if (error) return log.error(error);
+                    if (error) return Kwako.log.error(error);
                     let string: string = "";
                     fi.forEach(async (fi) => {
                         string = `${string}\`${fi.slice(0, -3)}\` `;

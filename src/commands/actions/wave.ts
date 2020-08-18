@@ -1,11 +1,11 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities'
-import { Logger } from 'pino';
 
 let nbGifs = 6;
 let lastGif = 0;
 
-module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: Logger) => {
+module.exports.run = async (msg: Message) => {
     const embed = new MessageEmbed();
     embed.setColor('#F2DEB0')
     embed.setDescription(`**<@${msg.author.id}>** is waving!`)
@@ -19,9 +19,9 @@ module.exports.run = async (bot: Client, msg: Message, args: any, db: any, log: 
 
     return msg.channel.send(embed)
         .then(() => {
-            log.info({msg: 'wave', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
+            Kwako.log.info({msg: 'wave', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
         })
-        .catch(log.error);
+        .catch(Kwako.log.error);
 };
 
 module.exports.help = {

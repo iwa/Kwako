@@ -1,11 +1,10 @@
-import { Client, Message, MessageReaction, User, MessageEmbed } from 'discord.js'
-import { Db } from 'mongodb'
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities';
-import { Logger } from 'pino';
 let lastGif: number = 0, count: number = 9;
 let lastGifFail: number = 0, countFail: number = 5;
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message) => {
     if (msg.mentions.everyone) return;
     let mention = msg.mentions.users.first()
     if (!mention) return;
@@ -13,7 +12,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     if (mention.id === msg.author.id)
         return msg.channel.send({ "embed": { "title": `:x: > **You can't highfive youself!**`, "color": 13632027 } });
 
-    if (mention.id === bot.user.id) return;
+    if (mention.id === Kwako.user.id) return;
 
     //let result = await db.collection('highfive').findOne({ 'author': { $eq: msg.author.id }, 'target': { $eq: mention.id } });
     //if (result)
@@ -63,13 +62,13 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         embed.setDescription(`**<@${msg.author.id}> 🙌 <@${mention.id}>**`)
         embed.setImage(`https://${process.env.CDN_URL}/img/highfive/${n}.gif`)
 
-        await db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { highfive: 1 } });
-        await db.collection('user').updateOne({ '_id': { $eq: mention.id } }, { $inc: { highfive: 1 } });
+        await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { highfive: 1 } });
+        await Kwako.db.collection('user').updateOne({ '_id': { $eq: mention.id } }, { $inc: { highfive: 1 } });
         return msg.channel.send(embed)
             .then(() => {
-                log.info({msg: 'highfive', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
+                Kwako.log.info({msg: 'highfive', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
             })
-            .catch(log.error);
+            .catch(Kwako.log.error);
     } else {
         let n = utilities.randomInt(countFail)
         while (lastGifFail == n)
