@@ -13,6 +13,7 @@ module.exports.run = (msg: Message) => {
 
 module.exports.help = {
     name: 'flip',
+    aliases: ['coin', 'coinflip'],
     usage: "flip",
     desc: "Flip a coin",
     perms: ['EMBED_LINKS']
