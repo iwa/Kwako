@@ -299,23 +299,27 @@ export default class music {
      */
     static async skip(msg: Message) {
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
-        let voiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        if(!voiceChannel) return;
+
+        let voiceConnection = Kwako.voice.connections.find(val => val.channel.id === voiceChannel.id);
+        if(!voiceConnection) return;
+
         let queu = queue.get(msg.guild.id);
 
-        if (!queu[0]) {
+        if (!queu) {
             const embed = new MessageEmbed();
             embed.setColor('RED')
             embed.setTitle("I'm not playing anything right now!")
             return msg.channel.send(embed);
         }
 
-        let skipperz = skippers.get(msg.guild.id) ? skippers.get(msg.guild.id) : []
+        let skipperz = skippers.get(msg.guild.id) || []
         if (skipperz.indexOf(msg.author.id) == -1) {
             skipperz.push(msg.author.id);
             skippers.set(msg.guild.id, skipperz);
 
-            let reqs = skipReq.get(msg.guild.id) ? skipReq.get(msg.guild.id) : 0;
-            reqs++;
+            let reqs = skipReq.get(msg.guild.id) || 0;
+            reqs += 1;
             skipReq.set(msg.guild.id, reqs)
 
             const embed = new MessageEmbed();
@@ -389,7 +393,7 @@ export default class music {
         let voiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
         let queu = queue.get(msg.guild.id);
 
-        if (!queu[0]) {
+        if (!queu) {
             const embed = new MessageEmbed();
             embed.setColor('RED')
             embed.setTitle("I'm not playing anything right now!")
@@ -460,7 +464,7 @@ export default class music {
         let voiceConnection = Kwako.voice.connections.find(val => val.channel.guild.id === msg.guild.id);
         let queu = queue.get(msg.guild.id);
 
-        if (!queu[0]) {
+        if (!queu) {
             const embed = new MessageEmbed();
             embed.setColor('RED')
             embed.setTitle("I'm not playing anything right now!")
