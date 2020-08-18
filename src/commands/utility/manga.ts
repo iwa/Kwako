@@ -1,9 +1,9 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 const al = require('anilist-node');
 const Anilist = new al();
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: Logger) => {
+module.exports.run = (msg: Message, args: string[]) => {
     if (args.length < 1) return;
     let req = args.join(' ');
     Anilist.search('manga', req, 1, 5).then(async (data: { media: any[]; }) => {
@@ -67,10 +67,10 @@ module.exports.run = (bot: Client, msg: Message, args: string[], db: any, log: L
         embed.setColor('BLUE')
         embed.setURL(info.siteUrl)
 
-        log.info({msg: 'manga', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, request: req});
+        Kwako.log.info({msg: 'manga', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, request: req});
         return msg.channel.send(embed)
     }).catch((err: any) => {
-        log.error(err)
+        Kwako.log.error(err)
         return msg.channel.send({ 'embed': { 'title': ":x: > **An error occured, please retry later.**" } })
     });
 };

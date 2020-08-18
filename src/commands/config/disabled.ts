@@ -1,8 +1,7 @@
-import { Client, Message, Collection, MessageEmbed } from 'discord.js';
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message, MessageEmbed } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: Collection<any, any>, guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     let disabled: string[] = guildConf.disabledCommands || [];
@@ -21,7 +20,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     await msg.channel.send(embed)
 
-    log.info({msg: 'disabled', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+    Kwako.log.info({msg: 'disabled', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 };
 
 module.exports.help = {

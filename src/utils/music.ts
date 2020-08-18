@@ -4,10 +4,10 @@
  * @module Music
  * @category Utils
  */
-import { Client, Message, MessageEmbed, Util, VoiceChannel, VoiceConnection, StreamDispatcher } from 'discord.js';
+import Kwako from '../Client';
+import { Message, MessageEmbed, Util, VoiceChannel, VoiceConnection, StreamDispatcher } from 'discord.js';
 import ytdl from 'ytdl-core';
 import { YouTube, Video } from 'popyt';
-import { Logger } from 'pino';
 const yt = new YouTube(process.env.YT_TOKEN)
 
 let queue:Map<string, string[]> = new Map();
@@ -25,7 +25,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async play(bot: Client, msg: Message, args: string[], log: Logger) {
+    static async play(msg: Message, args: string[]) {
         if (!args[0]) return;
 
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
@@ -92,12 +92,12 @@ export default class music {
 
                     msg.channel.send(embedDone)
 
-                    let connection: null | VoiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+                    let connection: null | VoiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
 
                     if (!connection) {
                         try {
                             const voiceConnection = await voiceChannel.join();
-                            playSong(msg, voiceConnection, voiceChannel, log);
+                            playSong(msg, voiceConnection, voiceChannel);
                         }
                         catch (ex) {
                             console.error(ex)
@@ -174,12 +174,12 @@ export default class music {
 
                 msg.channel.send(embedDone)
 
-                let connection: null | VoiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+                let connection: null | VoiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
 
                 if (!connection) {
                     try {
                         const voiceConnection = await voiceChannel.join();
-                        playSong(msg, voiceConnection, voiceChannel, log);
+                        playSong(msg, voiceConnection, voiceChannel);
                     }
                     catch (ex) {
                         console.error(ex)
@@ -188,7 +188,7 @@ export default class music {
             });
         } else {
             if (ytdl.validateURL(video_url[0])) {
-                launchPlay(msg, voiceChannel, video_url[0], log)
+                launchPlay(msg, voiceChannel, video_url[0])
             } else {
                 let keywords = args.join(' ')
 
@@ -202,7 +202,7 @@ export default class music {
                 if (!video) return;
                 if (!ytdl.validateURL(video)) return;
 
-                launchPlay(msg, voiceChannel, video, log)
+                launchPlay(msg, voiceChannel, video)
             }
         }
     }
@@ -212,7 +212,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async remove(msg: Message, args: string[], log: Logger) {
+    static async remove(msg: Message, args: string[]) {
         let queueID: number = parseInt(args[0]);
 
         if (isNaN(queueID)) return;
@@ -231,7 +231,7 @@ export default class music {
 
         msg.channel.send(embed)
 
-        log.info({msg: 'remove', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { title: data.title, url: data.shortUrl }});
+        Kwako.log.info({msg: 'remove', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { title: data.title, url: data.shortUrl }});
         queu.splice(queueID, 1);
         queue.set(msg.guild.id, queu);
     }
@@ -241,7 +241,7 @@ export default class music {
      * @param msg - Message object
      * @param args - Arguments in the message
      */
-    static async list(msg: Message, log: Logger) {
+    static async list(msg: Message) {
         let queu = queue.get(msg.guild.id) || [];
         if (queu.length < 0) return;
 
@@ -251,7 +251,7 @@ export default class music {
         if (queu.length <= 1) {
             embed.setTitle("**:cd: The queue is empty.**")
             msg.channel.send(embed);
-            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            Kwako.log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
         } else {
             msg.channel.startTyping();
             embed.setTitle("**:cd: Music Queue**")
@@ -288,7 +288,7 @@ export default class music {
 
             msg.channel.send(embed);
             msg.channel.stopTyping(true);
-            log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            Kwako.log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
         }
     }
 
@@ -297,9 +297,9 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async skip(bot: Client, msg: Message, log: Logger) {
+    static async skip(msg: Message) {
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
-        let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        let voiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
         let queu = queue.get(msg.guild.id);
 
         if (!queu[0]) {
@@ -323,7 +323,7 @@ export default class music {
             embed.setAuthor("Your voteskip has been registered!", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
             msg.channel.send(embed)
 
-            log.info({msg: 'voteskip', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            Kwako.log.info({msg: 'voteskip', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
             if (reqs >= Math.ceil((voiceChannel.members.size - 1) / 2)) {
                 let dispatcher = voiceConnection.dispatcher
@@ -333,7 +333,7 @@ export default class music {
                 msg.channel.send(embed)
                 loop.set(msg.guild.id, false);
                 dispatcher.end()
-                log.info({msg: 'skipping song', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+                Kwako.log.info({msg: 'skipping song', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
             } else {
                 const embed = new MessageEmbed();
                 embed.setColor('BRIGHT_RED')
@@ -352,20 +352,20 @@ export default class music {
      * Clears the queue
      * @param msg - Message object
      */
-    static async clear(msg: Message, log: Logger) {
+    static async clear(msg: Message) {
         queue.delete(msg.guild.id)
 
         await msg.react('✅');
 
-        log.info({msg: 'clear', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        Kwako.log.info({msg: 'clear', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
      * Stops the music
      * @param msg - Message object
      */
-    static async stop(bot: Client, msg: Message, log: Logger) {
-        let dispatcher = await fetchDispatcher(bot, msg);
+    static async stop(msg: Message) {
+        let dispatcher = await fetchDispatcher(msg);
 
         if(dispatcher) {
             let voiceChannel:VoiceChannel = msg.member.voice.channel;
@@ -374,7 +374,7 @@ export default class music {
 
             await msg.react('✅');
             voiceChannel.leave()
-            log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            Kwako.log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
         }
     }
 
@@ -384,9 +384,9 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async forceskip(bot: Client, msg: Message, log: Logger) {
+    static async forceskip(msg: Message) {
         let voiceChannel:VoiceChannel = msg.member.voice.channel;
-        let voiceConnection = bot.voice.connections.find(val => val.channel.id == voiceChannel.id);
+        let voiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
         let queu = queue.get(msg.guild.id);
 
         if (!queu[0]) {
@@ -406,25 +406,25 @@ export default class music {
 
         dispatcher.end()
 
-        return log.info({msg: 'forceskip', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        return Kwako.log.info({msg: 'forceskip', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
      * Enables / Disables looping the current song
      * @param msg - Message object
      */
-    static loop(msg: Message, log: Logger) {
+    static loop(msg: Message) {
         let loo = loop.get(msg.guild.id) || false
         if (!loo) {
             loop.set(msg.guild.id, true)
-            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
+            Kwako.log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
             const embed = new MessageEmbed();
             embed.setAuthor("🔂 Looping the current song...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         } else if (loo) {
             loop.set(msg.guild.id, false)
-            log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
+            Kwako.log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
             const embed = new MessageEmbed();
             embed.setAuthor("This song will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
@@ -432,18 +432,18 @@ export default class music {
         }
     }
 
-    static loopqueue(msg: Message, log: Logger) {
+    static loopqueue(msg: Message) {
         let loo = loopqueue.get(msg.guild.id) || false
         if (!loo) {
             loopqueue.set(msg.guild.id, true)
-            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
+            Kwako.log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
             const embed = new MessageEmbed();
             embed.setAuthor("🔁 Looping the queue...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
             return msg.channel.send(embed)
         } else if (loo) {
             loopqueue.set(msg.guild.id, false)
-            log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
+            Kwako.log.info({msg: 'loopqueue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
             const embed = new MessageEmbed();
             embed.setAuthor("The queue will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             embed.setColor('GREEN')
@@ -456,8 +456,8 @@ export default class music {
      * @param msg - Message object
      * @param bot - Discord Client object
      */
-    static async np(msg: Message, bot: Client, log: Logger) {
-        let voiceConnection = bot.voice.connections.find(val => val.channel.guild.id === msg.guild.id);
+    static async np(msg: Message) {
+        let voiceConnection = Kwako.voice.connections.find(val => val.channel.guild.id === msg.guild.id);
         let queu = queue.get(msg.guild.id);
 
         if (!queu[0]) {
@@ -499,7 +499,7 @@ export default class music {
 
         msg.channel.send(embed)
         msg.channel.stopTyping(true);
-        log.info({msg: 'nowplaying', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        Kwako.log.info({msg: 'nowplaying', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
@@ -507,15 +507,15 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async pause(bot: Client, msg: Message, log: Logger) {
-        let dispatcher = await fetchDispatcher(bot, msg);
+    static async pause(msg: Message) {
+        let dispatcher = await fetchDispatcher(msg);
 
         if(dispatcher) {
             dispatcher.pause(false);
             await msg.react('✅');
         }
 
-        log.info({msg: 'pause', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        Kwako.log.info({msg: 'pause', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
     /**
@@ -523,19 +523,19 @@ export default class music {
      * @param bot - Discord Client object
      * @param msg - Message object
      */
-    static async resume(bot: Client, msg: Message, log: Logger) {
-        let dispatcher = await fetchDispatcher(bot, msg);
+    static async resume(msg: Message) {
+        let dispatcher = await fetchDispatcher(msg);
 
         if(dispatcher) {
             dispatcher.resume();
             await msg.react('✅');
         }
 
-        log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        Kwako.log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 
-    static async shuffle(bot: Client, msg: Message, log: Logger) {
-        let dispatcher = await fetchDispatcher(bot, msg);
+    static async shuffle(msg: Message) {
+        let dispatcher = await fetchDispatcher(msg);
 
         if(dispatcher) {
             let queu = queue.get(msg.guild.id) || [];
@@ -553,7 +553,7 @@ export default class music {
             await msg.react('✅');
         }
 
-        log.info({msg: 'shuffle', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        Kwako.log.info({msg: 'shuffle', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
     }
 }
 
@@ -563,7 +563,7 @@ export default class music {
  * @param voiceConnection - Voice connection of the bot
  * @param voiceChannel - The voice channel where the bot should be connected in
  */
-async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel, log: Logger) {
+async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
     const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) });
 
@@ -593,7 +593,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
                 msg.channel.send(embed)
-                log.info({msg: 'music playing', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(videoData.title), url: videoData.shortUrl}});
+                Kwako.log.info({msg: 'music playing', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(videoData.title), url: videoData.shortUrl}});
             }
         }).on('finish', () => {
             let loo = loop.get(msg.guild.id) || false
@@ -622,7 +622,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
             } else {
                 skipReq.delete(msg.guild.id);
                 skippers.delete(msg.guild.id);
-                playSong(msg, voiceConnection, voiceChannel, log)
+                playSong(msg, voiceConnection, voiceChannel)
             }
         }).on('error', console.error);
 }
@@ -635,7 +635,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
  * @param video_url - The video url to check and play
  * @param data - Youtube Stream data infos
  */
-async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string, log: Logger) {
+async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string) {
     msg.channel.startTyping();
     let error = false, data;
     let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
@@ -669,13 +669,13 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
         embed.setColor('LUMINOUS_VIVID_PINK')
         msg.channel.stopTyping()
         await msg.channel.send(embed)
-        log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(data.videoDetails.title), url: data.videoDetails.video_url}});
+        Kwako.log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(data.videoDetails.title), url: data.videoDetails.video_url}});
     }
     else {
         msg.channel.stopTyping()
         try {
             const voiceConnection = await voiceChannel.join();
-            playSong(msg, voiceConnection, voiceChannel, log);
+            playSong(msg, voiceConnection, voiceChannel);
         }
         catch (ex) {
             console.error(ex)
@@ -690,7 +690,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
  * @param msg - Message object
  * @returns The existing StreamDispatcher (if exists)
  */
-async function fetchDispatcher(bot: Client, msg: Message): Promise<StreamDispatcher> {
+async function fetchDispatcher(msg: Message): Promise<StreamDispatcher> {
     let voiceChannel:VoiceChannel = msg.member.voice.channel;
     if (!voiceChannel) {
         const embed = new MessageEmbed();
@@ -700,7 +700,7 @@ async function fetchDispatcher(bot: Client, msg: Message): Promise<StreamDispatc
         return;
     }
 
-    let voiceConnection = bot.voice.connections.find(val => val.channel.id === voiceChannel.id);
+    let voiceConnection = Kwako.voice.connections.find(val => val.channel.id === voiceChannel.id);
     if (!voiceConnection) {
         const embed = new MessageEmbed();
         embed.setColor('RED')

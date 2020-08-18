@@ -1,9 +1,8 @@
-import { Client, Message } from 'discord.js'
-import { Db } from 'mongodb'
-import { loadImage } from 'canvas';
-import { Logger } from 'pino';
+import Kwako from '../../Client'
+import { Message } from 'discord.js'
+import { loadImage } from 'canvas'
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger, commands: any, guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setbackground (url)\` to set an image background in your profile card\n\n\`${guildConf.prefix}setbackground off\` to disable it and use the colored background back`,
@@ -14,12 +13,12 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
     let url = args[0];
 
     if(url === "off") {
-        await db.collection('user').updateOne({ _id: msg.author.id }, {$set: { background: null }}, { upsert: true });
+        await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, {$set: { background: null }}, { upsert: true });
         if (msg.deletable) {
             try {
                 await msg.delete()
             } catch (ex) {
-                log.error(ex)
+                Kwako.log.error(ex)
             }
         }
         return msg.channel.send({
@@ -50,7 +49,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     let res = findRes(image.width, image.height);
 
-    await db.collection('user').updateOne({ _id: msg.author.id }, {
+    await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, {
         $set: {
             background: {
                 url: url,
@@ -78,7 +77,7 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
             }
         })
 
-        log.info({msg: 'setbackground', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, image: url });
+        Kwako.log.info({msg: 'setbackground', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, image: url });
 };
 
 module.exports.help = {

@@ -1,12 +1,11 @@
-import { Client, Message } from 'discord.js';
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length != 1) return;
 
-    let dbEmbed = await db.collection('msg').findOne({ _id: args[0] })
+    let dbEmbed = await Kwako.db.collection('msg').findOne({ _id: args[0] })
     if (!dbEmbed) return msg.reply(":x: > That message doesn't exist!")
     let fetchMsg = await msg.channel.messages.fetch(args[0])
 
@@ -15,13 +14,13 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
             await msg.delete()
             await fetchMsg.delete()
         } catch (ex) {
-            log.error(ex)
+            Kwako.log.error(ex)
         }
     }
 
-    await db.collection('msg').deleteOne({ _id: args[0] })
+    await Kwako.db.collection('msg').deleteOne({ _id: args[0] })
 
-    log.info({msg: 'delembed', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+    Kwako.log.info({msg: 'delembed', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 };
 
 module.exports.help = {
