@@ -51,7 +51,7 @@ Kwako.on('message', async (msg: Message) => {
     await cooldown.message(msg, guildConf);
 
     if (msg.channel.id === guildConf.suggestionChannel)
-        return suggestion(Kwako, msg);
+        return suggestion(msg);
 
     if (!msg.content.startsWith(guildConf.prefix))
         return cooldown.exp(msg);
@@ -200,7 +200,7 @@ Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) =
     let starboardChannel = guildConf.starboardChannel;
     if(!starboardChannel) return;
 
-    await starboard.check(reaction, author, Kwako, starboardChannel);
+    await starboard.check(reaction, author, starboardChannel);
 });
 
 // Reaction Role Events
@@ -227,7 +227,7 @@ Kwako.on('messageDelete', async msg => {
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-    return messageDelete(msg, Kwako, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+    return messageDelete(msg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
@@ -243,7 +243,7 @@ Kwako.on('guildMemberRemove', async member => {
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-	return guildMemberRemove(member, Kwako, modLogChannel);
+	return guildMemberRemove(member, modLogChannel);
 });
 
 import guildBanAdd from './events/logs/guildBanAdd';
@@ -260,7 +260,7 @@ Kwako.on('guildBanAdd', async (guild, user) => {
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
-	return guildBanAdd(guild, user, Kwako, modLogChannel);
+	return guildBanAdd(guild, user, modLogChannel);
 });
 
 // Login
