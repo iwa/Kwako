@@ -63,7 +63,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
         try {
             await msg.delete()
         } catch (ex) {
-            console.error(ex)
+            Kwako.log.error(ex)
         }
     }
 

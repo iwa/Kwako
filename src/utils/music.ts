@@ -100,7 +100,7 @@ export default class music {
                             playSong(msg, voiceConnection, voiceChannel);
                         }
                         catch (ex) {
-                            console.error(ex)
+                            Kwako.log.error(ex)
                         }
                     }
                 });
@@ -110,7 +110,7 @@ export default class music {
 
         if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
 
-            const playlist = await yt.getPlaylist(video_url[0]).catch(console.error)
+            const playlist = await yt.getPlaylist(video_url[0]).catch(Kwako.log.error)
             if (!playlist) return;
 
             let reply = await msg.channel.send({
@@ -182,7 +182,7 @@ export default class music {
                         playSong(msg, voiceConnection, voiceChannel);
                     }
                     catch (ex) {
-                        console.error(ex)
+                        Kwako.log.error(ex)
                     }
                 }
             });
@@ -624,7 +624,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 skippers.delete(msg.guild.id);
                 playSong(msg, voiceConnection, voiceChannel)
             }
-        }).on('error', console.error);
+        }).on('error', Kwako.log.error);
 }
 
 /**
@@ -678,7 +678,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
             playSong(msg, voiceConnection, voiceChannel);
         }
         catch (ex) {
-            console.error(ex)
+            Kwako.log.error(ex)
         }
     }
 }

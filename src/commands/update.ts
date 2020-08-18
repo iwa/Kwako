@@ -8,15 +8,15 @@ module.exports.run = async (msg: Message, args: string[]) => {
     if(args[0])
         min = parseInt(args[0]);
 
-    await Kwako.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(console.error);
-    await Kwako.user.setStatus('idle').catch(console.error);
+    await Kwako.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(Kwako.log.error);
+    await Kwako.user.setStatus('idle').catch(Kwako.log.error);
 
     setInterval(async () => {
         if(min > 1) {
             min -= 1;
-            await Kwako.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(console.error);
+            await Kwako.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(Kwako.log.error);
         } else {
-            await Kwako.user.setActivity(`⚠️ update soon...`, { type: 'LISTENING' }).catch(console.error);
+            await Kwako.user.setActivity(`⚠️ update soon...`, { type: 'LISTENING' }).catch(Kwako.log.error);
         }
     }, 60000);
 };

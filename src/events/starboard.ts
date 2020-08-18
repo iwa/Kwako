@@ -34,7 +34,7 @@ export default class starboard {
                 }
             }
         });
-        console.log(`info: new message into starboard (author: ${msg.author.tag})`);
+        Kwako.log.info(`info: new message into starboard (author: ${msg.author.tag})`);
     }
 
     /**
