@@ -118,7 +118,12 @@ export default async function actionsRun(msg: Message, args: string[], type: str
         let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
         await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: msg.mentions.members.size } }, { upsert: true });
 
-        embed.setFooter(`You have given ${((user && user[type]) ? user[type][msg.guild.id] : 0) + msg.mentions.members.size} ${verb}`)
+        let nb = 0;
+        if(user)
+            if(user[type])
+                nb = user[type][msg.guild.id] || 0;
+
+        embed.setFooter(`You have given ${nb + msg.mentions.members.size} ${verb}`)
 
         return msg.channel.send(embed)
             .then(() => {
