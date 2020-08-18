@@ -82,6 +82,7 @@ Kwako.on('message', async (msg: Message) => {
             }, 3000);
         }
 
+        Kwako.log.trace({msg: msg.cleanContent, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
         await cmd.run(msg, args, guildConf);
     }
 });
