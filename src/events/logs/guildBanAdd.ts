@@ -4,9 +4,10 @@
  * @module LogGuildBanAdd
  * @category Events
  */
-import { User, Client, TextChannel, MessageEmbed, Guild, PartialUser } from 'discord.js';
+import Kwako from '../../Client'
+import { User, TextChannel, MessageEmbed, Guild, PartialUser } from 'discord.js';
 
-export default async function guildBanAdd(guild: Guild, user: User | PartialUser, bot: Client, modLogChannel: string) {
+export default async function guildBanAdd(guild: Guild, user: User | PartialUser, modLogChannel: string) {
 	const fetchedLogs = await guild.fetchAuditLogs({
 		limit: 1,
 		type: 'MEMBER_BAN_ADD',
@@ -21,7 +22,7 @@ export default async function guildBanAdd(guild: Guild, user: User | PartialUser
 	const { executor, target, createdTimestamp, reason } = banLog;
 
 	if ((target as User).id === user.id) {
-        let channel = await bot.channels.fetch(modLogChannel);
+        let channel = await Kwako.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Member banned");
         embed.setDescription(`Who: ${user.tag} (<@${user.id}>)\nBy: ${executor.tag} (<@${executor.id}>)\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);

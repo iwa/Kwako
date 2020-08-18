@@ -1,45 +1,44 @@
-import { Client, Message, MessageEmbed } from 'discord.js'
-import { Db } from 'mongodb'
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities'
-import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if (args.length > 1) return;
 
     switch (args[0]) {
         case "xp":
         case "exp":
-            return leaderboard(bot, msg, db, log, 'exp', false)
+            return leaderboard(msg, 'exp', false)
 
         case "pat":
         case "pats":
         case "patpat":
         case "patpats":
-            return leaderboard(bot, msg, db, log, 'pat', false)
+            return leaderboard(msg, 'pat', false)
 
         case "hug":
         case "hugs":
-            return leaderboard(bot, msg, db, log, 'hug', false)
+            return leaderboard(msg, 'hug', false)
 
         case "boop":
         case "boops":
-            return leaderboard(bot, msg, db, log, 'boop', false)
+            return leaderboard(msg, 'boop', false)
 
         case "slap":
         case "slaps":
-            return leaderboard(bot, msg, db, log, 'slap', false)
+            return leaderboard(msg, 'slap', false)
 
         case "glare":
         case "glares":
-            return leaderboard(bot, msg, db, log, 'glare', false)
+            return leaderboard(msg, 'glare', false)
 
         case "squish":
         case "squishes":
-            return leaderboard(bot, msg, db, log, 'squish', true)
+            return leaderboard(msg, 'squish', true)
 
         case "tickle":
         case "tickles":
-            return leaderboard(bot, msg, db, log, 'tickle', false)
+            return leaderboard(msg, 'tickle', false)
 
         default:
             msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap`", "color": 3396531 } });
@@ -55,9 +54,9 @@ module.exports.help = {
     perms: ['EMBED_LINKS']
 };
 
-async function leaderboard (bot: Client, msg: Message, db: Db, log: Logger, type: string, e: boolean) {
+async function leaderboard (msg: Message, type: string, e: boolean) {
     let guild = `${type}.${msg.guild.id.toString()}`
-    let leaderboard = await db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
+    let leaderboard = await Kwako.db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
 
     let title = `${type.charAt(0).toUpperCase()}${type.slice(1)}`
@@ -88,7 +87,7 @@ async function leaderboard (bot: Client, msg: Message, db: Db, log: Logger, type
                     desc = `${desc}**${member.user.username}**\n${elem[type][msg.guild.id]} ${type}${e ? "e" : ""}s\n`
 
             } else {
-                await db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
+                await Kwako.db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
             }
             if (index === leaderboard.length - 1) resolve();
         })
@@ -98,7 +97,7 @@ async function leaderboard (bot: Client, msg: Message, db: Db, log: Logger, type
         embed.setDescription(desc)
         msg.channel.send(embed)
             .then(() => {
-                log.info({msg: 'leaderboard', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, type: type});
-            }).catch(log.error)
+                Kwako.log.info({msg: 'leaderboard', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, type: type});
+            }).catch(Kwako.log.error)
     });
 }

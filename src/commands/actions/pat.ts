@@ -1,10 +1,8 @@
-import { Client, Message } from 'discord.js'
-import { Db } from 'mongodb'
+import { Message } from 'discord.js'
 import actionsRun from '../../utils/actions';
-import { Logger } from 'pino';
 
-module.exports.run = (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
-    actionsRun(bot, msg, args, db, log, 'pat', 'pats', false);
+module.exports.run = (msg: Message, args: string[]) => {
+    actionsRun(msg, args, 'pat', 'pats', false);
 };
 
 module.exports.help = {

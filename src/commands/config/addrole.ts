@@ -1,16 +1,18 @@
-import { Client, Message } from 'discord.js';
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length != 3) return;
 
-    let dbEmbed = await db.collection('msg').findOne({ _id: args[0] })
+    let dbEmbed = await Kwako.db.collection('msg').findOne({ _id: args[0] })
     if (!dbEmbed) return msg.reply(":x: > That message doesn't exist!")
     let embed = await msg.channel.messages.fetch(args[0])
 
     let emote = args[1]
+    if((emote.startsWith('<:') || emote.startsWith('<a:')) && emote.endsWith('>'))
+        emote = emote.slice(emote.length-19, emote.length-1);
+
     try {
         embed.react(emote)
     } catch (ex) {
@@ -30,13 +32,13 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         try {
             await msg.delete()
         } catch (ex) {
-            log.error(ex)
+            Kwako.log.error(ex)
         }
     }
 
-    await db.collection('msg').updateOne({ _id: args[0] }, { $push: { roles: { "id": role, "emote": emote } } })
+    await Kwako.db.collection('msg').updateOne({ _id: args[0] }, { $push: { roles: { "id": role, "emote": emote } } })
 
-    log.info({msg: 'addrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, role: { id: role, emote: emote }})
+    Kwako.log.info({msg: 'addrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, role: { id: role, emote: emote }})
 };
 
 module.exports.help = {

@@ -4,10 +4,11 @@
  * @module LogMessageDelete
  * @category Events
  */
-import { Message, User, PartialMessage, Client, TextChannel, MessageEmbed, Util } from 'discord.js';
+import Kwako from '../../Client'
+import { Message, User, PartialMessage, TextChannel, MessageEmbed, Util } from 'discord.js';
 let lastTimestamp: number;
 
-export default async function messageDelete(msg: Message | PartialMessage, bot: Client, modLogChannel: string, prefix: string, suggestionChannel: string) {
+export default async function messageDelete(msg: Message | PartialMessage, modLogChannel: string, prefix: string, suggestionChannel: string) {
     if (!msg.guild) return;
     if (msg.content.startsWith(prefix)) return;
 	const fetchedLogs = await msg.guild.fetchAuditLogs({
@@ -27,7 +28,7 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
         if ((target as User).id === msg.author.id) return;
         if (suggestionChannel && suggestionChannel === msg.channel.id) return;
         if (msg.author.bot) return;
-        let channel = await bot.channels.fetch(modLogChannel);
+        let channel = await Kwako.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message Self-deleted");
         embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nWhere: <#${msg.channel.id}>\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);
@@ -45,8 +46,8 @@ export default async function messageDelete(msg: Message | PartialMessage, bot: 
     lastTimestamp = createdTimestamp;
 
 	if ((target as User).id === msg.author.id) {
-        if(msg.author.id === bot.user.id) return;
-        let channel = await bot.channels.fetch(modLogChannel);
+        if(msg.author.id === Kwako.user.id) return;
+        let channel = await Kwako.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message deleted");
         embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nDeleted by: ${executor.tag} (<@${executor.id}>)\nWhere: <#${msg.channel.id}>\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);

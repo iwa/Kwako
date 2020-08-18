@@ -1,14 +1,13 @@
-import { Client, Message, Presence } from 'discord.js';
-import { Db } from 'mongodb'
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 import utilities from '../../utils/utilities';
-import { Logger } from 'pino';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length < 2) return;
-    let guildConf = await db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     if(!guildConf) {
-        await db.collection('settings').insertOne({ '_id': msg.guild.id });
+        await Kwako.db.collection('settings').insertOne({ '_id': msg.guild.id });
         guildConf = { '_id': msg.guild.id };
     }
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
@@ -40,15 +39,15 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
 
     levelroles = JSON.stringify([...levelrolesMap]);
 
-    await db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
-    await giveRoleToUpper(msg, db, role, parseInt(args[0]));
+    await giveRoleToUpper(msg, role, parseInt(args[0]));
 
     await msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}** and to members currently above this level.`);
     if (previous)
         await msg.channel.send(`When I'll give this role, I'll remove <@&${previous}>.`)
 
-    log.info({msg: 'addlevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, level: { id: args[0], role: role }})
+    Kwako.log.info({msg: 'addlevelrole', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, level: { id: args[0], role: role }})
 };
 
 module.exports.help = {
@@ -58,10 +57,10 @@ module.exports.help = {
     perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES']
 };
 
-async function giveRoleToUpper (msg:Message, db:Db, role:string, level:number) {
+async function giveRoleToUpper (msg:Message, role:string, level:number) {
     let exp = utilities.expForLevel(level-1);
     let guild = `exp.${msg.guild.id.toString()}`
-    let list = await db.collection('user').find({ [guild]: { $gte: exp } }).toArray();
+    let list = await Kwako.db.collection('user').find({ [guild]: { $gte: exp } }).toArray();
 
     if(list) {
         for(const user of list) {

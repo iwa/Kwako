@@ -1,8 +1,7 @@
-import { Client, Message } from 'discord.js';
-import { Db } from 'mongodb'
-import { Logger } from 'pino';
+import Kwako from '../../Client';
+import { Message } from 'discord.js';
 
-module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, log: Logger) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     let embed = args.join(' ')
     embed = JSON.parse(embed)
@@ -13,13 +12,13 @@ module.exports.run = async (bot: Client, msg: Message, args: string[], db: Db, l
         try {
             await msg.delete()
         } catch (ex) {
-            log.error(ex)
+            Kwako.log.error(ex)
         }
     }
 
-    await db.collection('msg').insertOne({ _id: sent.id, channel: sent.channel.id })
+    await Kwako.db.collection('msg').insertOne({ _id: sent.id, channel: sent.channel.id })
 
-    log.info({msg: 'addembed', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+    Kwako.log.info({msg: 'addembed', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 };
 
 module.exports.help = {

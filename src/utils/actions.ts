@@ -4,10 +4,9 @@
  * @module Actions
  * @category Utils
  */
-import { Client, Message, MessageEmbed } from 'discord.js';
-import { Db } from 'mongodb';
+import Kwako from '../Client'
+import { Message, MessageEmbed } from 'discord.js';
 import utilities from './utilities'
-import { Logger } from 'pino';
 
 /** @desc Automatic replies of the bot when an action is done on it  */
 let reply = ["awww", "thank you :33", "damn you're so precious", "why are you so cute with me ?", "omg", "<3", "so cuuuute c:", "c:", "c;", ":3", "QT af :O", "^u^ thanks!", ">u<", "-u-"]
@@ -46,7 +45,7 @@ let count = new Map([
  * @param db - Database connection object
  * @param type - Type of actions (hug, pat...)
  */
-export default async function actionsRun(bot: Client, msg: Message, args: string[], db: Db, log: Logger, type: string, verb: string, at: boolean) {
+export default async function actionsRun(msg: Message, args: string[], type: string, verb: string, at: boolean) {
     if (args.length === 0) return;
     if (args.length <= 4) {
         if (msg.mentions.everyone) return;
@@ -56,7 +55,7 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
             msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! Lemme do it for you...**`, "color": 13632027 }});
             const embed = new MessageEmbed();
             embed.setColor('#F2DEB0')
-            embed.setDescription(`<@${bot.user.id}> ${verb}${at ? ' at' : ''} you <@${msg.author.id}>!`)
+            embed.setDescription(`<@${Kwako.user.id}> ${verb}${at ? ' at' : ''} you <@${msg.author.id}>!`)
 
             let n = utilities.randomInt(count.get(type))
             while (lastGif.get(type) === n)
@@ -65,11 +64,11 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
 
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
             return msg.channel.send(embed)
-                .then(() => { log.info({msg: type, cmd: type, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }}); })
-                .catch(log.error);
+                .then(() => { Kwako.log.info({msg: type, cmd: type, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }}); })
+                .catch(Kwako.log.error);
         }
 
-        if (msg.mentions.members.has(bot.user.id) && !['slap', 'glare'].includes(type)) {
+        if (msg.mentions.members.has(Kwako.user.id) && !['slap', 'glare'].includes(type)) {
             let r = utilities.randomInt(reply.length)
             setTimeout(() => {
                 r - 1;
@@ -116,15 +115,20 @@ export default async function actionsRun(bot: Client, msg: Message, args: string
         }
 
         let guild = `${type}.${msg.guild.id.toString()}`
-        let user = await db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-        await db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: msg.mentions.members.size } }, { upsert: true });
+        let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
+        await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: msg.mentions.members.size } }, { upsert: true });
 
-        embed.setFooter(`You have given ${((user && user[type]) ? user[type][msg.guild.id] : 0) + msg.mentions.members.size} ${verb}`)
+        let nb = 0;
+        if(user)
+            if(user[type])
+                nb = user[type][msg.guild.id] || 0;
+
+        embed.setFooter(`You have given ${nb + msg.mentions.members.size} ${verb}`)
 
         return msg.channel.send(embed)
             .then(() => {
-                log.info({msg: type, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
+                Kwako.log.info({msg: type, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
             })
-            .catch(log.error);
+            .catch(Kwako.log.error);
     }
 }
