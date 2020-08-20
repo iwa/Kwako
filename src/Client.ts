@@ -4,6 +4,8 @@ import log from './Logger';
 
 import { MongoClient, Db } from 'mongodb';
 
+import axios from 'axios';
+
 // MongoDB constants
 const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
 
@@ -17,12 +19,34 @@ export default new class Kwako extends Client {
 
     public commands: Collection<any, any> = new Collection();
 
+    protected patrons: Set<string> = new Set();
+
     public constructor() {
 		super(
 			{
 				disableMentions: 'everyone',
 			}
 		);
+    }
+
+    private async getPledgeData() {
+        const link = `https://www.patreon.com/api/oauth2/api/campaigns/3028203/pledges`;
+        return await axios
+            .get(link, {
+                headers: { authorization: `Bearer ${process.env.PATREON_TOKEN}` }
+            })
+            .then(res => {
+                let users: Set<string> = new Set();
+                for(const thing of res.data.included)
+                    if(thing.type === 'user')
+                        if(thing.attributes.social_connections.discord)
+                            users.add(thing.attributes.social_connections.discord.user_id)
+
+                this.patrons = users;
+            })
+            .catch(err => {
+                return this.log.error({msg: `Error Fetching Patreon Data:`, status: err.response.status, reason: err.response.statusText})
+            });
     }
 
     private async _init() {
@@ -50,6 +74,13 @@ export default new class Kwako extends Client {
         let mongod = await MongoClient.connect(url, { 'useUnifiedTopology': true });
         this.db = mongod.db(dbName);
         this.log.debug('db initialized')
+
+        await this.getPledgeData();
+        this.log.debug({msg: 'premium enabled'})
+
+        this.setInterval(async () => {
+            await this.getPledgeData();
+        }, 300000);
 	}
 
     public async start(token: string) {
