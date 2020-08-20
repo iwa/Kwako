@@ -72,6 +72,13 @@ Kwako.on('message', async (msg: Message) => {
 
     if (!cmd || disabled.includes(cmd.help.name)) return;
     else {
+        if (cmd.help.premium && !Kwako.patrons.has(msg.guild.ownerID))
+            return msg.channel.send({ "embed": {
+                "title": "❌ Sorry, but this feature is premium-only.",
+                "description": "[Become a Patron](https://www.patreon.com/iwa) in order to access the new features before everyone else!",
+                "color": 13901365
+            }}).catch(() => { return; });
+
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
             return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
 

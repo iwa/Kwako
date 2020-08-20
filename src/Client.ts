@@ -19,7 +19,7 @@ export default new class Kwako extends Client {
 
     public commands: Collection<any, any> = new Collection();
 
-    protected patrons: Set<string> = new Set();
+    public patrons: Set<string> = new Set();
 
     public constructor() {
 		super(
