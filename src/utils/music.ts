@@ -571,7 +571,8 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
     let queu = queue.get(msg.guild.id);
     const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) });
 
-    video.on('error', () => {
+    video.on('error', err => {
+        Kwako.log.error(err);
         let dispatcher = voiceConnection.dispatcher
         loop.set(msg.guild.id, false);
         dispatcher.end()
