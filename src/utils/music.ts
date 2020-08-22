@@ -593,7 +593,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 embed.setColor('GREEN')
                 embed.setTitle("**:cd: Now Playing:**")
                 embed.setDescription(`[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`)
-                embed.setFooter(`Length : ${timeString}`)
+                embed.setFooter(`Length: ${timeString}`)
                 let infos = await yt.getVideo(queu[0]);
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
