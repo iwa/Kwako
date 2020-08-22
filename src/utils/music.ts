@@ -569,7 +569,7 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) });
+    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) }).on('error', Kwako.log.error);
 
     video.on('error', err => {
         Kwako.log.error(err);
@@ -645,7 +645,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
     let error = false, data;
     let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
     if (queu && !queu.find(song => song === video_url)) {
-        data = await ytdl.getBasicInfo(video_url).catch(() => { error = true; })
+        data = await ytdl.getBasicInfo(video_url).catch(err => { Kwako.log.error(err); error = true; })
         if (!error && data) {
             video_url = data.videoDetails.video_url
             queu.push(video_url)
