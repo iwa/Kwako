@@ -260,14 +260,14 @@ export default class music {
             let q = queu.slice(1, 10);
 
             let videoData = await yt.getVideo(queu[0]);
-            let date = new Date(null)
+            let date = new Date()
             date.setSeconds((videoData.minutes * 60) + videoData.seconds)
             let timeString = date.toISOString().substr(11, 8)
             let desc = `🎶 [${Util.escapeMarkdown(videoData.title)}](${queu[0]}), *${timeString}*\n\n`;
             for await (const song of q) {
                 let videoData = await yt.getVideo(song);
                 if (!videoData) return;
-                let date = new Date(null)
+                let date = new Date()
                 date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 desc = `${desc}${n}. [${Util.escapeMarkdown(videoData.title)}](${song}), *${timeString}*\n`;
