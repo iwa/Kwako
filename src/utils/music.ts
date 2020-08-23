@@ -213,7 +213,7 @@ export default class music {
      * @param args - Arguments in the message
      */
     static async remove(msg: Message, args: string[]) {
-        let queueID: number = parseInt(args[0]);
+        let queueID: number = parseInt(args[0], 10);
 
         if (isNaN(queueID)) return;
         if (queueID < 1) return;
