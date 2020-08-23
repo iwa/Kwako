@@ -73,9 +73,9 @@ export default class music {
                     let queu = queue.get(msg.guild.id) || [];
                     videos.forEach(async (video: Video, index: number, array: Video[]) => {
                         let url = video.url
-                        if (queu && !queu.find(song => song === url)) {
+                        if (!queu.find(song => song === url))
                             queu.push(url)
-                        }
+
                         if (index === array.length - 1){
                             queue.set(msg.guild.id, queu)
                             resolve();
