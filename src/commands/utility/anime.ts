@@ -32,7 +32,7 @@ module.exports.run = (msg: Message, args: string[]) => {
 
         let emote = collected.first().emoji.name
 
-        let res = null;
+        let res;
         switch (emote) {
             case '1️⃣':
                 if(!data.media[0]) return;
