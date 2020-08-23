@@ -1,6 +1,5 @@
-import { Client, Message } from 'discord.js'
+import { Message } from 'discord.js'
 import music from '../../utils/music'
-import { Logger } from 'pino';
 
 module.exports.run = (msg: Message) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
