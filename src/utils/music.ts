@@ -476,7 +476,7 @@ export default class music {
 
         if (!videoData) return;
 
-        let date = new Date(null)
+        let date = new Date()
         date.setSeconds((videoData.minutes * 60) + videoData.seconds)
         let timeString = date.toISOString().substr(11, 8)
 
@@ -586,7 +586,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 let videoData = await yt.getVideo(queu[0]);
                 if (!videoData) return;
 
-                let date = new Date(null)
+                let date = new Date()
                 date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
