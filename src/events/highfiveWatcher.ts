@@ -5,7 +5,7 @@
  * @category Events
  */
 import Kwako from '../Client'
-import { MessageReaction, User, MessageEmbed, Client } from 'discord.js';
+import { MessageReaction, User, MessageEmbed } from 'discord.js';
 
 export default async function highfiveWatcher(reaction: MessageReaction, author: User) {
     if (reaction.emoji.name === '✋') {
