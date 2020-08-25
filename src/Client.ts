@@ -20,6 +20,7 @@ export default new class Kwako extends Client {
     public commands: Collection<any, any> = new Collection();
 
     public patrons: Set<string> = new Set();
+    private golden: Set<string> = new Set();
 
     public constructor() {
 		super(
@@ -35,18 +36,38 @@ export default new class Kwako extends Client {
             .get(link, {
                 headers: { authorization: `Bearer ${process.env.PATREON_TOKEN}` }
             })
-            .then(res => {
+            .then(async res => {
+                let golden: Set<string> = new Set();
+                let goldenId: Set<string> = new Set();
+                for(const thing of res.data.data)
+                    if(thing.attributes.amount_cents >= 1000)
+                        goldenId.add(thing.relationships.patron.data.id)
+
                 let users: Set<string> = new Set();
                 for(const thing of res.data.included)
                     if(thing.type === 'user')
-                        if(thing.attributes.social_connections.discord)
+                        if(thing.attributes.social_connections.discord) {
                             users.add(thing.attributes.social_connections.discord.user_id)
+                            if(goldenId.has(thing.id))
+                                golden.add(thing.attributes.full_name)
+                        }
 
                 this.patrons = users;
+                this.golden = golden;
             })
             .catch(err => {
                 return this.log.error({msg: `Error Fetching Patreon Data:`, status: err.response.status, reason: err.response.statusText})
             });
+    }
+
+    public getGolden() {
+        let string = "";
+        for(const user of this.golden)
+            string = `${string}${user}, `
+
+        string = string.slice(0, (string.length-2));
+
+        return string;
     }
 
     private async _init() {
