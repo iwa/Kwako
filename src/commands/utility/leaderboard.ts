@@ -2,13 +2,17 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities'
 
-module.exports.run = async (msg: Message, args: string[]) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (args.length > 1) return;
 
     switch (args[0]) {
         case "xp":
-        case "exp":
-            return leaderboard(msg, 'exp', false)
+        case "exp": {
+            if(guildConf.useExpSystem)
+                return leaderboard(msg, 'exp', false)
+            else
+                return msg.channel.send(':x: > Sorry, but the experience system has been disabled in the server. Ask someone in the staff to re-enable it in order to use this command.')
+        }
 
         case "pat":
         case "pats":

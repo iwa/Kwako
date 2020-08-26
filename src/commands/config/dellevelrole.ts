@@ -9,6 +9,10 @@ module.exports.run = async (msg: Message, args: string[]) => {
         await Kwako.db.collection('settings').insertOne({ '_id': msg.guild.id });
         guildConf = { '_id': msg.guild.id };
     }
+
+    if(!guildConf.useExpSystem)
+        return msg.channel.send(':x: > You need to enable the experience system in order to use level roles');
+
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
     let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
 
