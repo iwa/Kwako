@@ -55,6 +55,7 @@ Kwako.on('message', async (msg: Message) => {
     if (msg.channel.id === guildConf.suggestionChannel)
         return suggestion(msg);
 
+    guildConf.useExpSystem ||= true;
     if(guildConf.useExpSystem)
         if (!msg.content.startsWith(guildConf.prefix))
             return cooldown.exp(msg, guildConf);

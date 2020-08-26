@@ -12,6 +12,7 @@ export default async function levelCheck (msg: Discord.Message, xp: number, exp:
     let before = utilities.levelInfo(xp);
     let after = utilities.levelInfo((xp + exp));
     if(before.level !== after.level) {
+        showLevelUp ||= true;
         if ((after.level % 5) === 0 && showLevelUp)
             await msg.reply(`you're now level ${after.level}!🎉🎉`).catch(() => {return});
 
