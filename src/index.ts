@@ -13,7 +13,8 @@ const defaultSettings = {
     muteRole: "",
     modLogChannel: "",
     suggestionChannel: "",
-    disabledCommands: [] as string[]
+    disabledCommands: [] as string[],
+    useExpSystem: true
 }
 
 let talkedRecently = new Set();
@@ -53,8 +54,9 @@ Kwako.on('message', async (msg: Message) => {
     if (msg.channel.id === guildConf.suggestionChannel)
         return suggestion(msg);
 
-    if (!msg.content.startsWith(guildConf.prefix))
-        return cooldown.exp(msg);
+    if(guildConf.useExpSystem)
+        if (!msg.content.startsWith(guildConf.prefix))
+            return cooldown.exp(msg);
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
