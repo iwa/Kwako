@@ -1,6 +1,7 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
-const timespan = require("timespan-parser")("min");
+//const timespan = require("timespan-parser")("min");
+import timespan from '../../utils/timespan';
 
 module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
@@ -55,8 +56,11 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
 
         args.shift();
         let time = args.join(" ")
-        let timeParsed = await timespan.parse(time, "msec");
-        let timeParsedString = await timespan.getString(timeParsed, "msec");
+        let timeParsed = await timespan.parse(time, "msec", msg).catch(() => {return;});
+        if(!timeParsed || typeof timeParsed !== 'number') return;
+
+        let timeParsedString = await timespan.getString(timeParsed, "msec", msg);
+        if(!timeParsedString || typeof timeParsedString !== 'string') return;
 
         const embed = new MessageEmbed();
         embed.setColor('RED')

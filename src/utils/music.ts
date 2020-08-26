@@ -7,7 +7,7 @@
 import Kwako from '../Client';
 import { Message, MessageEmbed, Util, VoiceChannel, VoiceConnection, StreamDispatcher } from 'discord.js';
 import ytdl from 'ytdl-core';
-import { YouTube, Video } from 'popyt';
+import { YouTube, Video, Playlist } from 'popyt';
 const yt = new YouTube(process.env.YT_TOKEN)
 
 let queue:Map<string, string[]> = new Map();
@@ -59,53 +59,8 @@ export default class music {
             let emote = collected.first().emoji.name
 
             reply.delete();
-            if (emote === '2️⃣') {
-                const embed = new MessageEmbed();
-                embed.setTitle("Adding all the playlist's videos to the queue...")
-                embed.setFooter(`Added by ${msg.author.username}`)
-                embed.setColor('LUMINOUS_VIVID_PINK')
-                msg.channel.send(embed)
-
-                let videos = await playlist.fetchVideos(0);
-                let errors = 0;
-
-                let bar = new Promise((resolve) => {
-                    let queu = queue.get(msg.guild.id) || [];
-                    videos.forEach(async (video: Video, index: number, array: Video[]) => {
-                        let url = video.url
-                        if (queu && !queu.find(song => song === url)) {
-                            queu.push(url)
-                        }
-                        if (index === array.length - 1){
-                            queue.set(msg.guild.id, queu)
-                            resolve();
-                        }
-                    });
-                });
-
-                bar.then(async () => {
-                    const embedDone = new MessageEmbed();
-                    embedDone.setTitle("**Done!**")
-                    embedDone.setColor('LUMINOUS_VIVID_PINK')
-
-                    if (errors > 0) embedDone.setDescription("Some videos are unavailable :(");
-
-                    msg.channel.send(embedDone)
-
-                    let connection: null | VoiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
-
-                    if (!connection) {
-                        try {
-                            const voiceConnection = await voiceChannel.join();
-                            playSong(msg, voiceConnection, voiceChannel);
-                        }
-                        catch (ex) {
-                            Kwako.log.error(ex)
-                        }
-                    }
-                });
-                return;
-            }
+            if (emote === '2️⃣')
+                return addPlaylistToQueue(msg, playlist, voiceChannel);
         }
 
         if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
@@ -142,50 +97,7 @@ export default class music {
             if (emote != '✅') return reply.delete();
 
             reply.delete()
-            const embed = new MessageEmbed();
-            embed.setTitle("Adding all the playlist's videos to the queue...")
-            embed.setFooter(`Added by ${msg.author.username}`)
-            embed.setColor('LUMINOUS_VIVID_PINK')
-            msg.channel.send(embed)
-
-            let videos = await playlist.fetchVideos(0);
-            let errors = 0;
-
-            let bar = new Promise((resolve) => {
-                let queu = queue.get(msg.guild.id) || [];
-                videos.forEach(async (video: Video, index: number, array: Video[]) => {
-                    let url = video.url
-                    if (queu && !queu.find(song => song === url)) {
-                        queu.push(url)
-                    }
-                    if (index === array.length - 1){
-                        queue.set(msg.guild.id, queu)
-                        resolve();
-                    }
-                });
-            });
-
-            bar.then(async () => {
-                const embedDone = new MessageEmbed();
-                embedDone.setTitle("**Done!**")
-                embedDone.setColor('LUMINOUS_VIVID_PINK')
-
-                if (errors > 0) embedDone.setDescription("Some videos are unavailable :(");
-
-                msg.channel.send(embedDone)
-
-                let connection: null | VoiceConnection = Kwako.voice.connections.find(val => val.channel.id == voiceChannel.id);
-
-                if (!connection) {
-                    try {
-                        const voiceConnection = await voiceChannel.join();
-                        playSong(msg, voiceConnection, voiceChannel);
-                    }
-                    catch (ex) {
-                        Kwako.log.error(ex)
-                    }
-                }
-            });
+            await addPlaylistToQueue(msg, playlist, voiceChannel);
         } else {
             if (ytdl.validateURL(video_url[0])) {
                 launchPlay(msg, voiceChannel, video_url[0])
@@ -213,7 +125,7 @@ export default class music {
      * @param args - Arguments in the message
      */
     static async remove(msg: Message, args: string[]) {
-        let queueID: number = parseInt(args[0]);
+        let queueID: number = parseInt(args[0], 10);
 
         if (isNaN(queueID)) return;
         if (queueID < 1) return;
@@ -260,14 +172,14 @@ export default class music {
             let q = queu.slice(1, 10);
 
             let videoData = await yt.getVideo(queu[0]);
-            let date = new Date(null)
+            let date = new Date()
             date.setSeconds((videoData.minutes * 60) + videoData.seconds)
             let timeString = date.toISOString().substr(11, 8)
             let desc = `🎶 [${Util.escapeMarkdown(videoData.title)}](${queu[0]}), *${timeString}*\n\n`;
             for await (const song of q) {
                 let videoData = await yt.getVideo(song);
                 if (!videoData) return;
-                let date = new Date(null)
+                let date = new Date()
                 date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 desc = `${desc}${n}. [${Util.escapeMarkdown(videoData.title)}](${song}), *${timeString}*\n`;
@@ -476,7 +388,7 @@ export default class music {
 
         if (!videoData) return;
 
-        let date = new Date(null)
+        let date = new Date()
         date.setSeconds((videoData.minutes * 60) + videoData.seconds)
         let timeString = date.toISOString().substr(11, 8)
 
@@ -569,9 +481,10 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) });
+    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) }).on('error', Kwako.log.error);
 
-    video.on('error', () => {
+    video.on('error', err => {
+        Kwako.log.error(err);
         let dispatcher = voiceConnection.dispatcher
         loop.set(msg.guild.id, false);
         dispatcher.end()
@@ -585,14 +498,14 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 let videoData = await yt.getVideo(queu[0]);
                 if (!videoData) return;
 
-                let date = new Date(null)
+                let date = new Date()
                 date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
                 embed.setColor('GREEN')
                 embed.setTitle("**:cd: Now Playing:**")
                 embed.setDescription(`[${Util.escapeMarkdown(videoData.title)}](${queu[0]})`)
-                embed.setFooter(`Length : ${timeString}`)
+                embed.setFooter(`Length: ${timeString}`)
                 let infos = await yt.getVideo(queu[0]);
                 let thumbnail = infos.thumbnails
                 embed.setThumbnail(thumbnail.high.url)
@@ -644,7 +557,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
     let error = false, data;
     let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
     if (queu && !queu.find(song => song === video_url)) {
-        data = await ytdl.getBasicInfo(video_url).catch(() => { error = true; })
+        data = await ytdl.getBasicInfo(video_url).catch(err => { Kwako.log.error(err); error = true; })
         if (!error && data) {
             video_url = data.videoDetails.video_url
             queu.push(video_url)
@@ -714,4 +627,52 @@ async function fetchDispatcher(msg: Message): Promise<StreamDispatcher> {
         let dispatcher = voiceConnection.dispatcher;
         return dispatcher;
     }
+}
+
+
+async function addPlaylistToQueue(msg: Message, playlist: Playlist, voiceChannel: VoiceChannel) {
+    const embed = new MessageEmbed();
+    embed.setTitle("Adding all the playlist's videos to the queue...")
+    embed.setFooter(`Added by ${msg.author.username}`)
+    embed.setColor('LUMINOUS_VIVID_PINK')
+    msg.channel.send(embed)
+
+    let videos = await playlist.fetchVideos(0);
+    let errors = 0;
+
+    let bar = new Promise((resolve) => {
+        let queu = queue.get(msg.guild.id) || [];
+        videos.forEach(async (video: Video, index: number, array: Video[]) => {
+            let url = video.url
+            if (!queu.find(song => song === url))
+                queu.push(url)
+
+            if (index === array.length - 1){
+                queue.set(msg.guild.id, queu)
+                resolve();
+            }
+        });
+    });
+
+    bar.then(async () => {
+        const embedDone = new MessageEmbed();
+        embedDone.setTitle("**Done!**")
+        embedDone.setColor('LUMINOUS_VIVID_PINK')
+
+        if (errors > 0) embedDone.setDescription("Some videos are unavailable :(");
+
+        msg.channel.send(embedDone)
+
+        let connection: null | VoiceConnection = Kwako.voice.connections.find(val => val.channel.id === voiceChannel.id);
+
+        if (!connection) {
+            try {
+                const voiceConnection = await voiceChannel.join();
+                playSong(msg, voiceConnection, voiceChannel);
+            }
+            catch (ex) {
+                Kwako.log.error(ex)
+            }
+        }
+    });
 }

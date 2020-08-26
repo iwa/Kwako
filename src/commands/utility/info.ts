@@ -9,9 +9,19 @@ module.exports.run = async (msg: Message, args: any, guildConf: any) => {
 
     let embed = {
         "embed": {
-            "title": "**Bot Infos**",
-            "description": `Kwako is developed and handled by <@125325519054045184>.\n\nLanguage : \`TypeScript\` using NodeJS\nAPI Access : \`discord.js\` package\n\nYou can access to the index of commands by typing \`${guildConf.prefix}help\`\n\nAll my work is done for free, but you can still financially support me [here](https://www.patreon.com/iwa)`,
-            "color": 13002714,
+            "title": "**About Kwako**",
+            "description": `Kwako is developed and handled by iwa#5222.
+
+📘 Language : \`TypeScript\` using NodeJS
+📲 API Access : \`discord.js\` package
+
+:grey_question: You can access the commands list by typing \`${guildConf.prefix}help\`
+
+💸 All my work is done for free, but you can still financially support me through [my Patreon page](https://www.patreon.com/iwa)
+
+💛 Big thanks to my Golden Patrons:
+${Kwako.getGolden()}`,
+            "color": 15909996,
             "footer": {
                 "text": `Created with ♥ by iwa | Copyright © iwa, v${version}`
             },
@@ -31,6 +41,7 @@ module.exports.run = async (msg: Message, args: any, guildConf: any) => {
 
 module.exports.help = {
     name: 'info',
+    aliases: ['about'],
     usage: "info",
     desc: "Show some info about Kwako",
     perms: ['EMBED_LINKS']

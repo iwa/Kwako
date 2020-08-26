@@ -31,32 +31,28 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
         })
     }
 
-    if (content.length > 5 || content.length < 3) {
+    if (content.length > 5 || content.length < 3)
         return msg.channel.send({ "embed": { "title": `:x: > **Date format is invalid ! Please enter your birthday like that :\n${guildConf.prefix}setbirthday mm/dd**`, "color": 13632027 } });
-    }
 
     let date = new Date(content);
 
-    if (date) {
-        let dd = String(date.getDate()).padStart(2, '0');
-        let mm = String(date.getMonth() + 1).padStart(2, '0');
-        if(dd === 'NaN' || mm === 'NaN') return;
-        let today = `${mm}/${dd}`;
-        await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $set: { birthday: today } }, { upsert: true });
-        const embed = new MessageEmbed();
-        embed.setAuthor("Your birthday is now set to: ", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
-        embed.setTitle(`**${today}**`)
-        embed.setFooter('(mm/dd)')
-        embed.setColor('AQUA')
+    let dd = String(date.getDate()).padStart(2, '0');
+    let mm = String(date.getMonth() + 1).padStart(2, '0');
+    if(dd === 'NaN' || mm === 'NaN') return;
+    let today = `${mm}/${dd}`;
+    await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $set: { birthday: today } }, { upsert: true });
+    const embed = new MessageEmbed();
+    embed.setAuthor("Your birthday is now set to: ", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
+    embed.setTitle(`**${today}**`)
+    embed.setFooter('(mm/dd)')
+    embed.setColor('AQUA')
 
-        try {
-            Kwako.log.info({msg: 'setbirthday', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, date: today});
-            return msg.channel.send(embed);
-        } catch (err) {
-            Kwako.log.error(err);
-        }
-    } else
-        return msg.channel.send({ "embed": { "title": ":x: > **Date format is invalid! Please enter your birthday in mm/dd format.", "color": 13632027 } });
+    try {
+        Kwako.log.info({msg: 'setbirthday', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, date: today});
+        return msg.channel.send(embed);
+    } catch (err) {
+        Kwako.log.error(err);
+    }
 };
 
 module.exports.help = {

@@ -7,7 +7,7 @@ module.exports.run = (msg: Message, args: string[]) => {
     if (args.length !== 0) {
         let channel: any = msg.channel
         if (msg.channel.type !== "dm") {
-            msg.delete().catch(console.error);
+            msg.delete().catch(Kwako.log.error);
             let nb = parseInt(args[0])
             msg.channel.bulkDelete(nb)
                 .then(() => {

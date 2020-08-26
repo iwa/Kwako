@@ -71,8 +71,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
         if (msg.mentions.members.has(Kwako.user.id) && !['slap', 'glare'].includes(type)) {
             let r = utilities.randomInt(reply.length)
             setTimeout(() => {
-                r - 1;
-                msg.reply(reply[r]);
+                msg.reply(reply[r-1]);
             }, 2000)
         }
 

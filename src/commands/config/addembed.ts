@@ -3,8 +3,13 @@ import { Message } from 'discord.js';
 
 module.exports.run = async (msg: Message, args: string[]) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
-    let embed = args.join(' ')
-    embed = JSON.parse(embed)
+    let embedString = args.join(' ')
+    let embed = JSON.parse(embedString)
+
+    if(!embed.embed) {
+        embedString = `{"embed":${embedString}}`
+        embed = JSON.parse(embedString)
+    }
 
     let sent = await msg.channel.send(embed)
 
