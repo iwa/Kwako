@@ -34,7 +34,6 @@
     "pino": "^6.5.1",
     "popyt": "^4.1.1",
     "sodium": "^3.0.2",
-    "timespan-parser": "^1.0.2",
     "utf-8-validate": "^5.0.2",
     "ytdl-core": "^3.2.1"
   },
