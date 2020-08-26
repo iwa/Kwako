@@ -8,11 +8,11 @@ import Kwako from '../Client';
 import Discord from "discord.js";
 import utilities from './utilities';
 
-export default async function levelCheck (msg: Discord.Message, xp: number, exp: number) {
+export default async function levelCheck (msg: Discord.Message, xp: number, exp: number, showLevelUp: boolean) {
     let before = utilities.levelInfo(xp);
     let after = utilities.levelInfo((xp + exp));
     if(before.level !== after.level) {
-        if ((after.level % 5) === 0)
+        if ((after.level % 5) === 0 && showLevelUp)
             await msg.reply(`you're now level ${after.level}!🎉🎉`).catch(() => {return});
 
         let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
