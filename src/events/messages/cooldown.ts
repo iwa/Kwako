@@ -52,7 +52,7 @@ export default class cooldown {
 
             let amount = exp;
             if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
-                amount = Math.floor(amount * 1.5);
+                amount = Math.floor(amount * 1.25);
 
             if(user && user.exp)
                 if(user.exp[msg.guild.id])
