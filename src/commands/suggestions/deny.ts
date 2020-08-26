@@ -12,8 +12,13 @@ module.exports.run = async (msg: Message, args: string[], guildConf: { suggestio
     if(!message)
         return msg.react('❌');
 
-    let channel = await Kwako.channels.fetch(guildConf.suggestionChannel);
-    let suggestion = await (channel as TextChannel).messages.fetch(message)
+    let channel = await Kwako.channels.fetch(guildConf.suggestionChannel).catch(() => { return; });
+    if(!channel)
+        return msg.react('❌');
+
+    let suggestion = await (channel as TextChannel).messages.fetch(message).catch(() => { return; });
+    if(!suggestion)
+        return msg.react('❌');
 
     let embed = suggestion.embeds[0];
 
