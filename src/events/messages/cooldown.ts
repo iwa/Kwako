@@ -45,15 +45,9 @@ export default class cooldown {
         }
     }
 
-    /**
-     * Experience cooldown
-     * @param msg - Message object
-     * @param mongod - MongoDB Client
-     * @param db - Database connection
-     */
     static async exp(msg: Message) {
         if (!cooldownXP.has(msg.author.id)) {
-            let guild = `exp.${msg.guild.id.toString()}`
+            let guild = `exp.${msg.guild.id}`
             let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
 
             let amount = exp;
