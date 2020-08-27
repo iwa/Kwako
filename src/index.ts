@@ -72,7 +72,6 @@ Kwako.on('message', async (msg: Message) => {
         let sent = await msg.channel.send(embed);
         return setTimeout(async () => { await sent.delete(); }, 3000);
     }
-    if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
     if (!cmd || disabled.includes(cmd.help.name)) return;
     else {
