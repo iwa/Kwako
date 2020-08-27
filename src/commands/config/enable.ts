@@ -10,6 +10,11 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     let cmd: any = Kwako.commands.get(args[0]) || Kwako.commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
     if (!cmd) return;
 
+    if(!disabled.includes(cmd.help.name))
+        return msg.channel.send({'embed':{
+            'title': ':x: This command has already been enabled'
+        }})
+
     let filtered = disabled.filter((value) => { return value !== cmd.help.name });
     if (cmd.help.aliases)
         filtered = filtered.filter((value) => { return !cmd.help.aliases.includes(value) });
