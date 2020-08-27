@@ -3,14 +3,14 @@ import { Message } from 'discord.js';
 
 module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
-    if (args.length != 1) return;
+    if (args.length !== 1) return;
 
     let disabled: string[] = guildConf.disabledCommands || [];
 
     let cmd: any = Kwako.commands.get(args[0]) || Kwako.commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(args[0]));
     if (!cmd) return;
 
-    let filtered = disabled.filter((value) => { return value != cmd.help.name });
+    let filtered = disabled.filter((value) => { return value !== cmd.help.name });
     if (cmd.help.aliases)
         filtered = filtered.filter((value) => { return !cmd.help.aliases.includes(value) });
 
