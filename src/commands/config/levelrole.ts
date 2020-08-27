@@ -138,7 +138,6 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
                 'title': `\`${guildConf.prefix}levelrole (add|remove|list)\``
             }});
     }
-
 };
 
 module.exports.help = {
