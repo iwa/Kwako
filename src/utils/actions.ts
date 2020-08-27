@@ -102,8 +102,8 @@ export default async function actionsRun(msg: Message, args: string[], type: str
                 embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
             }
         } else {
-            if(!msg.author.id) return;
-            embed.setDescription(`<@${msg.author.id}> ${verb}${at ? ' at' : ''} you <@${(msg.mentions.members.first()).id}>!`)
+            if(!msg.author || !msg.mentions.users.first()) return;
+            embed.setDescription(`<@${msg.author.id}> ${verb}${at ? ' at' : ''} you <@${(msg.mentions.users.first()).id}>!`)
 
             let n = utilities.randomInt(count.get(type))
             while (lastGif.get(type) === n)
