@@ -56,7 +56,7 @@ export default new class Kwako extends Client {
                 this.golden = golden;
             })
             .catch(err => {
-                return this.log.error({msg: `Error Fetching Patreon Data:`, status: err.response.status, reason: err.response.statusText})
+                return this.log.error({msg: `Error Fetching Patreon Data`, status: err.response.status, reason: err.response.statusText})
             });
     }
 
