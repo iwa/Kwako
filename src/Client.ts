@@ -1,4 +1,4 @@
-import { Collection, Client }from "discord.js";
+import { Collection, Client } from "discord.js";
 
 import log from './Logger';
 
