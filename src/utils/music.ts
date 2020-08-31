@@ -35,7 +35,7 @@ export default class music {
         let video_url = args[0].split('&')
         let playlist = await yt.getPlaylist(args[0]).catch(() => {return});
 
-        if (playlist && !video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
+        if (playlist && !video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
             let reply = await msg.channel.send({
                 "embed": {
                   "title": ":information_source: Your link contains both a video & a playlist link",
