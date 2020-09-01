@@ -34,6 +34,7 @@
     "pino": "^6.5.1",
     "popyt": "^4.1.1",
     "sodium": "^3.0.2",
+    "twitch": "^4.1.4",
     "utf-8-validate": "^5.0.2",
     "ytdl-core": "^3.2.1"
   },
