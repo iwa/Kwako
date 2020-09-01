@@ -63,7 +63,7 @@ export default class music {
                 return addPlaylistToQueue(msg, playlist, voiceChannel);
         }
 
-        if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
+        if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
 
             const playlist = await yt.getPlaylist(video_url[0]).catch(Kwako.log.error)
             if (!playlist) return;
