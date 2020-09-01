@@ -25,8 +25,8 @@ import ready from './events/ready';
 import suggestion from './events/messages/suggestion';
 
 // Process related Events
-process.on('uncaughtException', exception => Kwako.log.error(exception));
-process.on('unhandledRejection', exception => Kwako.log.error(exception));
+process.on('uncaughtException', async exception => Kwako.log.error(exception));
+process.on('unhandledRejection', async exception => Kwako.log.error(exception));
 
 // Bot-User related Events
 Kwako.on('warn', (warn) => Kwako.log.warn(warn));

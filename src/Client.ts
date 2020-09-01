@@ -32,7 +32,7 @@ export default new class Kwako extends Client {
 
     private async getPledgeData() {
         const link = `https://www.patreon.com/api/oauth2/api/campaigns/3028203/pledges`;
-        return await axios
+        return axios
             .get(link, {
                 headers: { authorization: `Bearer ${process.env.PATREON_TOKEN}` }
             })
