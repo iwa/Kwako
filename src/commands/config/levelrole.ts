@@ -66,6 +66,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
             await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
+            await msg.react('🔄');
             await giveRoleToUpper(msg, role, parseInt(args[1], 10));
 
             let addEmbed = new MessageEmbed()
