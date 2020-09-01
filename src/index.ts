@@ -102,6 +102,15 @@ Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
     let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+
+    let levelroles:string = guild.levelroles || "[]";
+    let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
+
+    let roles = levelrolesMap.get(1);
+
+    if (roles && roles[0])
+        await member.roles.add(roles[0]).catch(() => {return});
+
     let guildConf = guild.config || defaultSettings;
 
     let userDB = await Kwako.db.collection('user').findOne({ _id: member.id });
