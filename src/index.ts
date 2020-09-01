@@ -53,7 +53,7 @@ Kwako.on('message', async (msg: Message) => {
     await cooldown.message(msg, guildConf);
 
     if (msg.channel.id === guildConf.suggestionChannel)
-        return suggestion(msg);
+        return suggestion(msg, Kwako.patrons.has(msg.guild.ownerID));
 
     guildConf.useExpSystem &&= true;
     if(guildConf.useExpSystem)
