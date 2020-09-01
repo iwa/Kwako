@@ -283,5 +283,17 @@ Kwako.on('guildBanAdd', async (guild, user) => {
 	return guildBanAdd(guild, user, modLogChannel);
 });
 
+// VC Check if Kwako's alone
+import music from './utils/music'
+Kwako.on('voiceStateUpdate', async (oldState, newState) => {
+    let channel = oldState.channel;
+    if(!channel) return;
+
+    let members = channel.members;
+    if(members.size === 1)
+        if(members.has(Kwako.user.id))
+            return music.stopAlone(oldState.channel);
+});
+
 // Login
 Kwako.start(process.env.TOKEN);

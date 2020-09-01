@@ -284,13 +284,33 @@ export default class music {
         let dispatcher = await fetchDispatcher(msg);
 
         if(dispatcher) {
-            let voiceChannel:VoiceChannel = msg.member.voice.channel;
+            let voiceChannel: VoiceChannel = msg.member.voice.channel;
 
             queue.delete(msg.guild.id)
 
             await msg.react('✅');
             voiceChannel.leave()
             Kwako.log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        }
+    }
+
+    /**
+     * Stops the music
+     * @param voiceChannel - VoiceChannel object
+     */
+    static async stopAlone(voiceChannel: VoiceChannel) {
+        if (!voiceChannel) return;
+
+        let voiceConnection = Kwako.voice.connections.find(val => val.channel.id === voiceChannel.id);
+        let dispatcher;
+        if (voiceConnection)
+            dispatcher = voiceConnection.dispatcher;
+
+        if(dispatcher) {
+            queue.delete(voiceChannel.guild.id)
+
+            voiceChannel.leave();
+            Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
         }
     }
 
