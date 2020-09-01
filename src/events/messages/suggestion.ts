@@ -23,5 +23,5 @@ export default async function suggestion (msg: Message) {
 
     await sent.react('✅');
     await sent.react('❌');
-    return sent.react('👀');
+    return sent.react('🔔');
 }

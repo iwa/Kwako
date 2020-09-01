@@ -6,7 +6,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
 
     let min = 30;
     if(args[0])
-        min = parseInt(args[0]);
+        min = parseInt(args[0], 10);
 
     await Kwako.user.setActivity(`⚠️ update in ${min}min`, { type: 'LISTENING' }).catch(Kwako.log.error);
     await Kwako.user.setStatus('idle').catch(Kwako.log.error);
