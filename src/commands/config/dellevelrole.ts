@@ -17,8 +17,8 @@ module.exports.run = async (msg: Message, args: string[]) => {
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
     let levelrolesMap:Map<number, string> = new Map(JSON.parse(levelroles));
 
-    if(parseInt(args[0], 10) < 2 || parseInt(args[0], 10) > 100)
-        return msg.channel.send(":x: > Please choose a valid level number between 2 and 100!")
+    if(parseInt(args[0], 10) < 2 || parseInt(args[0], 10) > 50)
+        return msg.channel.send(":x: > Please choose a valid level number between 2 and 50!")
 
     levelrolesMap.delete(parseInt(args[0], 10))
 
