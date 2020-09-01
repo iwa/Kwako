@@ -25,7 +25,7 @@
     "@types/pino": "^6.3.0",
     "@types/ws": "^7.2.4",
     "anilist-node": "^1.4.0",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "bufferutil": "^4.0.1",
     "canvas": "^2.6.1",
     "discord.js": "^12.3.1",
@@ -36,7 +36,7 @@
     "sodium": "^3.0.2",
     "twitch": "^4.1.4",
     "utf-8-validate": "^5.0.2",
-    "ytdl-core": "^3.2.1"
+    "ytdl-core": "^3.2.2"
   },
   "devDependencies": {
     "pino-pretty": "^4.1.0"

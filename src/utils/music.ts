@@ -63,7 +63,7 @@ export default class music {
                 return addPlaylistToQueue(msg, playlist, voiceChannel);
         }
 
-        if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
+        if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
 
             const playlist = await yt.getPlaylist(video_url[0]).catch(Kwako.log.error)
             if (!playlist) return;
@@ -555,7 +555,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
 async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string) {
     msg.channel.startTyping();
     let error = false, data;
-    let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
+    let queu = queue.get(msg.guild.id) || [];
     if (queu && !queu.find(song => song === video_url)) {
         data = await ytdl.getBasicInfo(video_url).catch(err => { Kwako.log.error(err); error = true; })
         if (!error && data) {
