@@ -501,7 +501,7 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) }).on('error', Kwako.log.error);
+    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (16384 * 1024) }).on('error', Kwako.log.error);
 
     video.on('error', err => {
         Kwako.log.error(err);
