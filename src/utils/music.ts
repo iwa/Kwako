@@ -508,7 +508,9 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
         let dispatcher = voiceConnection.dispatcher
         loop.set(msg.guild.id, false);
         dispatcher.end()
-        return msg.channel.send(":x: > **There was an unexpected error while playing the video**")
+        return msg.channel.send({'embed':{
+            'title': ':x: There was an unexpected error while playing the video'
+        }})
     })
 
     voiceConnection.play(video, { volume: 0.8, bitrate: 76, highWaterMark: 256, fec: true, plp: 0 })
