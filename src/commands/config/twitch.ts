@@ -97,3 +97,57 @@ module.exports.help = {
     perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES'],
     premium: true
 };
+
+let isStreamChecks: Map<string, number> = new Map();
+
+setInterval(async () => {
+    let streamers = await Kwako.db.collection('twitch').find().toArray();
+
+    for(const data of streamers) {
+
+        let user = await twitchClient.helix.users.getUserByName(data._id);
+
+        if (!user) return Kwako.db.collection('twitch').deleteOne({ _id: data._id });
+
+        let stream = await user.getStream();
+        let isStream = data.isStream || false;
+
+        if (stream && !isStream) {
+            console.log(stream)
+            isStreamChecks.set(data._id, 5);
+            await Kwako.db.collection('twitch').updateOne({ _id: data._id }, { $set: { isStream: true } });
+
+            let channels = data.channels || [];
+            for(const channelID of channels) {
+                let channel = await Kwako.channels.fetch(channelID, true);
+
+                if(!channel) return Kwako.db.collection('twitch').updateOne({ _id: data._id }, { $pull: { channels: channelID } });
+                if(channel.type !== 'text' && channel.type !== 'news') return;
+
+                let thumbnail: string = stream._data.thumbnail_url;
+                thumbnail = thumbnail.replace('{width}', '1280');
+                thumbnail = thumbnail.replace('{height}', '720');
+
+                await (channel as TextChannel).send({'embed':{
+                    "title": `🚨 ${stream._data.user_name} is going live!`,
+                    "description": stream._data.title,
+                    "url": `https://twitch.tv/${stream._data.user_name}`,
+                    "color": 8926419,
+                    "timestamp": new Date(),
+                    "thumbnail": {
+                        "url": thumbnail
+                    }
+                }})
+            }
+        } else if(!stream) {
+            if(isStream && isStreamChecks.get(data._id) === 0) {
+                isStreamChecks.delete(data._id);
+                await Kwako.db.collection('twitch').updateOne({ _id: data._id }, { $set: { isStream: false } });
+            } else {
+                let value = isStreamChecks.get(data._id) || 1;
+                value -= 1;
+                isStreamChecks.set(data._id, value);
+            }
+        }
+    }
+}, 5 * 1000);
