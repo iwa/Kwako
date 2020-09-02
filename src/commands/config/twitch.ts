@@ -34,6 +34,8 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
                 }});
             }
 
+            await msg.react('✅');
+
             await Kwako.db.collection('twitch').updateOne({_id: args[1]}, { $push: { channels: channelID }}, { upsert: true });
 
             Kwako.log.info({msg: 'twitch add', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, data: { streamer: args[1], channel: channelID }})
@@ -54,6 +56,8 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
                     'title': ":x: There's already no notification set-up in this channel for this streamer"
                 }});
             }
+
+            await msg.react('✅');
 
             await Kwako.db.collection('twitch').updateOne({_id: args[1]}, { $pull: { channels: channelIDRemove }}, { upsert: true });
 
