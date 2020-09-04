@@ -49,7 +49,8 @@ export default async function actionsRun(msg: Message, args: string[], type: str
     if (args.length === 0) return;
     if (args.length <= 4) {
         if (msg.mentions.everyone) return;
-        if (msg.mentions.members.has(msg.author.id)) {
+        let foundMe = msg.cleanContent.match(/[mM][eE]+/m);
+        if (msg.mentions.members.has(msg.author.id) || foundMe) {
             if (type === 'slap')
                 return msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! It's mean! :c**`, "color": 13632027 }});
             msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! Lemme do it for you...**`, "color": 13632027 }});
@@ -101,9 +102,23 @@ export default async function actionsRun(msg: Message, args: string[], type: str
 
                 embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
             }
-        } else {
-            if(!msg.author.id) return;
-            embed.setDescription(`<@${msg.author.id}> ${verb}${at ? ' at' : ''} you <@${(msg.mentions.members.first()).id}>!`)
+        } else if (msg.mentions.members.size === 1) {
+            let target = msg.mentions.users.first();
+            if(!msg.author || !target) return;
+            embed.setDescription(`<@${msg.author.id}> ${verb}${at ? ' at' : ''} you <@${target.id}>!`)
+
+            let n = utilities.randomInt(count.get(type))
+            while (lastGif.get(type) === n)
+                n = utilities.randomInt(count.get(type));
+            lastGif.set(type, n);
+
+            embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
+        } else if (Kwako.patrons.has(msg.guild.ownerID)) {
+            let target = args.join(' ');
+            let user = msg.guild.members.cache.find(user => user.user.username.toLowerCase() === target.toLowerCase());
+
+            if(!msg.author || !user) return;
+            embed.setDescription(`<@${msg.author.id}> ${verb}${at ? ' at' : ''} you <@${user.id}>!`)
 
             let n = utilities.randomInt(count.get(type))
             while (lastGif.get(type) === n)

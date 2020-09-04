@@ -21,11 +21,11 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "@types/mongodb": "^3.5.26",
-    "@types/node": "^14.0.27",
+    "@types/node": "^14.6.2",
     "@types/pino": "^6.3.0",
     "@types/ws": "^7.2.4",
-    "anilist-node": "^1.4.0",
-    "axios": "^0.19.2",
+    "anilist-node": "^1.4.1",
+    "axios": "^0.20.0",
     "bufferutil": "^4.0.1",
     "canvas": "^2.6.1",
     "discord.js": "^12.3.1",
@@ -34,10 +34,11 @@
     "pino": "^6.5.1",
     "popyt": "^4.1.1",
     "sodium": "^3.0.2",
+    "twitch": "^4.1.4",
     "utf-8-validate": "^5.0.2",
-    "ytdl-core": "^3.2.1"
+    "ytdl-core": "^3.2.2"
   },
   "devDependencies": {
-    "pino-pretty": "^4.1.0"
+    "pino-pretty": "^4.2.0"
   }
 }

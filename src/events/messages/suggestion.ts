@@ -1,9 +1,31 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
 
-export default async function suggestion (msg: Message) {
+export default async function suggestion (msg: Message, isPremium: boolean) {
     let req = msg.cleanContent;
     let channel = msg.channel;
+
+    if(isPremium) {
+    let found = req.match(/#{1}\d+/gm);
+
+    if(found) {
+        for(const id of found) {
+            let num = id.slice(1, id.length);
+
+            let guild: { _id: string, suggestions: string[] } = await Kwako.db.collection('suggestions').findOne({ _id: msg.guild.id }) || null;
+            if (guild && guild.suggestions) {
+
+                let message = guild.suggestions[parseInt(num, 10) - 1];
+                if (message) {
+
+                    let suggestion = await msg.channel.messages.fetch(message).catch(() => { return; });
+                    if (suggestion)
+                        req = req.replace(id, `[${id}](${suggestion.url})`);
+                }
+            }
+        }
+    }
+    }
 
     let embed = new MessageEmbed();
     embed.setDescription(req);
@@ -23,5 +45,5 @@ export default async function suggestion (msg: Message) {
 
     await sent.react('✅');
     await sent.react('❌');
-    return sent.react('👀');
+    return sent.react('🔔');
 }

@@ -12,9 +12,10 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
     let desc = "";
 
-    for(const command of disabled) {
+    for(const command of disabled)
         desc = `${desc}\`${command}\`, `
-    }
+
+    desc = desc.slice(0, (desc.length-2))
 
     embed.setDescription(desc)
 

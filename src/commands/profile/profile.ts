@@ -31,7 +31,7 @@ async function profileImg(msg: Message, id: string) {
 
     if (!userDB || !userDB.exp) {
         let user = {
-            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
+            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
             username: userDiscord.username,
             positionExp: "?",
             level: 1,
@@ -61,7 +61,7 @@ async function profileImg(msg: Message, id: string) {
     let lvlInfo = utilities.levelInfo(userDB.exp[msg.guild.id]);
 
     let user = {
-        avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
+        avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
         username: userDiscord.username,
         positionExp: (leadXP.findIndex(val => val._id == id) + 1),
         level: lvlInfo.level,

@@ -1,4 +1,4 @@
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 dotenv.config();
 
 import Kwako from './Client';
@@ -13,7 +13,9 @@ const defaultSettings = {
     muteRole: "",
     modLogChannel: "",
     suggestionChannel: "",
-    disabledCommands: [] as string[]
+    disabledCommands: [] as string[],
+    useExpSystem: true,
+    showLevelUp: true
 }
 
 let talkedRecently = new Set();
@@ -23,8 +25,8 @@ import ready from './events/ready';
 import suggestion from './events/messages/suggestion';
 
 // Process related Events
-process.on('uncaughtException', exception => Kwako.log.error(exception));
-process.on('unhandledRejection', exception => Kwako.log.error(exception));
+process.on('uncaughtException', async exception => Kwako.log.error(exception));
+process.on('unhandledRejection', async exception => Kwako.log.error(exception));
 
 // Bot-User related Events
 Kwako.on('warn', (warn) => Kwako.log.warn(warn));
@@ -51,10 +53,12 @@ Kwako.on('message', async (msg: Message) => {
     await cooldown.message(msg, guildConf);
 
     if (msg.channel.id === guildConf.suggestionChannel)
-        return suggestion(msg);
+        return suggestion(msg, Kwako.patrons.has(msg.guild.ownerID));
 
-    if (!msg.content.startsWith(guildConf.prefix))
-        return cooldown.exp(msg);
+    guildConf.useExpSystem &&= true;
+    if(guildConf.useExpSystem)
+        if (!msg.content.startsWith(guildConf.prefix))
+            return cooldown.exp(msg, guildConf);
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
@@ -68,7 +72,6 @@ Kwako.on('message', async (msg: Message) => {
         let sent = await msg.channel.send(embed);
         return setTimeout(async () => { await sent.delete(); }, 3000);
     }
-    if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
     if (!cmd || disabled.includes(cmd.help.name)) return;
     else {
@@ -99,6 +102,15 @@ Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
     let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+
+    let levelroles:string = guild.levelroles || "[]";
+    let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
+
+    let roles = levelrolesMap.get(1);
+
+    if (roles && roles[0])
+        await member.roles.add(roles[0]).catch(() => {return});
+
     let guildConf = guild.config || defaultSettings;
 
     let userDB = await Kwako.db.collection('user').findOne({ _id: member.id });
@@ -269,6 +281,18 @@ Kwako.on('guildBanAdd', async (guild, user) => {
     if(!modLogChannel) return;
 
 	return guildBanAdd(guild, user, modLogChannel);
+});
+
+// VC Check if Kwako's alone
+import music from './utils/music'
+Kwako.on('voiceStateUpdate', async (oldState, newState) => {
+    let channel = oldState.channel;
+    if(!channel) return;
+
+    let members = channel.members;
+    if(members.size === 1)
+        if(members.has(Kwako.user.id))
+            return music.stopAlone(oldState.channel);
 });
 
 // Login

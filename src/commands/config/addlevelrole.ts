@@ -10,10 +10,15 @@ module.exports.run = async (msg: Message, args: string[]) => {
         await Kwako.db.collection('settings').insertOne({ '_id': msg.guild.id });
         guildConf = { '_id': msg.guild.id };
     }
+
+    guildConf.useExpSystem &&= true;
+    if(!guildConf.useExpSystem)
+        return msg.channel.send(':x: > You need to enable the experience system in order to use level roles');
+
     let levelroles:string = guildConf.levelroles ? guildConf.levelroles : "[]";
     let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
 
-    if(parseInt(args[0]) < 2 || parseInt(args[0]) > 50)
+    if(parseInt(args[0], 10) < 2 || parseInt(args[0], 10) > 50)
         return msg.channel.send(":x: > Please choose a valid level number between 2 and 50!")
 
     let role = args[1];
@@ -35,13 +40,13 @@ module.exports.run = async (msg: Message, args: string[]) => {
         return msg.reply('please mention a role!')
 
 
-    levelrolesMap.set(parseInt(args[0]), [role, previous]);
+    levelrolesMap.set(parseInt(args[0], 10), [role, previous]);
 
     levelroles = JSON.stringify([...levelrolesMap]);
 
     await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
-    await giveRoleToUpper(msg, role, parseInt(args[0]));
+    await giveRoleToUpper(msg, role, parseInt(args[0], 10));
 
     await msg.channel.send(`I'll now give the role <@&${role}> to members when they reach the level **${args[0]}** and to members currently above this level.`);
     if (previous)
