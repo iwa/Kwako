@@ -3,12 +3,14 @@ import { Message } from 'discord.js'
 import { loadImage } from 'canvas'
 
 module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
-    if (args.length !== 1) return msg.channel.send({
+    let attachment = msg.attachments.first();
+
+    if (args.length !== 1 && !attachment) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setbackground (url)\` to set an image background in your profile card\n\n\`${guildConf.prefix}setbackground off\` to disable it and use the colored background back`,
           "color": 11462520
         }
-      })
+    })
 
     let url = args[0];
 
@@ -30,6 +32,13 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
               "color": 15431286
             }
           })
+    }
+
+    if(attachment) {
+        let fileName = attachment.name.split('.')
+        let name = `${msg.author.id}.${fileName.pop()}`
+        await download(msg.attachments.first().proxyURL, `image/${name}`);
+        url = `image/${name}`
     }
 
     let image = await loadImage(url).catch(() => {
@@ -108,3 +117,30 @@ function findRes(width: number, height: number) {
 
     return { width: goodWidth, height: goodHeight };
 }
+
+import fs from 'fs'
+import axios from 'axios'
+
+async function download(url: string, filename: string) {
+    //let bar = new Promise((resolve, reject) => {
+    //    request.head(uri, function(err: any, res: { headers: { [x: string]: any; }; }, body: any) {
+    //        request(uri).pipe(fs.createWriteStream(filename)).on('close', () => { resolve() });
+    //    });
+    //});
+    //return bar;
+
+    const writer = fs.createWriteStream(filename)
+
+    const response = await axios({
+      url,
+      method: 'GET',
+      responseType: 'stream'
+    })
+
+    response.data.pipe(writer)
+
+    return new Promise((resolve, reject) => {
+        writer.on('finish', resolve)
+        writer.on('error', reject)
+    })
+};
