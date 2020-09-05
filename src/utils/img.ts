@@ -1,22 +1,8 @@
-/**
- * Image generation function
- * @packageDocumentation
- * @module ImGenerator
- * @category Utils
- */
 import { createCanvas, loadImage, CanvasRenderingContext2D, registerFont } from 'canvas';
 import { MessageAttachment } from 'discord.js';
 
 registerFont('assets/Nunito-SemiBold.ttf', { family: "Nunito" });
 
-/**
- * @param width - Width of the screenshot (in pixels)
- * @param height - Height of the screenshot (in pixels)
- * @param content - HTML content, written in one string
- * @param tag - UID of the user
- * @param prefix - Prefix to define the type of image generated
- * @returns Link to the generated file
- */
 export default async function imGenerator(user: any) {
     const canvas = createCanvas(1016, 336)
     const ctx = canvas.getContext('2d')
