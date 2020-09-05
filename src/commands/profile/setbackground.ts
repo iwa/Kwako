@@ -90,13 +90,21 @@ module.exports.help = {
 
 function findRes(width: number, height: number) {
     let goodWidth = 0, goodHeight = 0;
-    for(let i = 0; i <= width; i += 25) {
-        for(let j = 0; j <= height; j += 8) {
-            if((i / j) === 3.125) {
-                goodWidth = i;
+    if(width >= height) {
+        goodWidth = width;
+        for(let j = 0; j <= height; j += 1) {
+            if(Math.abs((width / j) - (1016 / 356)) < 0.5) {
                 goodHeight = j;
             }
         }
+    } else {
+        goodHeight = height;
+        for(let i = 0; i <= width; i += 1) {
+            if((i / height) === 2.8539) {
+                goodWidth = i;
+            }
+        }
     }
+
     return { width: goodWidth, height: goodHeight };
 }

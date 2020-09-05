@@ -3,23 +3,30 @@ import { MessageAttachment } from 'discord.js';
 
 registerFont('assets/Nunito-SemiBold.ttf', { family: "Nunito" });
 
-export default async function imGenerator(user: any) {
-    const canvas = createCanvas(1016, 336)
+export default async function imGeneratorPremium(user: any) {
+    const canvas = createCanvas(1016, 356)
     const ctx = canvas.getContext('2d')
 
     ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, 1016, 336)
+    ctx.fillRect(0, 0, 1016, 356)
 
     if(!user.userBackground) {
-        let grd = ctx.createLinearGradient(0, 0, 1016, 336);
+        let grd = ctx.createLinearGradient(0, 0, 1016, 356);
         grd.addColorStop(0, `${user.userColor}A6`);
         grd.addColorStop(1, `${user.userColor}`);
 
         ctx.fillStyle = grd;
-        ctx.fillRect(8, 8, 1000, 320);
+        ctx.fillRect(0, 0, 1016, 356);
 
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
-        ctx.fillRect(28, 28, 960, 280)
+        ctx.save();
+        makeRund(ctx, 20, 20, 976, 316, 10);
+
+        ctx.clip();
+
+        ctx.fillStyle = 'rgba(50, 50, 50, 0.08)'
+        ctx.fillRect(20, 20, 976, 316)
+
+        ctx.restore();
     } else {
         let base_image = await loadImage(user.userBackground.url)
         if(base_image) {
@@ -28,20 +35,34 @@ export default async function imGenerator(user: any) {
                 Math.ceil((base_image.height - user.userBackground.height)/2),
                 user.userBackground.width,
                 user.userBackground.height,
-                8, 8, 1000, 320);
+                0, 0, 1016, 356);
 
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
-            ctx.fillRect(28, 28, 960, 280)
+            ctx.save();
+            makeRund(ctx, 20, 20, 976, 316, 10);
+
+            ctx.clip();
+
+            ctx.fillStyle = 'rgba(50, 50, 50, 0.43)'
+            ctx.fillRect(20, 20, 976, 316)
+
+            ctx.restore();
         } else {
-            let grd = ctx.createLinearGradient(0, 0, 1016, 336);
+            let grd = ctx.createLinearGradient(0, 0, 1016, 356);
             grd.addColorStop(0, `${user.userColor}A6`);
             grd.addColorStop(1, `${user.userColor}`);
 
             ctx.fillStyle = grd;
-            ctx.fillRect(8, 8, 1000, 320);
+            ctx.fillRect(0, 0, 1016, 356);
 
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
-            ctx.fillRect(28, 28, 960, 280)
+            ctx.save();
+            makeRund(ctx, 20, 20, 976, 316, 10);
+
+            ctx.clip();
+
+            ctx.fillStyle = 'rgba(50, 50, 50, 0.1)'
+            ctx.fillRect(20, 20, 976, 316)
+
+            ctx.restore();
         }
     }
 
@@ -54,93 +75,172 @@ export default async function imGenerator(user: any) {
     ctx.font = 'bold 56pt Nunito'
     ctx.textAlign = 'left'
     ctx.fillStyle = '#fff'
-    ctx.fillText(username, 328, 148)
+
+    ctx.save();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 3;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+    ctx.shadowBlur = 4;
+
+    ctx.fillText(username, 328, 154)
+
+    ctx.restore()
+
 
     // level
     let level = `Level ${user.level}`
     ctx.font = '300 34pt Nunito'
     ctx.textAlign = 'left'
     ctx.fillStyle = '#fff'
-    ctx.fillText(level, 338, 240)
+
+    ctx.save();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 4;
+
+    ctx.fillText(level, 328, 250)
+
+    ctx.restore();
 
     // rank
     let rank = `#${user.positionExp} | ${user.current}/${user.max}`
     ctx.font = '300 24pt Nunito'
     ctx.textAlign = 'right'
     ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
-    ctx.fillText(rank, 964, 240)
+
+    ctx.save();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 4;
+
+    ctx.fillText(rank, 974, 250)
+
+    ctx.restore();
 
     // pfp
     await make_base(ctx, user.avatar);
 
-    // contour progress bar
-    ctx.save();
-    makeRund(ctx, 326, 248, 650, 19, 10);
+    // premium icon
+    if(user.premium && !user.iwa) {
+        let premium_icon = await loadImage("https://cdn.iwa.sh/img/star.png")
+        ctx.save();
 
-    ctx.clip();
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+        ctx.shadowBlur = 4;
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-    ctx.fillRect(326, 248, 650, 19);
+        ctx.drawImage(premium_icon, 258, 54, 40, 40);
+        ctx.restore();
+    } else if (user.iwa) {
+        let premium_icon = await loadImage("https://cdn.iwa.sh/img/tools.png")
+        ctx.save();
 
-    ctx.restore();
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+        ctx.shadowBlur = 4;
+
+        ctx.drawImage(premium_icon, 258, 54, 40, 40);
+        ctx.restore();
+    }
+    console.log(user.iwa)
+
 
     // progress bar
     ctx.save();
-    makeRund(ctx, 328, 250, 646, 15, 8);
+    makeRund(ctx, 328, 260, 646, 15, 8);
 
     ctx.clip();
     ctx.fillStyle = "rgba(22, 22, 22, 0.8)";
-    ctx.fillRect(328, 250, 646, 15);
+    ctx.fillRect(328, 260, 646, 15);
 
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(328, 250, user.expBar, 15);
+    ctx.fillRect(328, 260, user.expBar, 15);
     var grad = ctx.createLinearGradient(0, 0, 1516, 0);
     grad.addColorStop(0, "transparent");
     grad.addColorStop(1, "rgba(0,0,0,0.4)");
     ctx.fillStyle = grad;
-    ctx.fillRect(328, 250, user.expBar, 15);
+    ctx.fillRect(328, 260, user.expBar, 15);
 
     ctx.restore();
 
     // birthday icon
     let cake_image = await loadImage("https://cdn.iwa.sh/img/cake.png")
     ctx.save();
-    ctx.drawImage(cake_image, 338, 270, 34, 34);
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 4;
+
+    ctx.drawImage(cake_image, 168, 295, 34, 34);
     ctx.restore();
 
     // birthday
     let birthday = `${user.birthday}`
     ctx.font = '300 24pt Nunito'
     ctx.textAlign = 'left'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)'
-    ctx.fillText(birthday, 382, 299)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
+
+    ctx.save();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 4;
+
+    ctx.fillText(birthday, 212, 324)
 
     // birthday format
     let birthdayFormat = "(mm/dd)"
     ctx.font = '300 14pt Nunito'
     ctx.textAlign = 'left'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'
-    ctx.fillText(birthdayFormat, 472, 297)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'
+    ctx.fillText(birthdayFormat, 302, 322)
+
+    ctx.restore()
 
     // switch icon
     let switch_image = await loadImage("https://cdn.iwa.sh/img/switch.png")
     ctx.save();
-    ctx.drawImage(switch_image, 658, 272, 30, 30);
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 4;
+
+    ctx.drawImage(switch_image, 592, 299, 26, 26);
     ctx.restore();
 
-    // switch
+    // switch fc
     let fc = `${user.fc}`
     ctx.font = '300 24pt Nunito'
     ctx.textAlign = 'left'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)'
-    ctx.fillText(fc, 698, 298)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
+
+    ctx.save();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 4;
+
+    ctx.fillText(fc, 628, 324)
+
+    ctx.restore();
 
     // made with love
     let made = `made with ♥ by iwa`
     ctx.font = '300 12pt Nunito'
     ctx.textAlign = 'center'
     ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
-    ctx.fillText(made, 488, 324)
+    ctx.fillText(made, 488, 354)
 
     return new MessageAttachment(canvas.toBuffer('image/jpeg', {quality: 1}), 'rank.jpg')
 }
@@ -148,9 +248,9 @@ export default async function imGenerator(user: any) {
 async function make_base(ctx: CanvasRenderingContext2D, url: string) {
     let base_image = await loadImage(url)
     ctx.save();
-    makeRund(ctx, 28, 28, 280, 280, 140);
+    makeRund(ctx, 38, 28, 260, 260, 130);
     ctx.clip();
-    ctx.drawImage(base_image, 28, 28, 280, 280);
+    ctx.drawImage(base_image, 38, 28, 260, 260);
     ctx.restore();
 }
 
