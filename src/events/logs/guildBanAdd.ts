@@ -22,7 +22,9 @@ export default async function guildBanAdd(guild: Guild, user: User | PartialUser
 	const { executor, target, createdTimestamp, reason } = banLog;
 
 	if ((target as User).id === user.id) {
-        let channel = await Kwako.channels.fetch(modLogChannel);
+        let channel = await Kwako.channels.fetch(modLogChannel).catch(() => {return});
+        if(!channel) return Kwako.db.collection('settings').updateOne({ _id: guild.id }, { $set: { 'config.modLogChannel': "" } });
+
         let embed = new MessageEmbed();
         embed.setTitle("Member banned");
         embed.setDescription(`Who: ${user.tag} (<@${user.id}>)\nBy: ${executor.tag} (<@${executor.id}>)\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);
