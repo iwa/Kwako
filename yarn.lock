@@ -1020,10 +1020,10 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-pino-pretty@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-4.2.0.tgz#522732d8579e13ccd648dd12876fb91257354dc7"
-  integrity sha512-CBFLgxMj/cJOANqZs+Xcjdgi1v40TJP3xMTkSN2xuOvX+03uAAHXf9SEU+1DHu/1kw44H2c31VYCImx0QewQ6w==
+pino-pretty@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-4.2.1.tgz#fb2508d0d77cae00dc5fe5006755bfd454a73c32"
+  integrity sha512-WyO/n6c6T2gj0ioYGFUFbrvyUoERK37Lu0liLxMIJnp1YaaG+XZBU2TAQB0yVJNb+7T+oDh9t8HGMzk00jy+tw==
   dependencies:
     "@hapi/bourne" "^2.0.0"
     args "^5.0.1"

@@ -39,6 +39,6 @@
     "ytdl-core": "^3.2.2"
   },
   "devDependencies": {
-    "pino-pretty": "^4.2.0"
+    "pino-pretty": "^4.2.1"
   }
 }
