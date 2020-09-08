@@ -51,8 +51,11 @@ export default class cooldown {
             let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
 
             let amount = exp;
-            if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
-                amount = Math.floor(amount * 1.25);
+
+            let boosterBenefits = guildConf.boosterBenefits || true;
+            if(boosterBenefits)
+                if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
+                    amount = Math.floor(amount * 1.25);
 
             if(user && user.exp)
                 if(user.exp[msg.guild.id])

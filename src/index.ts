@@ -15,7 +15,8 @@ const defaultSettings = {
     suggestionChannel: "",
     disabledCommands: [] as string[],
     useExpSystem: true,
-    showLevelUp: true
+    showLevelUp: true,
+    boosterBenefits: true
 }
 
 let talkedRecently = new Set();
