@@ -17,7 +17,8 @@ const defaultSettings = {
     useExpSystem: true,
     showLevelUp: true,
     boosterBenefits: true,
-    customEmote: ""
+    customEmote: "",
+    starReactions: 5
 }
 
 let talkedRecently = new Set();
@@ -223,8 +224,9 @@ Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) =
     if(!starboardChannel) return;
 
     let customEmote = guildConf.customEmote || "";
+    let starReactions = guildConf.starReactions || 5;
 
-    await starboard.check(reaction, author, starboardChannel, customEmote);
+    await starboard.check(reaction, author, starboardChannel, customEmote, starReactions);
 });
 
 // Reaction Role Events

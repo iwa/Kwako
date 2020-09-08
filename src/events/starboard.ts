@@ -43,11 +43,11 @@ export default class starboard {
      * @param {User} author - Author Object
      * @param {Client} bot - Discord Client object
      */
-    static async check(reaction: MessageReaction, author: User, starboardChannel: string, customEmote: string) {
+    static async check(reaction: MessageReaction, author: User, starboardChannel: string, customEmote: string, starReactions: number) {
         if (reaction.users.cache.find(val => val.id === Kwako.user.id)) return;
         if (customEmote !== "") {
             if (reaction.emoji.id === customEmote) {
-                if (reaction.count >= 5) {
+                if (reaction.count >= starReactions) {
                     let msg = reaction.message;
                     let content;
                     if (!msg.cleanContent)
@@ -60,7 +60,7 @@ export default class starboard {
             }
         } else {
             if (reaction.emoji.name === '⭐') {
-                if (reaction.count >= 5) {
+                if (reaction.count >= starReactions) {
                     let msg = reaction.message;
                     let content;
                     if (!msg.cleanContent)
