@@ -25,7 +25,9 @@ export default async function guildMemberRemove(member: GuildMember | PartialGu
 	const { executor, target, createdTimestamp, reason } = kickLog;
 
 	if ((target as User).id === member.id) {
-        let channel = await Kwako.channels.fetch(modLogChannel);
+        let channel = await Kwako.channels.fetch(modLogChannel).catch(() => {return});
+        if(!channel) return Kwako.db.collection('settings').updateOne({ _id: member.guild.id }, { $set: { 'config.modLogChannel': "" } });
+
         let embed = new MessageEmbed();
         embed.setTitle("Member kicked");
         embed.setDescription(`Who: ${member.user.tag} (<@${member.id}>)\nBy: ${executor.tag} (<@${executor.id}>)\nReason:\`\`\`${reason ? reason : "no reason"}\`\`\``);
