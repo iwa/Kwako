@@ -47,7 +47,7 @@ Kwako.on('message', async (msg: Message) => {
     if (!msg) return;
     if (msg.author.bot) return;
     if (!msg.guild) return Kwako.log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
-    if (msg.channel.type != "text") return;
+    if (msg.channel.type !== "text") return;
 
     let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
