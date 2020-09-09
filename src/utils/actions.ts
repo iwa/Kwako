@@ -23,7 +23,9 @@ let lastGif = new Map([
     ['slap', 0],
     ['squish', 0],
     ['glare', 0],
-    ['tickle', 0]
+    ['tickle', 0],
+    ['peck', 0],
+    ['yeet', 0]
 ]);
 
 /** define the number of gifs available */
@@ -35,7 +37,9 @@ let count = new Map([
     ['slap', 11],
     ['squish', 4],
     ['glare', 6],
-    ['tickle', 5]
+    ['tickle', 5],
+    ['peck', 0],
+    ['yeet', 3]
 ]);
 
 /**
