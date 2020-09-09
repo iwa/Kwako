@@ -678,7 +678,7 @@ async function addPlaylistToQueue(msg: Message, playlist: Playlist, voiceChannel
 
     bar.then(async () => {
         const embedDone = new MessageEmbed();
-        embedDone.setTitle("**Done!**")
+        embedDone.setTitle("Done!")
         embedDone.setColor('LUMINOUS_VIVID_PINK')
 
         if (errors > 0) embedDone.setDescription("Some videos are unavailable :(");
