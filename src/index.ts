@@ -59,8 +59,8 @@ Kwako.on('message', async (msg: Message) => {
         return suggestion(msg, Kwako.patrons.has(msg.guild.ownerID));
 
     guildConf.useExpSystem &&= true;
-    if(guildConf.useExpSystem)
-        if (!msg.content.startsWith(guildConf.prefix))
+    if (!msg.content.startsWith(guildConf.prefix))
+        if(guildConf.useExpSystem)
             return cooldown.exp(msg, guildConf);
 
     let args = msg.content.slice(1).trim().split(/ +/g);
