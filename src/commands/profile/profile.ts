@@ -48,18 +48,7 @@ async function profileImg(msg: Message, id: string) {
                 fc: "not registered"
             }
 
-            if(user.userColor === '#000000') user.userColor = '#444444';
-            let file = await imGenerator(user);
-
-            try {
-                Kwako.log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
-                return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
-            } catch (err) {
-                Kwako.log.error(err)
-                return msg.channel.send({'embed':{
-                    'title': ':x: An error occured. Please retry later.'
-                }})
-            }
+            return sendRankCard(msg, user, userDiscord);
         }
     }
 
@@ -84,6 +73,10 @@ async function profileImg(msg: Message, id: string) {
         fc: userDB.fc || "not registered"
     }
 
+    return sendRankCard(msg, user, userDiscord);
+}
+
+async function sendRankCard(msg: Message, user: { userColor: string; }, userDiscord: any) {
     if(user.userColor === '#000000') user.userColor = '#444444';
     let file = await imGenerator(user);
 
