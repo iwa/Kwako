@@ -312,5 +312,11 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
             return music.stopAlone(oldState.channel);
 });
 
+// Check if it's someone's birthday, and send a HBP message at 8am UTC
+import birthdayCheck from './events/birthdayCheck';
+setInterval(async () => {
+    await birthdayCheck()
+}, 3600000);
+
 // Login
 Kwako.start(process.env.TOKEN);
