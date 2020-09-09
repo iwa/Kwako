@@ -31,7 +31,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
                     'title': ':x: Please choose a valid level number between 1 and 50!'
                 }})
 
-            let role = args[2] || null;
+            let role = args[2] || "";
             if(role.startsWith('<@&') && role.endsWith('>')) {
                 role = role.slice(3, (role.length-1))
                 let chan = await msg.guild.roles.fetch(role);

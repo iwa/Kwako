@@ -53,7 +53,7 @@ export default class cooldown {
             let amount = exp;
 
             let boosterBenefits = guildConf.boosterBenefits || true;
-            if(boosterBenefits)
+            if(boosterBenefits ===  true)
                 if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
                     amount = Math.floor(amount * 1.25);
 

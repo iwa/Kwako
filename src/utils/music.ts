@@ -578,7 +578,7 @@ async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: s
     msg.channel.startTyping();
     let error = false, data;
     let queu = queue.get(msg.guild.id) || [];
-    if (queu && !queu.find(song => song === video_url)) {
+    if (!queu.find(song => song === video_url)) {
         data = await ytdl.getBasicInfo(video_url).catch(err => { Kwako.log.error(err); error = true; })
         if (!error && data) {
             video_url = data.videoDetails.video_url
