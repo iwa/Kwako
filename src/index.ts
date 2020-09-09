@@ -58,10 +58,19 @@ Kwako.on('message', async (msg: Message) => {
     if (msg.channel.id === guildConf.suggestionChannel)
         return suggestion(msg, Kwako.patrons.has(msg.guild.ownerID));
 
-    guildConf.useExpSystem &&= true;
-    if (!msg.content.startsWith(guildConf.prefix))
+    if (!msg.content.startsWith(guildConf.prefix)) {
+        if(msg.mentions.has(Kwako.user.id))
+            return msg.channel.send({'embed':{
+                'title': 'My prefix here is:',
+                'description': `\`${guildConf.prefix}\``
+            }})
+
+        guildConf.useExpSystem &&= true;
         if(guildConf.useExpSystem)
             return cooldown.exp(msg, guildConf);
+
+        return;
+    }
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
