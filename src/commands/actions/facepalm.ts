@@ -1,11 +1,21 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
+import utilities from '../../utils/utilities'
+
+let nbGifs = 5;
+let lastGif = 0;
 
 module.exports.run = async (msg: Message) => {
     const embed = new MessageEmbed();
     embed.setColor('#F2DEB0')
     embed.setDescription(`**<@${msg.author.id}>**, facepalm!`)
-    embed.setImage('https://i.imgur.com/zqUDpIk.gif');
+
+    let n = utilities.randomInt(nbGifs)
+    while (lastGif === n)
+        n = utilities.randomInt(nbGifs);
+    lastGif = n;
+
+    embed.setImage(`https://${process.env.CDN_URL}/img/facepalm/${n}.gif`);
 
     return msg.channel.send(embed)
         .then(() => {
