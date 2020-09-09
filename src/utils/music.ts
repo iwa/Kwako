@@ -65,7 +65,7 @@ export default class music {
 
         if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
 
-            const playlist = await yt.getPlaylist(video_url[0]).catch(Kwako.log.error)
+            const playlist = await yt.getPlaylist(video_url[0]).catch(err => Kwako.log.error(err))
             if (!playlist) return;
 
             let reply = await msg.channel.send({
@@ -501,7 +501,7 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (16384 * 1024) }).on('error', Kwako.log.error);
+    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (16384 * 1024) }).on('error', err => Kwako.log.error(err));
 
     video.on('error', err => {
         Kwako.log.error(err);
@@ -563,7 +563,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 skippers.delete(msg.guild.id);
                 playSong(msg, voiceConnection, voiceChannel)
             }
-        }).on('error', Kwako.log.error);
+        }).on('error', err => Kwako.log.error(err));
 }
 
 /**

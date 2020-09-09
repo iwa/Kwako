@@ -12,7 +12,7 @@ module.exports.run = (msg: Message, args: string[]) => {
             }
         })
             .then(() => { Kwako.log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: x}) })
-            .catch(Kwako.log.error);
+            .catch(err => Kwako.log.error(err));
     } else {
         msg.channel.send({
             "embed": {
@@ -21,7 +21,7 @@ module.exports.run = (msg: Message, args: string[]) => {
             }
         })
             .then(() => { Kwako.log.info({msg: 'roll', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, x: 100}) })
-            .catch(Kwako.log.error);
+            .catch(err => Kwako.log.error(err));
     }
 };
 

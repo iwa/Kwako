@@ -14,8 +14,8 @@ let { version } = require('../../package.json');
  * - Cache all messages needed for Reaction Roles system
  */
 export default async function ready() {
-    await Kwako.user.setActivity(`kwako.iwa.sh | v${version}`, { type: 'WATCHING' }).catch(Kwako.log.error);
-    await Kwako.user.setStatus("online").catch(Kwako.log.error)
+    await Kwako.user.setActivity(`kwako.iwa.sh | v${version}`, { type: 'WATCHING' }).catch(err => Kwako.log.error(err));
+    await Kwako.user.setStatus("online").catch(err => Kwako.log.error(err))
 
     let allMsg = Kwako.db.collection('msg').find()
     if(allMsg) {

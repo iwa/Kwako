@@ -211,14 +211,14 @@ Kwako.on('guildCreate', async guild => {
 
     await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
 
-    await axios.get('http://localhost:8080/api/guilds/update').catch(Kwako.log.error);
+    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
 
     Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 Kwako.on("guildDelete", async guild => {
     await Kwako.db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    await axios.get('http://localhost:8080/api/guilds/update').catch(Kwako.log.error);
+    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
