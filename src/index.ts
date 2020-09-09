@@ -4,7 +4,7 @@ dotenv.config();
 import Kwako from './Client';
 
 import { MessageReaction, User, Message, MessageEmbed, TextChannel } from 'discord.js';
-import http from 'http';
+import axios from "axios";
 
 const defaultSettings = {
     prefix: "!",
@@ -210,14 +210,15 @@ Kwako.on('guildCreate', async guild => {
     }
 
     await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
-    http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
+
+    await axios.get('http://localhost:8080/api/guilds/update').catch(Kwako.log.error);
 
     Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 Kwako.on("guildDelete", async guild => {
     await Kwako.db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
+    await axios.get('http://localhost:8080/api/guilds/update').catch(Kwako.log.error);
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
