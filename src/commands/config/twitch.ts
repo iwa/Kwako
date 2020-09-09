@@ -1,8 +1,10 @@
 import Kwako from '../../Client';
 import { Message, TextChannel } from 'discord.js';
 
-const twitch = require('twitch').default;
-const twitchClient = twitch.withClientCredentials(process.env.TWITCHCLIENTID, process.env.TWITCHCLIENTSECRET);
+import { ApiClient } from 'twitch';
+import { ClientCredentialsAuthProvider } from 'twitch-auth';
+const authProvider = new ClientCredentialsAuthProvider(process.env.TWITCHCLIENTID, process.env.TWITCHCLIENTSECRET);
+const twitchClient = new ApiClient({ authProvider });
 
 module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
@@ -128,14 +130,14 @@ setInterval(async () => {
                 if(!channel) return Kwako.db.collection('twitch').updateOne({ _id: data._id }, { $pull: { channels: channelID } });
                 if(channel.type !== 'text' && channel.type !== 'news') return;
 
-                let thumbnail: string = stream._data.thumbnail_url;
+                let thumbnail: string = stream.thumbnailUrl;
                 thumbnail = thumbnail.replace('{width}', '1280');
                 thumbnail = thumbnail.replace('{height}', '720');
 
                 await (channel as TextChannel).send({'embed':{
-                    "title": `🚨 ${stream._data.user_name} is going live!`,
-                    "description": stream._data.title,
-                    "url": `https://twitch.tv/${stream._data.user_name}`,
+                    "title": `🚨 ${stream.userDisplayName} is going live!`,
+                    "description": stream.title,
+                    "url": `https://twitch.tv/${stream.userDisplayName}`,
                     "color": 8926419,
                     "timestamp": new Date(),
                     "thumbnail": {
