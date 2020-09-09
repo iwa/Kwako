@@ -169,7 +169,7 @@ Kwako.on("guildMemberAdd", async member => {
 Kwako.on('guildCreate', async guild => {
     if(!guild.available) return;
 
-    let channel = guild.channels.cache.find(val => val.name.includes('general') && val.type === 'text');
+    let channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
     if(channel) {
         await (channel as TextChannel).send({
             "embed": {
@@ -208,6 +208,7 @@ Kwako.on('guildCreate', async guild => {
             await (channel as TextChannel).send(':x: **Some needed perms are unavailable. Please give me all the required permissions or I won\'t be able to work normally.**').catch(() => {return;})
         }
     }
+
     await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
     http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
 
