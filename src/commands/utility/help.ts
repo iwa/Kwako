@@ -97,13 +97,13 @@ async function sendHelp(msg: Message, guildConf: any) {
             await msg.channel.send(member)
             await msg.author.send(mod)
         } catch (ex) {
-            return msg.channel.send(":x: > **Please open your DMs, I can't reach you**")
+            return msg.channel.send(":x: **Please open your DMs, I can't reach you**")
         }
     else
         try {
             await msg.channel.send(member)
         } catch {
-            return msg.channel.send(":x: > **Commands list loading, redo the commands in a few seconds!**")
+            return msg.channel.send(":x: **Commands list loading, redo the command in a few seconds!**")
         }
 }
 
