@@ -85,7 +85,7 @@ module.exports.help = {
     aliases: ['commands', 'command'],
     usage: "help",
     desc: "Sends you the list of the commands available",
-    perms: ['EMBED_LINKS', 'MANAGE_ROLES']
+    perms: ['EMBED_LINKS']
 };
 
 async function sendHelp(msg: Message, guildConf: any) {
