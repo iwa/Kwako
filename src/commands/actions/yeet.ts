@@ -6,7 +6,7 @@ module.exports.run = (msg: Message, args: string[]) => {
 };
 
 module.exports.help = {
-    name: 'Yeet',
+    name: 'yeet',
     usage: "Yeet (mention someone) [someone else]",
     desc: "Yeet people by mentioning them",
     perms: ['EMBED_LINKS'],
