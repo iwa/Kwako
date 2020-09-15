@@ -1,4 +1,4 @@
-import { Collection, Client }from "discord.js";
+import { Collection, Client } from "discord.js";
 
 import log from './Logger';
 
@@ -32,7 +32,7 @@ export default new class Kwako extends Client {
 
     private async getPledgeData() {
         const link = `https://www.patreon.com/api/oauth2/api/campaigns/3028203/pledges`;
-        return await axios
+        return axios
             .get(link, {
                 headers: { authorization: `Bearer ${process.env.PATREON_TOKEN}` }
             })
@@ -56,7 +56,7 @@ export default new class Kwako extends Client {
                 this.golden = golden;
             })
             .catch(err => {
-                return this.log.error({msg: `Error Fetching Patreon Data:`, status: err.response.status, reason: err.response.statusText})
+                return this.log.error({msg: `Error Fetching Patreon Data`, status: err.response.status, reason: err.response.statusText})
             });
     }
 

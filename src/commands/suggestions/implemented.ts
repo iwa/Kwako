@@ -27,7 +27,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: { suggestio
     let desc = embed.description;
     embed.setDescription(`${desc}\n\n**✅ Implemented by ${msg.author.username}**\n\n`);
 
-    let reactions = suggestion.reactions.resolve('👀');
+    let reactions = suggestion.reactions.resolve('🔔');
     let users = await reactions.users.fetch();
 
     let embedDM = new MessageEmbed();

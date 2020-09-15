@@ -6,14 +6,13 @@ export default class utilities {
 
     static levelInfo(xp: number): { 'level': number, 'current': number, 'max': number } {
         let x = 100;
-        for (let i = 1; i < 50; i++) {
-            if (xp < x) {
+        for (let i = 1; i <= 50; i++) {
+            if (xp < x || i === 50)
                 return { 'level': i, 'current': xp, 'max': x }
-            }
             xp -= x;
             x = Math.round(Math.log(Math.pow(x, 2))+(x*1.12))
         }
-        return { 'level': 50, 'current': 1, 'max': 1 }
+        return { 'level': 1, 'current': 0, 'max': 100 }
     }
 
     static expForLevel(level: number): number {

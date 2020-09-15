@@ -45,7 +45,7 @@ module.exports.run = (msg: Message, args: string[]) => {
     embed.setDescription(res);
 
     Kwako.log.info({msg: 'rps', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
-    return msg.channel.send(embed).catch(Kwako.log.error)
+    return msg.channel.send(embed).catch(err => Kwako.log.error(err))
 };
 
 module.exports.help = {

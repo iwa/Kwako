@@ -1,10 +1,10 @@
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 dotenv.config();
 
 import Kwako from './Client';
 
 import { MessageReaction, User, Message, MessageEmbed, TextChannel } from 'discord.js';
-import http from 'http';
+import axios from "axios";
 
 const defaultSettings = {
     prefix: "!",
@@ -13,7 +13,12 @@ const defaultSettings = {
     muteRole: "",
     modLogChannel: "",
     suggestionChannel: "",
-    disabledCommands: [] as string[]
+    disabledCommands: [] as string[],
+    useExpSystem: true,
+    showLevelUp: true,
+    boosterBenefits: true,
+    customEmote: "",
+    starReactions: 5
 }
 
 let talkedRecently = new Set();
@@ -23,8 +28,8 @@ import ready from './events/ready';
 import suggestion from './events/messages/suggestion';
 
 // Process related Events
-process.on('uncaughtException', exception => Kwako.log.error(exception));
-process.on('unhandledRejection', exception => Kwako.log.error(exception));
+process.on('uncaughtException', async exception => Kwako.log.error(exception));
+process.on('unhandledRejection', async exception => Kwako.log.error(exception));
 
 // Bot-User related Events
 Kwako.on('warn', (warn) => Kwako.log.warn(warn));
@@ -42,7 +47,7 @@ Kwako.on('message', async (msg: Message) => {
     if (!msg) return;
     if (msg.author.bot) return;
     if (!msg.guild) return Kwako.log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
-    if (msg.channel.type != "text") return;
+    if (msg.channel.type !== "text") return;
 
     let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
@@ -51,10 +56,21 @@ Kwako.on('message', async (msg: Message) => {
     await cooldown.message(msg, guildConf);
 
     if (msg.channel.id === guildConf.suggestionChannel)
-        return suggestion(msg);
+        return suggestion(msg, Kwako.patrons.has(msg.guild.ownerID));
 
-    if (!msg.content.startsWith(guildConf.prefix))
-        return cooldown.exp(msg);
+    if (!msg.content.startsWith(guildConf.prefix)) {
+        if(msg.mentions.has(Kwako.user.id))
+            return msg.channel.send({'embed':{
+                'title': 'My prefix here is:',
+                'description': `\`${guildConf.prefix}\``
+            }})
+
+        guildConf.useExpSystem &&= true;
+        if(guildConf.useExpSystem)
+            return cooldown.exp(msg, guildConf);
+
+        return;
+    }
 
     let args = msg.content.slice(1).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
@@ -68,7 +84,6 @@ Kwako.on('message', async (msg: Message) => {
         let sent = await msg.channel.send(embed);
         return setTimeout(async () => { await sent.delete(); }, 3000);
     }
-    if (process.env.SLEEP === '1' && msg.author.id != process.env.IWA) return;
 
     if (!cmd || disabled.includes(cmd.help.name)) return;
     else {
@@ -99,6 +114,15 @@ Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
     let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+
+    let levelroles:string = guild.levelroles || "[]";
+    let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
+
+    let roles = levelrolesMap.get(1);
+
+    if (roles && roles[0])
+        await member.roles.add(roles[0]).catch(() => {return});
+
     let guildConf = guild.config || defaultSettings;
 
     let userDB = await Kwako.db.collection('user').findOne({ _id: member.id });
@@ -145,7 +169,7 @@ Kwako.on("guildMemberAdd", async member => {
 Kwako.on('guildCreate', async guild => {
     if(!guild.available) return;
 
-    let channel = guild.channels.cache.find(val => val.name.includes('general') && val.type === 'text');
+    let channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
     if(channel) {
         await (channel as TextChannel).send({
             "embed": {
@@ -184,15 +208,17 @@ Kwako.on('guildCreate', async guild => {
             await (channel as TextChannel).send(':x: **Some needed perms are unavailable. Please give me all the required permissions or I won\'t be able to work normally.**').catch(() => {return;})
         }
     }
+
     await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
-    http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
+
+    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
 
     Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 Kwako.on("guildDelete", async guild => {
     await Kwako.db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
-    http.get('http://localhost:8080/api/guilds/update').on("error", Kwako.log.error);
+    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
@@ -208,7 +234,10 @@ Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) =
     let starboardChannel = guildConf.starboardChannel;
     if(!starboardChannel) return;
 
-    await starboard.check(reaction, author, starboardChannel);
+    let customEmote = guildConf.customEmote || "";
+    let starReactions = guildConf.starReactions || 5;
+
+    await starboard.check(reaction, author, starboardChannel, customEmote, starReactions);
 });
 
 // Reaction Role Events
@@ -270,6 +299,24 @@ Kwako.on('guildBanAdd', async (guild, user) => {
 
 	return guildBanAdd(guild, user, modLogChannel);
 });
+
+// VC Check if Kwako's alone
+import music from './utils/music'
+Kwako.on('voiceStateUpdate', async (oldState, newState) => {
+    let channel = oldState.channel;
+    if(!channel) return;
+
+    let members = channel.members;
+    if(members.size === 1)
+        if(members.has(Kwako.user.id))
+            return music.stopAlone(oldState.channel);
+});
+
+// Check if it's someone's birthday, and send a HBP message at 8am UTC
+import birthdayCheck from './events/birthdayCheck';
+setInterval(async () => {
+    await birthdayCheck()
+}, 3600000);
 
 // Login
 Kwako.start(process.env.TOKEN);

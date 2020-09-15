@@ -1,16 +1,18 @@
 import Kwako from '../../Client'
 import { Message } from 'discord.js'
-import imGenerator from '../../utils/img';
+
+import imGenerator from '../../utils/img'
 import utilities from '../../utils/utilities'
 
-module.exports.run = (msg: Message, args: string[]) => {
-    if (args.length == 1) {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+    if (args.length === 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
         if (!mention || mention.bot) return;
         return profileImg(msg, mention.id);
-    } else
-        return profileImg(msg, msg.author.id);
+    }
+
+    return profileImg(msg, msg.author.id);
 };
 
 module.exports.help = {
@@ -30,28 +32,23 @@ async function profileImg(msg: Message, id: string) {
     let memberDiscord = await msg.guild.members.fetch(id)
 
     if (!userDB || !userDB.exp) {
-        let user = {
-            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
-            username: userDiscord.username,
-            positionExp: "?",
-            level: 1,
-            current: 0,
-            max: 100,
-            userColor: memberDiscord.displayHexColor,
-            expBar: 0,
-            birthday: "--/--",
-            fc: "not registered"
-        }
+        if(!userDB.exp[msg.guild.id]) {
+            let user = {
+                avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
+                username: userDiscord.username,
+                premium: Kwako.patrons.has(id) || false,
+                iwa: (id === process.env.IWA) ? true : false,
+                positionExp: "?",
+                level: 1,
+                current: 0,
+                max: 100,
+                userColor: memberDiscord.displayHexColor,
+                expBar: 0,
+                birthday: "--/--",
+                fc: "not registered"
+            }
 
-        if(user.userColor == '#000000') user.userColor = '#444444';
-        let file = await imGenerator(user);
-
-        try {
-            Kwako.log.info({msg: 'profile', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: userDiscord.id, name: userDiscord.tag }});
-            return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
-        } catch (err) {
-            Kwako.log.error(err)
-            return msg.channel.send(":x: > An error occured. Please retry later.")
+            return sendRankCard(msg, user, userDiscord);
         }
     }
 
@@ -61,8 +58,10 @@ async function profileImg(msg: Message, id: string) {
     let lvlInfo = utilities.levelInfo(userDB.exp[msg.guild.id]);
 
     let user = {
-        avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }),
+        avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
         username: userDiscord.username,
+        premium: Kwako.patrons.has(id) || false,
+        iwa: (id === process.env.IWA) ? true : false,
         positionExp: (leadXP.findIndex(val => val._id == id) + 1),
         level: lvlInfo.level,
         current: lvlInfo.current,
@@ -74,7 +73,11 @@ async function profileImg(msg: Message, id: string) {
         fc: userDB.fc || "not registered"
     }
 
-    if(user.userColor == '#000000') user.userColor = '#444444';
+    return sendRankCard(msg, user, userDiscord);
+}
+
+async function sendRankCard(msg: Message, user: { userColor: string; }, userDiscord: any) {
+    if(user.userColor === '#000000') user.userColor = '#444444';
     let file = await imGenerator(user);
 
     try {
@@ -82,6 +85,8 @@ async function profileImg(msg: Message, id: string) {
         return msg.channel.send('', { files: [file] }).then(() => { msg.channel.stopTyping(true) });
     } catch (err) {
         Kwako.log.error(err)
-        return msg.channel.send(":x: > An error occured. Please retry later.")
+        return msg.channel.send({'embed':{
+            'title': ':x: An error occured. Please retry later.'
+        }})
     }
 }

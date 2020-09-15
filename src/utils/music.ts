@@ -35,7 +35,7 @@ export default class music {
         let video_url = args[0].split('&')
         let playlist = await yt.getPlaylist(args[0]).catch(() => {return});
 
-        if (playlist && !video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
+        if (playlist && !video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
             let reply = await msg.channel.send({
                 "embed": {
                   "title": ":information_source: Your link contains both a video & a playlist link",
@@ -63,9 +63,9 @@ export default class music {
                 return addPlaylistToQueue(msg, playlist, voiceChannel);
         }
 
-        if (video_url[0].match(/^https?:\/\/(www.youtube.com|youtube.com|m.youtube.com)\/playlist(.*)$/)) {
+        if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
 
-            const playlist = await yt.getPlaylist(video_url[0]).catch(Kwako.log.error)
+            const playlist = await yt.getPlaylist(video_url[0]).catch(err => Kwako.log.error(err))
             if (!playlist) return;
 
             let reply = await msg.channel.send({
@@ -172,14 +172,14 @@ export default class music {
             let q = queu.slice(1, 10);
 
             let videoData = await yt.getVideo(queu[0]);
-            let date = new Date()
+            let date = new Date(0);
             date.setSeconds((videoData.minutes * 60) + videoData.seconds)
             let timeString = date.toISOString().substr(11, 8)
             let desc = `🎶 [${Util.escapeMarkdown(videoData.title)}](${queu[0]}), *${timeString}*\n\n`;
             for await (const song of q) {
                 let videoData = await yt.getVideo(song);
                 if (!videoData) return;
-                let date = new Date()
+                let date = new Date(0);
                 date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 desc = `${desc}${n}. [${Util.escapeMarkdown(videoData.title)}](${song}), *${timeString}*\n`;
@@ -284,13 +284,33 @@ export default class music {
         let dispatcher = await fetchDispatcher(msg);
 
         if(dispatcher) {
-            let voiceChannel:VoiceChannel = msg.member.voice.channel;
+            let voiceChannel: VoiceChannel = msg.member.voice.channel;
 
             queue.delete(msg.guild.id)
 
             await msg.react('✅');
             voiceChannel.leave()
             Kwako.log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+        }
+    }
+
+    /**
+     * Stops the music
+     * @param voiceChannel - VoiceChannel object
+     */
+    static async stopAlone(voiceChannel: VoiceChannel) {
+        if (!voiceChannel) return;
+
+        let voiceConnection = Kwako.voice.connections.find(val => val.channel.id === voiceChannel.id);
+        let dispatcher;
+        if (voiceConnection)
+            dispatcher = voiceConnection.dispatcher;
+
+        if(dispatcher) {
+            queue.delete(voiceChannel.guild.id)
+
+            voiceChannel.leave();
+            Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
         }
     }
 
@@ -388,7 +408,7 @@ export default class music {
 
         if (!videoData) return;
 
-        let date = new Date()
+        let date = new Date(0);
         date.setSeconds((videoData.minutes * 60) + videoData.seconds)
         let timeString = date.toISOString().substr(11, 8)
 
@@ -481,14 +501,16 @@ export default class music {
  */
 async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceChannel: VoiceChannel) {
     let queu = queue.get(msg.guild.id);
-    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (2048 * 1024) }).on('error', Kwako.log.error);
+    const video = ytdl(queu[0], { filter: "audioonly", quality: "highestaudio", highWaterMark: (16384 * 1024) }).on('error', err => Kwako.log.error(err));
 
     video.on('error', err => {
         Kwako.log.error(err);
         let dispatcher = voiceConnection.dispatcher
         loop.set(msg.guild.id, false);
         dispatcher.end()
-        return msg.channel.send(":x: > **There was an unexpected error while playing the video**")
+        return msg.channel.send({'embed':{
+            'title': ':x: There was an unexpected error while playing the video'
+        }})
     })
 
     voiceConnection.play(video, { volume: 0.8, bitrate: 76, highWaterMark: 256, fec: true, plp: 0 })
@@ -498,7 +520,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 let videoData = await yt.getVideo(queu[0]);
                 if (!videoData) return;
 
-                let date = new Date()
+                let date = new Date(0);
                 date.setSeconds((videoData.minutes * 60) + videoData.seconds)
                 let timeString = date.toISOString().substr(11, 8)
                 const embed = new MessageEmbed();
@@ -541,7 +563,7 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
                 skippers.delete(msg.guild.id);
                 playSong(msg, voiceConnection, voiceChannel)
             }
-        }).on('error', Kwako.log.error);
+        }).on('error', err => Kwako.log.error(err));
 }
 
 /**
@@ -555,8 +577,8 @@ async function playSong(msg: Message, voiceConnection: VoiceConnection, voiceCha
 async function launchPlay(msg: Message, voiceChannel: VoiceChannel, video_url: string) {
     msg.channel.startTyping();
     let error = false, data;
-    let queu = queue.get(msg.guild.id) ? queue.get(msg.guild.id) : [];
-    if (queu && !queu.find(song => song === video_url)) {
+    let queu = queue.get(msg.guild.id) || [];
+    if (!queu.find(song => song === video_url)) {
         data = await ytdl.getBasicInfo(video_url).catch(err => { Kwako.log.error(err); error = true; })
         if (!error && data) {
             video_url = data.videoDetails.video_url
@@ -656,7 +678,7 @@ async function addPlaylistToQueue(msg: Message, playlist: Playlist, voiceChannel
 
     bar.then(async () => {
         const embedDone = new MessageEmbed();
-        embedDone.setTitle("**Done!**")
+        embedDone.setTitle("Done!")
         embedDone.setColor('LUMINOUS_VIVID_PINK')
 
         if (errors > 0) embedDone.setDescription("Some videos are unavailable :(");

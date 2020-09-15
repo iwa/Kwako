@@ -43,31 +43,34 @@ export default class starboard {
      * @param {User} author - Author Object
      * @param {Client} bot - Discord Client object
      */
-    static async check(reaction: MessageReaction, author: User, starboardChannel: string) {
-        if (reaction.message.guild.id !== process.env.GUILDID) return;
-        if (reaction.message.channel.id == process.env.STARBOARDTC) return;
-        if (reaction.message.channel.id == process.env.ANNOUNCEMENTSTC) return;
+    static async check(reaction: MessageReaction, author: User, starboardChannel: string, customEmote: string, starReactions: number) {
         if (reaction.users.cache.find(val => val.id === Kwako.user.id)) return;
-        if (reaction.emoji.name == '⭐') {
-            if (reaction.count >= 5) {
-                let msg = reaction.message;
-                let content;
-                if (!msg.cleanContent)
-                    content = "*attachment only*\n"
-                else
-                    content = `\`\`\`${msg.cleanContent}\`\`\``
+        if (customEmote !== "") {
+            if (reaction.emoji.id === customEmote) {
+                if (reaction.count >= starReactions) {
+                    let msg = reaction.message;
+                    let content;
+                    if (!msg.cleanContent)
+                        content = "*attachment only*\n"
+                    else
+                        content = `\`\`\`${msg.cleanContent}\`\`\``
 
-                return starboard.send(msg, reaction, content, starboardChannel);
+                    return starboard.send(msg, reaction, content, starboardChannel);
+                }
             }
-        } else if (reaction.emoji.name == '🌟' && author.id == process.env.IWA) {
-            let msg = reaction.message;
-            let content;
-            if (!msg.cleanContent)
-                content = "*attachment only*\n"
-            else
-                content = `\`\`\`${msg.cleanContent}\`\`\``
+        } else {
+            if (reaction.emoji.name === '⭐') {
+                if (reaction.count >= starReactions) {
+                    let msg = reaction.message;
+                    let content;
+                    if (!msg.cleanContent)
+                        content = "*attachment only*\n"
+                    else
+                        content = `\`\`\`${msg.cleanContent}\`\`\``
 
-            return starboard.send(msg, reaction, content, starboardChannel);
+                    return starboard.send(msg, reaction, content, starboardChannel);
+                }
+            }
         }
     }
 }

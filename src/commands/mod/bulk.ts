@@ -7,13 +7,13 @@ module.exports.run = (msg: Message, args: string[]) => {
     if (args.length !== 0) {
         let channel: any = msg.channel
         if (msg.channel.type !== "dm") {
-            msg.delete().catch(Kwako.log.error);
+            msg.delete().catch(err => Kwako.log.error(err));
             let nb = parseInt(args[0])
             msg.channel.bulkDelete(nb)
                 .then(() => {
                     Kwako.log.info({msg: 'bulk', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, bulk: { channel: channel.id, name: channel.name, x: nb }});
                 })
-                .catch(Kwako.log.error);
+                .catch(err => Kwako.log.error(err));
         }
     }
     else

@@ -26,7 +26,7 @@ export default async function highfiveWatcher(reaction: MessageReaction, author:
                 .then(() => {
                     Kwako.log.info(`info: highfive`);
                 })
-                .catch(Kwako.log.error);
+                .catch(err => Kwako.log.error(err));
         }
     }
 }
