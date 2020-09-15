@@ -9,5 +9,6 @@ module.exports.help = {
     name: 'Yeet',
     usage: "Yeet (mention someone) [someone else]",
     desc: "Yeet people by mentioning them",
-    perms: ['EMBED_LINKS']
+    perms: ['EMBED_LINKS'],
+    premium: true
 };
