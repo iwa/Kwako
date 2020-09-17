@@ -59,7 +59,7 @@ Kwako.on('message', async (msg: Message) => {
         return suggestion(msg, Kwako.patrons.has(msg.guild.ownerID));
 
     if (!msg.content.startsWith(guildConf.prefix)) {
-        if(msg.mentions.has(Kwako.user.id))
+        if(msg.mentions.has(Kwako.user.id) && !msg.mentions.everyone)
             return msg.channel.send({'embed':{
                 'title': 'My prefix here is:',
                 'description': `\`${guildConf.prefix}\``
