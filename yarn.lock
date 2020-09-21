@@ -1281,10 +1281,10 @@ pino@^6.6.0:
     quick-format-unescaped "^4.0.1"
     sonic-boom "^1.0.2"
 
-popyt@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/popyt/-/popyt-4.1.1.tgz#53f1e0064a30946a8781e44c181f7be31452d57d"
-  integrity sha512-ufh3FjOWr2cKTgQpS4vV/IqYlBitmgU0/UifM/bVzY6/C4OfEFMPWGaxMqAFZ/Izll3j/8B74k40n+SvFbx6aQ==
+popyt@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/popyt/-/popyt-4.1.2.tgz#b865b5ba5f6f8744deeb5d20d790230448f93c2a"
+  integrity sha512-ju2zBBhNnbngymcMUmEKHWRPff0Kgk1I2VapLPut54qjaU4bH+LpicMKcGpYzvyVPoFQxI0hsPWKKDOVmMCeUg==
 
 prism-media@^1.2.2:
   version "1.2.2"
