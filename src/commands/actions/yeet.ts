@@ -2,7 +2,7 @@ import { Message } from 'discord.js'
 import actionsRun from '../../utils/actions';
 
 module.exports.run = (msg: Message, args: string[]) => {
-    actionsRun(msg, args, 'yeet', 'yeet', false);
+    actionsRun(msg, args, 'yeet', 'yeets', false);
 };
 
 module.exports.help = {
