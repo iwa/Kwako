@@ -15,7 +15,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
 
     player.connect();
 
-    const res = await Kwako.music.search(msg.content.slice(6), msg.author);
+    const res = await Kwako.music.search(args.join(' '), msg.author);
 
     player.queue.add(res.tracks[0]);
 
