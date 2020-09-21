@@ -57,8 +57,8 @@ Kwako.once('shardReady', async () => {
             const guild = Kwako.guilds.cache.get(id);
             if (guild) guild.shard.send(payload);
         },
-    }).on("nodeConnect", () => console.log("New node connected"))
-        .on("nodeError", (node, error) => console.log(`Node error: ${error.message}`))
+    }).on("nodeConnect", (node) => Kwako.log.info({msg: 'new lavalink node', node: node.options.identifier}))
+        .on("nodeError", (node, error) => Kwako.log.error({msg: `lavalink node error\n${error.message}`, node: node.options.identifier}))
         .on("trackStart", async (player, track) => {
             let channel: any = Kwako.channels.cache.get(player.textChannel);
             if(!channel) return;
