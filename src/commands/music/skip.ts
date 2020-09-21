@@ -3,6 +3,7 @@ import { Message, MessageEmbed, VoiceChannel } from 'discord.js'
 
 let skippers: Map<string, Set<string>> = new Map();
 let skipReq: Map<string, number> = new Map();
+let last: Map<string, string> = new Map();
 
 module.exports.run = (msg: Message) => {
     let voiceChannel: VoiceChannel = msg.member.voice.channel;
@@ -19,6 +20,13 @@ module.exports.run = (msg: Message) => {
             .setColor('RED')
             .setTitle("I'm not playing anything right now!")
         return msg.channel.send(embed);
+    }
+
+    if(player.queue['current'].uri !== last.get(msg.guild.id)) {
+        skipReq.delete(msg.guild.id);
+        skippers.delete(msg.guild.id);
+
+        last.set(msg.guild.id, player.queue['current'].uri);
     }
 
     let skipperList = skippers.get(msg.guild.id) || new Set();
