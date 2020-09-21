@@ -24,7 +24,7 @@ let lastGif = new Map([
     ['squish', 0],
     ['glare', 0],
     ['tickle', 0],
-    ['peck', 0],
+    ['kiss', 0],
     ['yeet', 0]
 ]);
 
@@ -38,7 +38,7 @@ let count = new Map([
     ['squish', 4],
     ['glare', 6],
     ['tickle', 5],
-    ['peck', 0],
+    ['kiss', 2],
     ['yeet', 3]
 ]);
 
