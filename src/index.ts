@@ -80,9 +80,13 @@ Kwako.once('shardReady', async () => {
             Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
         })
         .on("queueEnd", async (player) => {
-            console.log("Queue has ended.");
             let channel: any = Kwako.channels.cache.get(player.textChannel)
-            await channel.send("Queue has ended.");
+
+            const embed = new MessageEmbed()
+                .setColor('GREEN')
+                .setTitle("🚪 Queue finished. Disconnecting...");
+
+            await channel.send(embed)
             player.destroy();
         });
 
