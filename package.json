@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rm -rf build/ && tsc",
     "update": "git fetch origin master && git pull origin master && rm -rf build/ && yarn && tsc",
-    "changelog": "github_changelog_generator -u iwa -p Kwako --exclude-labels \"duplicate\",\"question\",\"invalid\",\"wontfix\",\"Duplicate\",\"Question\",\"Invalid\",\"Wontfix\",\"Meta: Exclude From Changelog\",\"update\",\"question-discussion\",\"dependencies\" --add-sections '{\"features\":{\"prefix\":\"**New features:**\",\"labels\":[\"feature\", \"features\"]}}' --no-compare-link"
+    "changelog": "github_changelog_generator -u iwa -p Kwako --exclude-labels \"duplicate\",\"question\",\"invalid\",\"wontfix\",\"Duplicate\",\"Question\",\"Invalid\",\"Wontfix\",\"Meta: Exclude From Changelog\",\"update\",\"question-discussion\",\"dependencies\" --add-sections '{\"features\":{\"prefix\":\"**New features:**\",\"labels\":[\"feature\", \"features\"]}}' --no-compare-link",
+    "lavalink": "cd lavalink && java -jar Lavalink.jar"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "canvas": "^2.6.1",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
+    "erela.js": "^2.0.0",
     "mee6-levels-api": "^1.1.0",
     "mongodb": "^3.6.1",
     "pino": "^6.6.0",

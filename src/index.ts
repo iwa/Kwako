@@ -3,7 +3,8 @@ dotenv.config();
 
 import Kwako from './Client';
 
-import { MessageReaction, User, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util } from 'discord.js';
+import { Manager } from "erela.js";
 import axios from "axios";
 
 const defaultSettings = {
@@ -36,10 +37,58 @@ Kwako.on('warn', (warn) => Kwako.log.warn(warn));
 Kwako.on('shardError', (error) => Kwako.log.error(error));
 Kwako.on('shardDisconnect', (event) => Kwako.log.debug({msg: "Kwako disconnected", event: event}));
 Kwako.on('shardReconnecting', (event) => Kwako.log.debug({msg: "Kwako reconnecting", event: event}));
-Kwako.on('shardResume', async () => ready());
-Kwako.on('shardReady', async () => {
-    ready();
+Kwako.on('shardResume', async () => await ready());
+Kwako.once('shardReady', async () => {
+    await ready();
     Kwako.log.debug(`logged in as ${Kwako.user.username}`);
+
+    Kwako.music = new Manager({
+        nodes: [
+            {
+                identifier: 'default',
+                host: process.env.LAVALINK_HOST,
+                port: parseInt(process.env.LAVALINK_PORT, 10),
+                password: process.env.LAVALINK_PWD,
+                secure: false,
+            },
+          ],
+        autoPlay: true,
+        send(id, payload) {
+            const guild = Kwako.guilds.cache.get(id);
+            if (guild) guild.shard.send(payload);
+        },
+    }).on("nodeConnect", () => console.log("New node connected"))
+        .on("nodeError", (node, error) => console.log(`Node error: ${error.message}`))
+        .on("trackStart", async (player, track) => {
+            let channel: any = Kwako.channels.cache.get(player.textChannel);
+            if(!channel) return;
+
+            let timeString;
+            if(!track.isStream) {
+                let date = new Date(track.duration);
+                timeString = `Length: ${date.toISOString().substr(11, 8)}`
+            } else
+                timeString = '🔴 Listening to a stream | Skip to stop the stream'
+
+            const embed = new MessageEmbed()
+                .setColor('GREEN')
+                .setTitle("**:cd: Now Playing:**")
+                .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
+                .setFooter(timeString)
+                .setThumbnail(track.thumbnail)
+            await channel.send(embed)
+            Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
+        })
+        .on("queueEnd", async (player) => {
+            console.log("Queue has ended.");
+            let channel: any = Kwako.channels.cache.get(player.textChannel)
+            await channel.send("Queue has ended.");
+            player.destroy();
+        });
+
+    Kwako.music.init(Kwako.user.id);
+
+    Kwako.on("raw", d => Kwako.music.updateVoiceState(d));
 });
 
 // Message Event
@@ -301,15 +350,24 @@ Kwako.on('guildBanAdd', async (guild, user) => {
 });
 
 // VC Check if Kwako's alone
-import music from './utils/music'
 Kwako.on('voiceStateUpdate', async (oldState, newState) => {
     let channel = oldState.channel;
     if(!channel) return;
 
     let members = channel.members;
     if(members.size === 1)
-        if(members.has(Kwako.user.id))
-            return music.stopAlone(oldState.channel);
+        if(members.has(Kwako.user.id)) {
+            let voiceChannel = oldState.channel;
+            if (!voiceChannel) return;
+
+            const player = Kwako.music.players.get(voiceChannel.guild.id);
+
+            if(player) {
+                player.destroy();
+
+                Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
+            }
+        }
 });
 
 // Check if it's someone's birthday, and send a HBP message at 8am UTC

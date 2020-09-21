@@ -1,8 +1,34 @@
-import { Message } from 'discord.js'
-import music from '../../utils/music'
+import Kwako from '../../Client'
+import { Message, MessageEmbed } from 'discord.js'
 
 module.exports.run = (msg: Message) => {
-    music.loop(msg);
+    const player = Kwako.music.create({
+        guild: msg.guild.id,
+        voiceChannel: msg.member.voice.channel.id,
+        textChannel: msg.channel.id,
+    });
+
+    let loop = player.trackRepeat || false;
+
+    if (!loop) {
+        player.setTrackRepeat(true);
+
+        Kwako.log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: true})
+        const embed = new MessageEmbed()
+            .setAuthor("🔂 Looping the current song...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+            .setColor('GREEN')
+
+        return msg.channel.send(embed)
+    } else if (loop) {
+        player.setTrackRepeat(false);
+
+        Kwako.log.info({msg: 'loop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, enable: false})
+        const embed = new MessageEmbed()
+            .setAuthor("This song will no longer be looped...", msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+            .setColor('GREEN')
+
+        return msg.channel.send(embed)
+    }
 };
 
 module.exports.help = {

@@ -117,3 +117,6 @@ data/
 
 # Changelog
 CHANGELOG.md
+
+# Lavalink bins
+lavalink/*.jar
