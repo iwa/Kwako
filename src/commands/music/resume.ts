@@ -8,7 +8,7 @@ module.exports.run = async (msg: Message) => {
         textChannel: msg.channel.id,
     });
 
-    if(player.playing && player.paused) {
+    if(!player.playing && player.paused) {
         player.pause(false);
         await msg.react('✅');
         Kwako.log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
