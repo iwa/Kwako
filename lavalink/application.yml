@@ -13,7 +13,7 @@ lavalink:
       mixer: true
       http: false
       local: false
-    bufferDurationMs: 400
+    bufferDurationMs: 600
     youtubePlaylistLoadLimit: 6 # Number of pages at 100 each
     youtubeSearchEnabled: true
     soundcloudSearchEnabled: true

@@ -35,5 +35,5 @@ module.exports.help = {
     name: 'forceskip',
     usage: 'forceskip',
     staff: true,
-    perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK', 'USE_VAD', 'ADD_REACTIONS']
+    perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK', 'USE_VAD']
 };
