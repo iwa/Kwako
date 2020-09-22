@@ -336,6 +336,7 @@ async function editModLogs(msg: Message, args: string[], guildConf: any, sent: M
         await sentEdit.delete();
 
         if(!collected) return;
+        await collected.first().delete().catch(() => {return})
 
         let channel = collected.first().mentions.channels.first();
         if(!channel) return;
@@ -343,6 +344,8 @@ async function editModLogs(msg: Message, args: string[], guildConf: any, sent: M
         if(!channel.viewable) return (await msg.channel.send({'embed':{
             'title': ":x: I can't access to the channel! Make sure I can read and send message in this channel."
         }})).delete({ timeout: 10000 });
+
+        value = channel.id;
     }
     else if (emote.emoji.name === '❌') value = '';
 
@@ -351,7 +354,7 @@ async function editModLogs(msg: Message, args: string[], guildConf: any, sent: M
     Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.modLogChannel']: value } });
 
     sent = await updateSent(guildConf, sent);
-    await sent.reactions.resolve('🟣').users.remove(msg.author.id);
+    await sent.reactions.resolve('📖').users.remove(msg.author.id);
     return chooseWhat(msg, args, guildConf, sent);
 }
 
