@@ -33,7 +33,7 @@ export default async function messageDelete(msg: Message | PartialMessage, modLo
 
         let embed = new MessageEmbed();
         embed.setTitle("Message Self-deleted");
-        embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nWhere: <#${msg.channel.id}>\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);
+        embed.setDescription(`**Author:** ${msg.author.tag} (<@${msg.author.id}>)\n**Where:** <#${msg.channel.id}>\n\`\`\`${msg.cleanContent || "empty message"}\`\`\``);
         embed.setColor(5753229);
         embed.setTimestamp(new Date());
         embed.setFooter("Date of deletion:")
@@ -52,7 +52,7 @@ export default async function messageDelete(msg: Message | PartialMessage, modLo
         let channel = await Kwako.channels.fetch(modLogChannel);
         let embed = new MessageEmbed();
         embed.setTitle("Message deleted");
-        embed.setDescription(`Author: ${msg.author.tag} (<@${msg.author.id}>)\nDeleted by: ${executor.tag} (<@${executor.id}>)\nWhere: <#${msg.channel.id}>\n\`\`\`${msg.cleanContent ? msg.cleanContent : "empty message"}\`\`\``);
+        embed.setDescription(`**Author:** ${msg.author.tag} (<@${msg.author.id}>)\n**Deleted by:** ${executor.tag} (<@${executor.id}>)\n**Where:** <#${msg.channel.id}>\n\`\`\`${msg.cleanContent || "empty message"}\`\`\``);
         embed.setColor(10613368);
         embed.setTimestamp(createdTimestamp);
         embed.setFooter("Date of deletion:")

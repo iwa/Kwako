@@ -82,7 +82,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                 let channel = await Kwako.channels.fetch(modLogChannel);
                 let embedLog = new MessageEmbed();
                 embedLog.setTitle("Member muted");
-                embedLog.setDescription(`Who: ${mention.user.tag} (<@${mention.id}>)\nBy: <@${msg.author.id}>\nFor: \`${timeParsedString}\`\nReason: \`${reason}\``);
+                embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
                 embedLog.setColor(9392322);
                 embedLog.setTimestamp(msg.createdTimestamp);
                 embedLog.setFooter("Date of mute:")
