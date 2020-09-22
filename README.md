@@ -21,9 +21,8 @@
 - Language used : `TypeScript, with NodeJS`
 - Library used : `discord.js`
 
-[![BCH Compliance](https://bettercodehub.com/edge/badge/iwa/Kwako?branch=master)](https://bettercodehub.com/)
-[![CodeFactor Grade](https://www.codefactor.io/repository/github/iwa/kwako/badge)](https://www.codefactor.io/repository/github/iwa/kwako)
-[![DeepScan Grade](https://deepscan.io/api/teams/10640/projects/13488/branches/228346/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=10640&pid=13488&bid=228346)
+[![BCH compliance](https://bettercodehub.com/edge/badge/iwa/Kwako?branch=master&token=5720a73440a7a8e1a3a7e4275d8dab0ddbacecd8)](https://bettercodehub.com/)
+[![CodeFactor](https://www.codefactor.io/repository/github/iwa/kwako/badge?s=c68de224d1a6db6598562d86decd9247c26336a5)](https://www.codefactor.io/repository/github/iwa/kwako)
 
 ## 🤝 Contributing
 
