@@ -98,7 +98,7 @@ async function chooseWhat(msg: Message, args: string[], guildConf: any, sent: Me
     if(emote === '⭐')
         return editStarboard();
     if(emote === '✉️')
-        return editWelcomeMessage();
+        return editWelcomeMessage(msg, args, guildConf, sent);
 
     if(emote === '❌') {
         await msg.delete().catch(() => {return});
@@ -162,7 +162,7 @@ async function editPrefix(msg: Message, args: string[], guildConf: any, sent: Me
         return editPrefix(msg, args, guildConf, sent);
     }
 
-    Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.prefix']: prefix } });
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.prefix']: prefix } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('❕').users.remove(msg.author.id);
@@ -234,7 +234,7 @@ async function editExpSystem(msg: Message, args: string[], guildConf: any, sent:
         else
             guildConf.useExpSystem = true;
 
-        Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.useExpSystem']: guildConf.useExpSystem } });
+        await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.useExpSystem']: guildConf.useExpSystem } });
     }
 
     if(emote.emoji.name === '2️⃣') {
@@ -252,7 +252,7 @@ async function editExpSystem(msg: Message, args: string[], guildConf: any, sent:
 
             console.log(guildConf.showLevelUp)
 
-            Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.showLevelUp']: guildConf.showLevelUp } });
+            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.showLevelUp']: guildConf.showLevelUp } });
         }
     }
 
@@ -292,7 +292,7 @@ async function editBoosterBenefit(msg: Message, args: string[], guildConf: any, 
 
     guildConf.boosterBenefits = value;
 
-    Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.boosterBenefits']: value } });
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.boosterBenefits']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('🟣').users.remove(msg.author.id);
@@ -351,7 +351,7 @@ async function editModLogs(msg: Message, args: string[], guildConf: any, sent: M
 
     guildConf.modLogChannel = value;
 
-    Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.modLogChannel']: value } });
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.modLogChannel']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('📖').users.remove(msg.author.id);
@@ -410,7 +410,7 @@ async function editSuggestions(msg: Message, args: string[], guildConf: any, sen
 
     guildConf.suggestionChannel = value;
 
-    Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.suggestionChannel']: value } });
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.suggestionChannel']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('❓').users.remove(msg.author.id);
@@ -470,7 +470,7 @@ async function editMuteRole(msg: Message, args: string[], guildConf: any, sent: 
 
     guildConf.muteRole = value;
 
-    Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: value } });
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('⛔').users.remove(msg.author.id);
@@ -481,6 +481,36 @@ async function editStarboard() {
     return;
 }
 
-async function editWelcomeMessage() {
-    return;
+async function editWelcomeMessage(msg: Message, args: string[], guildConf: any, sent: Message) {
+    let sentEdit = await msg.channel.send({'embed':{
+        'title': '✉️ Change the DM Welcome Message',
+        'description': 'Send in the channel the new welcome message.',
+        'footer': {
+            'text': 'Type "cancel" to cancel the edit. Type "off" to disable.'
+        }
+    }});
+
+    let collected = await msg.channel.awaitMessages(m => m.author.id === msg.author.id, { max: 1, time: 60000 });
+    if(!collected) return;
+
+    let reply = collected.first().cleanContent;
+
+    sentEdit.delete();
+    collected.first().delete();
+
+    if(reply.toLowerCase().startsWith('cancel')) {
+        await sent.reactions.resolve('✉️').users.remove(msg.author.id);
+        return chooseWhat(msg, args, guildConf, sent);
+    }
+
+    if(reply.toLowerCase().startsWith('off'))
+        reply = '';
+
+    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.welcomeMessage']: reply } });
+
+    guildConf.welcomeMessage = reply;
+
+    sent = await updateSent(guildConf, sent);
+    await sent.reactions.resolve('✉️').users.remove(msg.author.id);
+    return chooseWhat(msg, args, guildConf, sent);
 }
