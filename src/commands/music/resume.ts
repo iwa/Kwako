@@ -1,8 +1,18 @@
+import Kwako from '../../Client'
 import { Message } from 'discord.js'
-import music from '../../utils/music'
 
-module.exports.run = (msg: Message) => {
-    music.resume(msg);
+module.exports.run = async (msg: Message) => {
+    const player = Kwako.music.create({
+        guild: msg.guild.id,
+        voiceChannel: msg.member.voice.channel.id,
+        textChannel: msg.channel.id,
+    });
+
+    if(!player.playing && player.paused) {
+        player.pause(false);
+        await msg.react('✅');
+        Kwako.log.info({msg: 'resume', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
+    }
 };
 
 module.exports.help = {

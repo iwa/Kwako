@@ -1,28 +1,25 @@
 import Kwako from '../../Client'
 import { Message } from 'discord.js'
 
-module.exports.run = (msg: Message, args: string[]) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
 
-    if (args.length !== 0) {
-        let channel: any = msg.channel
-        if (msg.channel.type !== "dm") {
-            msg.delete().catch(err => Kwako.log.error(err));
-            let nb = parseInt(args[0])
-            msg.channel.bulkDelete(nb)
-                .then(() => {
-                    Kwako.log.info({msg: 'bulk', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, bulk: { channel: channel.id, name: channel.name, x: nb }});
-                })
-                .catch(err => Kwako.log.error(err));
-        }
+    if (msg.channel.type !== "dm") {
+        await msg.delete().catch(console.error);
+
+        let messages = await msg.channel.messages.fetch({ limit: 100 }, false)
+
+        for(const message of messages)
+            await message[1].delete()
+                .catch(() => {return});;
+
+        Kwako.log.info({msg: 'bulk', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, bulk: { channel: msg.channel.id, name: msg.channel.name }});
     }
-    else
-        return msg.channel.send({ "embed": { "title": ":x: > **Incomplete command.**", "color": 13632027 } });
 };
 
 module.exports.help = {
     name: 'bulk',
-    usage: 'bulk (number of messages to delete)',
+    usage: 'bulk',
     staff: true,
     perms: ['MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
 };

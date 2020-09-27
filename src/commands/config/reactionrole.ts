@@ -238,6 +238,5 @@ module.exports.help = {
     aliases: ['rr'],
     usage: "reactionrole",
     staff: true,
-    perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
-    premium: true
+    perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
 };

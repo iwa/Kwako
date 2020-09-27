@@ -34,7 +34,7 @@ module.exports.run = async (msg: Message, args:string[]) => {
             await msg.channel.send("I can't kick this person!")
         }
 
-        Kwako.log.info({msg: 'setconf', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
+        Kwako.log.info({msg: 'kick', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
     }
 };
 

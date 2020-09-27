@@ -6,6 +6,8 @@ import { MongoClient, Db } from 'mongodb';
 
 import axios from 'axios';
 
+import { Manager } from 'erela.js';
+
 // MongoDB constants
 const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
 
@@ -21,6 +23,8 @@ export default new class Kwako extends Client {
 
     public patrons: Set<string> = new Set();
     private golden: Set<string> = new Set();
+
+    public music: Manager;
 
     public constructor() {
 		super(
@@ -102,10 +106,10 @@ export default new class Kwako extends Client {
         this.setInterval(async () => {
             await this.getPledgeData();
         }, 300000);
-	}
+    }
 
     public async start(token: string) {
 		await this._init();
-		return this.login(token);
+        await this.login(token);
 	}
 }

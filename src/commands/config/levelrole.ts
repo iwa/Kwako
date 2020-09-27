@@ -145,8 +145,7 @@ module.exports.help = {
     name: 'levelrole',
     usage: "levelrole (add|remove|list)",
     staff: true,
-    perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES'],
-    premium: true
+    perms: ['EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES', 'MANAGE_MESSAGES']
 };
 
 async function giveRoleToUpper (msg: Message, role: string, level: number) {

@@ -1,12 +1,13 @@
 {
   "name": "kwako",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "",
   "main": "build/index.js",
   "scripts": {
     "build": "rm -rf build/ && tsc",
     "update": "git fetch origin master && git pull origin master && rm -rf build/ && yarn && tsc",
-    "changelog": "github_changelog_generator -u iwa -p Kwako --exclude-labels \"duplicate\",\"question\",\"invalid\",\"wontfix\",\"Duplicate\",\"Question\",\"Invalid\",\"Wontfix\",\"Meta: Exclude From Changelog\",\"update\",\"question-discussion\",\"dependencies\" --add-sections '{\"features\":{\"prefix\":\"**New features:**\",\"labels\":[\"feature\", \"features\"]}}' --no-compare-link"
+    "changelog": "github_changelog_generator -u iwa -p Kwako --exclude-labels \"duplicate\",\"question\",\"invalid\",\"wontfix\",\"Duplicate\",\"Question\",\"Invalid\",\"Wontfix\",\"Meta: Exclude From Changelog\",\"update\",\"question-discussion\",\"dependencies\" --add-sections '{\"features\":{\"prefix\":\"**New features:**\",\"labels\":[\"feature\", \"features\"]}}' --no-compare-link",
+    "lavalink": "cd lavalink && java -jar Lavalink.jar"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,6 @@
   },
   "homepage": "https://github.com/iwa/Kwako#readme",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
     "@types/mongodb": "^3.5.27",
     "@types/node": "^14.6.4",
     "@types/pino": "^6.3.0",
@@ -30,14 +30,12 @@
     "canvas": "^2.6.1",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
+    "erela.js": "^2.0.0",
     "mee6-levels-api": "^1.1.0",
     "mongodb": "^3.6.1",
     "pino": "^6.6.0",
-    "popyt": "^4.1.1",
-    "sodium": "^3.0.2",
     "twitch": "^4.2.2",
-    "utf-8-validate": "^5.0.2",
-    "ytdl-core": "^3.2.2"
+    "utf-8-validate": "^5.0.2"
   },
   "devDependencies": {
     "pino-pretty": "^4.2.1"

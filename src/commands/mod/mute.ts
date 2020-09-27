@@ -22,7 +22,9 @@ module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
             muteRole = role.id;
             await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
         })
-        await msg.channel.send("🛠 > A 'Muted' role has been generated.");
+        await msg.channel.send({'embed':{
+            'title': "🛠 A 'Muted' role has been generated."
+        }});
     }
 
     let modLogChannel = guildConf.modLogChannel;
@@ -44,7 +46,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         let mention = msg.mentions.members.first()
 
         if (!mention) return;
-        if (mention.id == msg.author.id || mention.id == Kwako.user.id) return;
+        if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
 
         if (msg.author.id != process.env.IWA && mention.hasPermission('MANAGE_GUILD')) return;
 
@@ -55,12 +57,16 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         }
 
         args.shift();
-        let time = args.join(" ")
-        let timeParsed = await timespan.parse(time, "msec", msg).catch(() => {return;});
+        let timeParsed = await timespan.parse(args[0], "msec", msg).catch(() => {return;});
         if(!timeParsed || typeof timeParsed !== 'number') return;
 
         let timeParsedString = await timespan.getString(timeParsed, "msec", msg);
         if(!timeParsedString || typeof timeParsedString !== 'string') return;
+
+        args.shift();
+        let reason = "no reason provided";
+        if(args.length > 1)
+            reason = args.join(" ")
 
         const embed = new MessageEmbed();
         embed.setColor('RED')
@@ -76,7 +82,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                 let channel = await Kwako.channels.fetch(modLogChannel);
                 let embedLog = new MessageEmbed();
                 embedLog.setTitle("Member muted");
-                embedLog.setDescription(`Who: ${mention.user.tag} (<@${mention.id}>)\nBy: <@${msg.author.id}>\nFor: \`${timeParsedString}\``);
+                embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
                 embedLog.setColor(9392322);
                 embedLog.setTimestamp(msg.createdTimestamp);
                 embedLog.setFooter("Date of mute:")
