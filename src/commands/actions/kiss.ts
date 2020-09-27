@@ -10,5 +10,6 @@ module.exports.help = {
     aliases: ['peck'],
     usage: "kiss (mention someone) [someone else]",
     desc: "Kiss people by mentioning them",
-    perms: ['EMBED_LINKS']
+    perms: ['EMBED_LINKS'],
+    premium: true
 };
