@@ -74,7 +74,8 @@ module.exports.help = {
     usage: "config",
     desc: "Set a custom configuration for this Guild",
     staff: true,
-    perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES']
+    perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES'],
+    premium: true
 };
 
 async function chooseWhat(msg: Message, args: string[], guildConf: any, sent: Message): Promise<any> {
