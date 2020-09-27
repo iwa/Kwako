@@ -33,7 +33,7 @@
     "erela.js": "^2.0.0",
     "mee6-levels-api": "^1.1.0",
     "mongodb": "^3.6.1",
-    "pino": "^6.6.0",
+    "pino": "^6.6.1",
     "twitch": "^4.2.2",
     "utf-8-validate": "^5.0.2"
   },
