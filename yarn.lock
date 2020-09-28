@@ -553,10 +553,10 @@ end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-erela.js@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/erela.js/-/erela.js-2.0.0.tgz#cd13394ee30e678777f69cb2509cfe9ec773949a"
-  integrity sha512-VzkRY5qrdyCBX4ijlA87R6NrcI5/gnaiGYj+DPeHqa1yFPdRsKkc8r22cuFaQEuOLN82KbWA80SzzzpjmcLFEQ==
+erela.js@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/erela.js/-/erela.js-2.0.1.tgz#2f7864651194b1ecb2903c30c5056062a3a78976"
+  integrity sha512-z1eqjEtlNtK9YiJtBsZVwiOZhPPb/2zHGxTgbVdBYrWWr04HP2KRJkZjehD4nLEHdaBwO58ax27eVC5eJXGGNQ==
   dependencies:
     "@discordjs/collection" "^0.1.6"
     axios "^0.19.2"
