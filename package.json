@@ -34,7 +34,7 @@
     "mee6-levels-api": "^1.1.0",
     "mongodb": "^3.6.2",
     "pino": "^6.6.0",
-    "twitch": "^4.2.2",
+    "twitch": "^4.2.7",
     "utf-8-validate": "^5.0.2"
   },
   "devDependencies": {
