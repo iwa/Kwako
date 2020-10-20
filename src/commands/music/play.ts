@@ -15,19 +15,39 @@ module.exports.run = async (msg: Message, args: string[]) => {
 
     player.connect();
 
-    const res = await Kwako.music.search(args.join(' '), msg.author);
+    let video_url = args[0].split('&')
 
-    player.queue.add(res.tracks[0]);
+    if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
+        let res = await Kwako.music.search(args.join(), msg.author);
 
-    const embed = new MessageEmbed()
-        .setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
-        .setDescription(`**${res.tracks[0].title}**`)
-        .setFooter(`Added by ${msg.author.username}`)
-        .setThumbnail(res.tracks[0].thumbnail)
-        .setColor('LUMINOUS_VIVID_PINK');
+        player.queue.add(res.tracks);
 
-    await msg.channel.send(embed)
-    Kwako.log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(res.tracks[0].title), url: res.tracks[0].uri}});
+        let playlist = res.playlist;
+
+        if(playlist) {
+            const embed = new MessageEmbed()
+                .setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+                .setDescription(`Playlist: **${playlist.name}**`)
+                .setFooter(`Added by ${msg.author.username}`)
+                .setColor('LUMINOUS_VIVID_PINK');
+
+            await msg.channel.send(embed)
+        }
+    } else {
+        let res = await Kwako.music.search(args.join(' '), msg.author);
+
+        player.queue.add(res.tracks[0]);
+
+        const embed = new MessageEmbed()
+            .setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+            .setDescription(`**${res.tracks[0].title}**`)
+            .setFooter(`Added by ${msg.author.username}`)
+            .setThumbnail(res.tracks[0].thumbnail)
+            .setColor('LUMINOUS_VIVID_PINK');
+
+        await msg.channel.send(embed)
+        Kwako.log.info({msg: 'music added to queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, song: { name: Util.escapeMarkdown(res.tracks[0].title), url: res.tracks[0].uri}});
+    }
 
     if (!player.playing) player.play();
 };
