@@ -73,27 +73,35 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\` by **${msg.author.username}**`)
 
         try {
-            await mention.roles.add(muteRole)
-            let reply = await msg.channel.send(embed)
+            let res = await mention.roles.add(muteRole).catch(async () => {
+                    await msg.channel.send({'embed':{
+                        'title': ":x: I can't mute people!",
+                        'description': "Please make sure the 'Muted' role is below my highest role."
+                    }});
+                });
 
-            Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            if(res) {
+                let reply = await msg.channel.send(embed)
 
-            if(modLogChannel) {
-                let channel = await Kwako.channels.fetch(modLogChannel);
-                let embedLog = new MessageEmbed();
-                embedLog.setTitle("Member muted");
-                embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
-                embedLog.setColor(9392322);
-                embedLog.setTimestamp(msg.createdTimestamp);
-                embedLog.setFooter("Date of mute:")
-                embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
-                await (channel as TextChannel).send(embedLog);
+                Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+
+                if(modLogChannel) {
+                    let channel = await Kwako.channels.fetch(modLogChannel);
+                    let embedLog = new MessageEmbed();
+                    embedLog.setTitle("Member muted");
+                    embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
+                    embedLog.setColor(9392322);
+                    embedLog.setTimestamp(msg.createdTimestamp);
+                    embedLog.setFooter("Date of mute:")
+                    embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+                    await (channel as TextChannel).send(embedLog);
+                }
+
+                setTimeout(async () => {
+                    await reply.delete()
+                    return mention.roles.remove(muteRole)
+                }, timeParsed)
             }
-
-            setTimeout(async () => {
-                await reply.delete()
-                return mention.roles.remove(muteRole)
-            }, timeParsed)
         } catch (err) {
             Kwako.log.error(err);
         }
