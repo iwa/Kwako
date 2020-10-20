@@ -20,10 +20,10 @@
   },
   "homepage": "https://github.com/iwa/Kwako#readme",
   "dependencies": {
-    "@types/mongodb": "^3.5.27",
+    "@types/mongodb": "^3.5.29",
     "@types/node": "^14.14.0",
     "@types/pino": "^6.3.2",
-    "@types/ws": "^7.2.4",
+    "@types/ws": "^7.2.7",
     "anilist-node": "^1.5.0",
     "axios": "^0.20.0",
     "bufferutil": "^4.0.1",
@@ -33,11 +33,11 @@
     "erela.js": "^2.0.1",
     "mee6-levels-api": "^1.1.0",
     "mongodb": "^3.6.2",
-    "pino": "^6.6.0",
-    "twitch": "^4.2.2",
+    "pino": "^6.7.0",
+    "twitch": "^4.2.7",
     "utf-8-validate": "^5.0.2"
   },
   "devDependencies": {
-    "pino-pretty": "^4.2.1"
+    "pino-pretty": "^4.3.0"
   }
 }
