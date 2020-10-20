@@ -62,8 +62,9 @@ module.exports.run = async (msg: Message) => {
         embed.setDescription(`**<@${msg.author.id}> 🙌 <@${mention.id}>**`)
         embed.setImage(`https://${process.env.CDN_URL}/img/highfive/${n}.gif`)
 
-        await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { highfive: 1 } });
-        await Kwako.db.collection('user').updateOne({ '_id': { $eq: mention.id } }, { $inc: { highfive: 1 } });
+        let guild = `highfive.${msg.guild.id.toString()}`
+        await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: 1 } });
+        await Kwako.db.collection('user').updateOne({ '_id': { $eq: mention.id } }, { $inc: { [guild]: 1 } });
         return msg.channel.send(embed)
             .then(() => {
                 Kwako.log.info({msg: 'highfive', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
