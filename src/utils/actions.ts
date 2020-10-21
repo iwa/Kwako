@@ -117,7 +117,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
             lastGif.set(type, n);
 
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
-        } else if (Kwako.patrons.has(msg.guild.ownerID)) {
+        } else {
             let target = args.join(' ');
             let user = msg.guild.members.cache.find(user => user.user.username.toLowerCase() === target.toLowerCase());
 
