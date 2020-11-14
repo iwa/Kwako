@@ -14,7 +14,7 @@ export default async function messageUpdate(msg: Message | PartialMessage, oldms
 
     let channel = await Kwako.channels.fetch(modLogChannel);
     let embed = new MessageEmbed();
-    embed.setTitle("Message edited");
+    embed.setTitle("✏️ Message edited");
     embed.setDescription(`**Author:** ${msg.author.tag} (<@${msg.author.id}>)\n**Where:** <#${msg.channel.id}>`);
     embed.setColor(16098851);
     embed.setTimestamp(msg.editedTimestamp);
