@@ -162,7 +162,7 @@ Kwako.on('message', async (msg: Message) => {
     }
 });
 
-
+import userJoin from './events/logs/userJoin';
 Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
@@ -217,12 +217,21 @@ Kwako.on("guildMemberAdd", async member => {
     } catch {
         return;
     }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) return;
+
+    return userJoin(member, modLogChannel);
 });
 
 Kwako.on('guildCreate', async guild => {
     if(!guild.available) return;
 
-    let channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+    let channel = guild.channels.cache.find(val => val.type === 'text' && val.name.match(/g(e?)n(e?)r(a?)l/gi) !== null && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
+    if(!channel)
+        channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
     if(channel) {
         await (channel as TextChannel).send({
             "embed": {
@@ -262,7 +271,7 @@ Kwako.on('guildCreate', async guild => {
         }
     }
 
-    await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
+    await Kwako.db.collection('settings').insertOne({ '_id': guild.id, 'config': defaultSettings });
 
     await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
 
@@ -318,6 +327,21 @@ Kwako.on('messageDelete', async msg => {
     if(!modLogChannel) return;
 
     return messageDelete(msg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+});
+
+import messageUpdate from './events/logs/messageUpdate';
+Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
+    if(!oldmsg.guild.available) return;
+
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: oldmsg.guild.id } });
+    guildConf = guildConf.config || defaultSettings;
+
+    let modLogChannel = guildConf.modLogChannel;
+    if (!modLogChannel) return;
+
+    if (!newmsg) return;
+
+    return messageUpdate(newmsg, oldmsg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';

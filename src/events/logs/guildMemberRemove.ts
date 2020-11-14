@@ -29,7 +29,7 @@ export default async function guildMemberRemove(member: GuildMember | PartialGu
         if(!channel) return Kwako.db.collection('settings').updateOne({ _id: member.guild.id }, { $set: { 'config.modLogChannel': "" } });
 
         let embed = new MessageEmbed();
-        embed.setTitle("Member kicked");
+        embed.setTitle("🚪 Member kicked");
         embed.setDescription(`**Who:** ${member.user.tag} (<@${member.id}>)\n**By:** ${executor.tag} (<@${executor.id}>)\n**Reason:** \`${reason || "no reason provided"}\``);
         embed.setColor(15260213);
         embed.setTimestamp(createdTimestamp);
