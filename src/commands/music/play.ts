@@ -15,6 +15,10 @@ module.exports.run = async (msg: Message, args: string[]) => {
 
     player.connect();
 
+    if(player.voiceChannel !== voiceChannel.id) return msg.channel.send({'embed':{
+        'title': ':x: You need to be connected in the same voice channel as me to use this command'
+    }});
+
     let video_url = args[0].split('&')
 
     if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
