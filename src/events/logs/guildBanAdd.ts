@@ -26,7 +26,7 @@ export default async function guildBanAdd(guild: Guild, user: User | PartialUser
         if(!channel) return Kwako.db.collection('settings').updateOne({ _id: guild.id }, { $set: { 'config.modLogChannel': "" } });
 
         let embed = new MessageEmbed();
-        embed.setTitle("Member banned");
+        embed.setTitle("🔨 Member banned");
         embed.setDescription(`**Who:** ${user.tag} (<@${user.id}>)\n**By:** ${executor.tag} (<@${executor.id}>)\n**Reason:** \`${reason || "no reason provided"}\``);
         embed.setColor(13632027);
         embed.setTimestamp(createdTimestamp);
