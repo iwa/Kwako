@@ -40,6 +40,12 @@ module.exports.run = async (msg: Message, args: string[]) => {
     } else {
         let res = await Kwako.music.search(args.join(' '), msg.author);
 
+        if(!res.tracks) return msg.channel.send(":x: An unexpected error occurred.");
+
+        if(player.queue.includes(res.tracks[0])) return msg.channel.send({'embed':{
+            'title': 'Song already in the queue!'
+        }})
+
         player.queue.add(res.tracks[0]);
 
         const embed = new MessageEmbed()
