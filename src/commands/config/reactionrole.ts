@@ -252,12 +252,13 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
             let stop = false;
             let roles = new Map();
-            let roleMsg = await msg.channel.send({'embed':{
-                'title': "Current roles binded",
-                'description': roles.forEach((val, key) => {
-                        return `${key}: <@&${val}>\n`
-                    })
-            }})
+
+            let embedRoles = new MessageEmbed();
+            embedRoles.setTitle("Current roles binded");
+            embedRoles.setDescription(roles.forEach((val, key) => {
+                return `${key}: <@&${val}>\n`
+            }));
+            let roleMsg = await msg.channel.send(embedRoles);
 
             let repRoles = await msg.channel.send({'embed':{
                 'title': "Add a role to the Reaction Role Message",
@@ -311,12 +312,12 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
                 roles.set(emote, role);
 
-                await roleMsg.edit({'embed':{
-                    'title': "Current roles binded",
-                    'description': roles.forEach((val, key) => {
-                            return `${key}: <@&${val}>\n`
-                        })
-                }})
+                let embedRole = new MessageEmbed();
+                embedRole.setTitle("Current roles binded");
+                embedRole.setDescription(roles.forEach((val, key) => {
+                    return `${key}: <@&${val}>\n`
+                }));
+                await roleMsg.edit(embedRole);
             }
 
             await repRoles.delete();
