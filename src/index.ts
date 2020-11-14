@@ -227,7 +227,11 @@ Kwako.on("guildMemberAdd", async member => {
 Kwako.on('guildCreate', async guild => {
     if(!guild.available) return;
 
-    let channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+    let channel = guild.channels.cache.find(val => val.type === 'text' && val.name.match(/g(e?)n(e?)r(a?)l/gi) !== null && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
+    if(!channel)
+        channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
     if(channel) {
         await (channel as TextChannel).send({
             "embed": {
