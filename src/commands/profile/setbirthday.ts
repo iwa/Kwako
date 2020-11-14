@@ -38,7 +38,12 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
     let dd = String(date.getDate()).padStart(2, '0');
     let mm = String(date.getMonth() + 1).padStart(2, '0');
-    if(dd === 'NaN' || mm === 'NaN') return;
+
+    if(dd === 'NaN' || mm === 'NaN') return msg.channel.send({'embed':{
+        'title': 'An error occured',
+        'description': 'Please enter your birthday in the following format: `mm/dd`'
+    }});
+
     let today = `${mm}/${dd}`;
     await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $set: { birthday: today } }, { upsert: true });
     const embed = new MessageEmbed();
