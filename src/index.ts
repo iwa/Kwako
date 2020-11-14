@@ -271,7 +271,7 @@ Kwako.on('guildCreate', async guild => {
         }
     }
 
-    await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
+    await Kwako.db.collection('settings').insertOne({ '_id': guild.id, 'config': defaultSettings });
 
     await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
 
