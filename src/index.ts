@@ -320,6 +320,21 @@ Kwako.on('messageDelete', async msg => {
     return messageDelete(msg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
+import messageUpdate from './events/logs/messageUpdate';
+Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
+    if(!oldmsg.guild.available) return;
+
+    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: oldmsg.guild.id } });
+    guildConf = guildConf.config || defaultSettings;
+
+    let modLogChannel = guildConf.modLogChannel;
+    if (!modLogChannel) return;
+
+    if (!newmsg) return;
+
+    return messageUpdate(newmsg, oldmsg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+});
+
 import guildMemberRemove from './events/logs/guildMemberRemove';
 Kwako.on('guildMemberRemove', async member => {
     if(!member.guild.available) return;
