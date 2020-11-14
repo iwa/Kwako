@@ -13,6 +13,10 @@ module.exports.run = async (msg: Message, args: string[]) => {
         textChannel: msg.channel.id,
     });
 
+    if(player.voiceChannel !== voiceChannel.id) return msg.channel.send({'embed':{
+        'title': ':x: You need to be connected in the same voice channel as me to use this command'
+    }});
+
     player.connect();
 
     let video_url = args[0].split('&')
@@ -35,6 +39,12 @@ module.exports.run = async (msg: Message, args: string[]) => {
         }
     } else {
         let res = await Kwako.music.search(args.join(' '), msg.author);
+
+        if(!res.tracks) return msg.channel.send(":x: An unexpected error occurred.");
+
+        if(player.queue.includes(res.tracks[0])) return msg.channel.send({'embed':{
+            'title': 'Song already in the queue!'
+        }})
 
         player.queue.add(res.tracks[0]);
 

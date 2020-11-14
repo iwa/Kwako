@@ -8,6 +8,10 @@ module.exports.run = async (msg: Message) => {
         textChannel: msg.channel.id,
     });
 
+    if(player.voiceChannel !== msg.member.voice.channelID) return msg.channel.send({'embed':{
+        'title': ':x: You need to be connected in the same voice channel as me to use this command'
+    }});
+
     if (player.queue.length <= 2) return msg.react('❌');
 
     player.queue.shuffle();

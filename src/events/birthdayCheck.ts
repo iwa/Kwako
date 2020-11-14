@@ -14,7 +14,10 @@ export default async function birthdayCheck() {
         if(!data || data.length === 0) return;
 
         for(const guild of Kwako.guilds.cache.values()) {
-            let channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']))
+            let channel = guild.channels.cache.find(val => val.type === 'text' && val.name.match(/g(e?)n(e?)r(a?)l/gi) !== null && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
+            if(!channel)
+                channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
 
             data.forEach(async user => {
                 let userInfo = guild.members.resolve(user._id)
