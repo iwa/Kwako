@@ -162,7 +162,7 @@ Kwako.on('message', async (msg: Message) => {
     }
 });
 
-
+import userJoin from './events/logs/userJoin';
 Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
@@ -217,6 +217,11 @@ Kwako.on("guildMemberAdd", async member => {
     } catch {
         return;
     }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) return;
+
+    return userJoin(member, modLogChannel);
 });
 
 Kwako.on('guildCreate', async guild => {
