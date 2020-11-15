@@ -340,6 +340,7 @@ Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
     if (!modLogChannel) return;
 
     if (!newmsg) return;
+    if (oldmsg.cleanContent === newmsg.cleanContent) return;
 
     return messageUpdate(newmsg, oldmsg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
