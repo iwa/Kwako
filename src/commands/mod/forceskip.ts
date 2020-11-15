@@ -33,6 +33,7 @@ module.exports.run = (msg: Message) => {
 
 module.exports.help = {
     name: 'forceskip',
+    aliases: ['fs'],
     usage: 'forceskip',
     staff: true,
     perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK', 'USE_VAD']
