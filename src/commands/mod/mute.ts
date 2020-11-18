@@ -19,7 +19,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
                 .catch(() => {return});
             });
             muteRole = role.id;
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
         })
         await msg.channel.send({'embed':{
             'title': "🛠 A 'Muted' role has been generated."

@@ -24,7 +24,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
     guildConf.disabledCommands = disabled;
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { config: guildConf }});
 
     await msg.channel.send({
         "embed": {

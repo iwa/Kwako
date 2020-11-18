@@ -14,7 +14,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
         'title': `\`${guildConf.prefix}levelrole (add|remove|list)\``
     }});
 
-    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: msg.guild.id } });
 
     let levelroles:string = guild.levelroles || "[]";
     let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
@@ -64,7 +64,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
             levelroles = JSON.stringify([...levelrolesMap]);
 
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
             await msg.react('🔄');
             await giveRoleToUpper(msg, role, parseInt(args[1], 10));
@@ -103,7 +103,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
             levelroles = JSON.stringify([...levelrolesMap]);
 
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
             let removeEmbed = new MessageEmbed()
                             .setTitle('🚮 Level Role Removed')

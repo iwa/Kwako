@@ -102,7 +102,7 @@ Kwako.on('message', async (msg: Message) => {
     if (!msg.guild) return Kwako.log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
     if (msg.channel.type !== "text") return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
     let disabled: string[] = guildConf.disabledCommands || [];
 
@@ -166,7 +166,7 @@ import userJoin from './events/logs/userJoin';
 Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
-    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+    let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: member.guild.id } });
 
     let levelroles:string = guild.levelroles || "[]";
     let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
@@ -271,7 +271,7 @@ Kwako.on('guildCreate', async guild => {
         }
     }
 
-    await Kwako.db.collection('settings').insertOne({ '_id': guild.id, 'config': defaultSettings });
+    await Kwako.db.collection('guilds').insertOne({ '_id': guild.id, 'config': defaultSettings });
 
     await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
 
@@ -279,7 +279,7 @@ Kwako.on('guildCreate', async guild => {
 });
 
 Kwako.on("guildDelete", async guild => {
-    await Kwako.db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
+    await Kwako.db.collection('guilds').deleteOne({ '_id': { $eq: guild.id } });
     await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
@@ -290,7 +290,7 @@ import starboard from './events/starboard';
 Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) => {
     if(!reaction.message.guild.available) return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
+    let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: reaction.message.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let starboardChannel = guildConf.starboardChannel;
@@ -320,7 +320,7 @@ import messageDelete from './events/logs/messageDelete';
 Kwako.on('messageDelete', async msg => {
     if(!msg.guild.available) return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: msg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
@@ -333,7 +333,7 @@ import messageUpdate from './events/logs/messageUpdate';
 Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
     if(!oldmsg.guild.available) return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: oldmsg.guild.id } });
+    let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: oldmsg.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
@@ -352,7 +352,7 @@ Kwako.on('guildMemberRemove', async member => {
     let guildDB = `exp.${member.guild.id.toString()}`
     await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+    let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: member.guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
@@ -369,7 +369,7 @@ Kwako.on('guildBanAdd', async (guild, user) => {
     let guildDB = `exp.${guild.id.toString()}`
     await Kwako.db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: guild.id } });
+    let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: guild.id } });
     guildConf = guildConf.config || defaultSettings;
 
     let modLogChannel = guildConf.modLogChannel;
@@ -415,7 +415,7 @@ setInterval(async () => {
 
             for (const [key, val] of Object.entries(user.until)) {
                 if(val <= now) {
-                    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: key } });
+                    let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: key } });
                     if(!guild) return;
 
                     let guildConf = guild.config || defaultSettings;

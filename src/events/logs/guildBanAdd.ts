@@ -23,7 +23,7 @@ export default async function guildBanAdd(guild: Guild, user: User | PartialUser
 
 	if ((target as User).id === user.id) {
         let channel = await Kwako.channels.fetch(modLogChannel).catch(() => {return});
-        if(!channel) return Kwako.db.collection('settings').updateOne({ _id: guild.id }, { $set: { 'config.modLogChannel': "" } });
+        if(!channel) return Kwako.db.collection('guilds').updateOne({ _id: guild.id }, { $set: { 'config.modLogChannel': "" } });
 
         let embed = new MessageEmbed();
         embed.setTitle("🔨 Member banned");

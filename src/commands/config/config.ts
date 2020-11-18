@@ -163,7 +163,7 @@ async function editPrefix(msg: Message, args: string[], guildConf: any, sent: Me
         return editPrefix(msg, args, guildConf, sent);
     }
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.prefix']: prefix } });
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.prefix']: prefix } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('❕').users.remove(msg.author.id);
@@ -235,7 +235,7 @@ async function editExpSystem(msg: Message, args: string[], guildConf: any, sent:
         else
             guildConf.useExpSystem = true;
 
-        await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.useExpSystem']: guildConf.useExpSystem } });
+        await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.useExpSystem']: guildConf.useExpSystem } });
     }
 
     if(emote.emoji.name === '2️⃣') {
@@ -253,7 +253,7 @@ async function editExpSystem(msg: Message, args: string[], guildConf: any, sent:
 
             console.log(guildConf.showLevelUp)
 
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.showLevelUp']: guildConf.showLevelUp } });
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.showLevelUp']: guildConf.showLevelUp } });
         }
     }
 
@@ -293,7 +293,7 @@ async function editBoosterBenefit(msg: Message, args: string[], guildConf: any, 
 
     guildConf.boosterBenefits = value;
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.boosterBenefits']: value } });
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.boosterBenefits']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('🟣').users.remove(msg.author.id);
@@ -352,7 +352,7 @@ async function editModLogs(msg: Message, args: string[], guildConf: any, sent: M
 
     guildConf.modLogChannel = value;
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.modLogChannel']: value } });
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.modLogChannel']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('📖').users.remove(msg.author.id);
@@ -411,7 +411,7 @@ async function editSuggestions(msg: Message, args: string[], guildConf: any, sen
 
     guildConf.suggestionChannel = value;
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.suggestionChannel']: value } });
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.suggestionChannel']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('❓').users.remove(msg.author.id);
@@ -471,7 +471,7 @@ async function editMuteRole(msg: Message, args: string[], guildConf: any, sent: 
 
     guildConf.muteRole = value;
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: value } });
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: value } });
 
     sent = await updateSent(guildConf, sent);
     await sent.reactions.resolve('⛔').users.remove(msg.author.id);
@@ -574,7 +574,7 @@ async function editStarboard(msg: Message, args: string[], guildConf: any, sent:
 
         guildConf.starboardChannel = value;
 
-        await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.starboardChannel']: value } });
+        await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.starboardChannel']: value } });
     }
 
     if(emote.emoji.name === '2️⃣') {
@@ -603,7 +603,7 @@ async function editStarboard(msg: Message, args: string[], guildConf: any, sent:
 
         guildConf.customEmote = emote;
 
-        await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.customEmote']: emote } });
+        await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.customEmote']: emote } });
     }
 
     if(emote.emoji.name === '3️⃣') {
@@ -635,7 +635,7 @@ async function editStarboard(msg: Message, args: string[], guildConf: any, sent:
 
         guildConf.starReactions = amount;
 
-        await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.starReactions']: amount } });
+        await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.starReactions']: amount } });
     }
 
     sentEdit.delete();
@@ -669,7 +669,7 @@ async function editWelcomeMessage(msg: Message, args: string[], guildConf: any, 
     if(reply.toLowerCase().startsWith('off'))
         reply = '';
 
-    await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.welcomeMessage']: reply } });
+    await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.welcomeMessage']: reply } });
 
     guildConf.welcomeMessage = reply;
 

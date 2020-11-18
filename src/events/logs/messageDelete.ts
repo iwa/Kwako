@@ -29,7 +29,7 @@ export default async function messageDelete(msg: Message | PartialMessage, modLo
         if (suggestionChannel && suggestionChannel === msg.channel.id) return;
         if (msg.author.bot) return;
         let channel = await Kwako.channels.fetch(modLogChannel).catch(() => {return});
-        if(!channel) return Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { 'config.modLogChannel': "" } });
+        if(!channel) return Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { 'config.modLogChannel': "" } });
 
         let embed = new MessageEmbed();
         embed.setTitle("🗑 Message Self-deleted");

@@ -16,7 +16,7 @@ export default async function levelCheck (msg: Discord.Message, xp: number, exp:
         if ((after.level % 5) === 0 && showLevelUp)
             await msg.reply(`you're now level ${after.level}!🎉🎉`).catch(() => {return});
 
-        let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+        let guildConf = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: msg.guild.id } });
         let levelroles:string = guildConf.levelroles || "[]";
         let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
 
