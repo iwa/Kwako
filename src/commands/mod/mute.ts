@@ -2,7 +2,7 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
 import timespan from '../../utils/timespan';
 
-module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
 
     let muteRole = guildConf.muteRole;
