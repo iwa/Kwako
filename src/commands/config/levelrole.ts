@@ -153,11 +153,12 @@ async function giveRoleToUpper (msg: Message, role: string, level: number) {
     let guild = `exp.${msg.guild.id.toString()}`
 
     if(level === 1) {
-        let list = msg.guild.members.cache.filter(m => !m.user.bot).values();
+        let list = (await msg.guild.members.fetch()).array();
         if(list) {
             for(const member of list) {
                 if(member)
-                    await member.roles.add(role).catch(() => {return});
+                    if(!member.user.bot)
+                        await member.roles.add(role).catch(() => {return});
             }
         }
     } else {
