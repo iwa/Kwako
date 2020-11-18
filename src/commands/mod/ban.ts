@@ -2,7 +2,7 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 
 module.exports.run = async (msg: Message, args:string[]) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if (!msg.member.hasPermission('BAN_MEMBERS')) return;
 
     if (args.length >= 2 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
