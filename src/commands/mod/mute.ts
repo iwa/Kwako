@@ -1,6 +1,5 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
-//const timespan = require("timespan-parser")("min");
 import timespan from '../../utils/timespan';
 
 module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
@@ -71,6 +70,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         const embed = new MessageEmbed();
         embed.setColor('RED')
         embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\` by **${msg.author.username}**`)
+        embed.setDescription(`Reason: \`${reason}\``);
 
         try {
             let res = await mention.roles.add(muteRole).catch(async () => {
@@ -81,7 +81,11 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                 });
 
             if(res) {
-                let reply = await msg.channel.send(embed)
+                await msg.channel.send(embed);
+
+                let unmuteDate = Date.now() + timeParsed;
+                let field = `until.${msg.guild.id}`
+                await Kwako.db.collection('mute').updateOne({ _id: mention.user.id }, { $set: { [field]: unmuteDate } }, { upsert: true });
 
                 Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
@@ -96,11 +100,6 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                     embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
                     await (channel as TextChannel).send(embedLog);
                 }
-
-                setTimeout(async () => {
-                    await reply.delete()
-                    return mention.roles.remove(muteRole)
-                }, timeParsed)
             }
         } catch (err) {
             Kwako.log.error(err);

@@ -405,5 +405,39 @@ setInterval(async () => {
     await birthdayCheck()
 }, 3600000);
 
+// unmute loop
+setInterval(async () => {
+    let now = Date.now();
+    let users = await Kwako.db.collection('mute').find().toArray();
+
+    for(const user of users) {
+        if(user.until) {
+
+            for (const [key, val] of Object.entries(user.until)) {
+                if(val <= now) {
+                    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: key } });
+                    if(!guild) return;
+
+                    let guildConf = guild.config || defaultSettings;
+                    if(!guildConf.muteRole) return;
+
+                    let discGuild = await Kwako.guilds.fetch(key);
+                    if(!discGuild) return;
+
+                    let discMember = await discGuild.members.fetch(user._id);
+                    if(!discMember) return;
+
+                    await discMember.roles.remove(guildConf.muteRole).catch(() => {return});
+                    await Kwako.db.collection('mute').deleteOne({ _id: user._id });
+                }
+            }
+
+        } else {
+            await Kwako.db.collection('mute').deleteOne({ _id: user._id });
+        }
+    }
+
+}, 30000);
+
 // Login
 Kwako.start(process.env.TOKEN);
