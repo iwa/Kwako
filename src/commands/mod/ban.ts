@@ -20,7 +20,7 @@ module.exports.run = async (msg: Message, args:string[]) => {
 
         args.shift();
         let reason = "no reason provided";
-        if(args.length > 1)
+        if(args.length >= 1)
             reason = args.join(" ")
 
         const embed = new MessageEmbed();
