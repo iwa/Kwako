@@ -1,5 +1,5 @@
 import Kwako from '../../Client'
-import { Message, MessageEmbed } from 'discord.js'
+import { Message, MessageEmbed, TextChannel } from 'discord.js'
 
 module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
     if (!msg.member.hasPermission('MANAGE_GUILD')) return;
@@ -30,6 +30,19 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
             await msg.channel.send({'embed':{
                 'title': ":x: > I can't unmute this person!"
             }});
+        }
+
+        let modLogChannel = guildConf.modLogChannel;
+        if(modLogChannel) {
+            let channel = await Kwako.channels.fetch(modLogChannel);
+            let embedLog = new MessageEmbed();
+            embedLog.setTitle("Member unmuted");
+            embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>`);
+            embedLog.setColor(14349246);
+            embedLog.setTimestamp(msg.createdTimestamp);
+            embedLog.setFooter("Date of unmute:")
+            embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+            await (channel as TextChannel).send(embedLog);
         }
 
         Kwako.log.info({msg: 'unmute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag }})
