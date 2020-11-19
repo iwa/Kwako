@@ -132,7 +132,7 @@ Kwako.on('message', async (msg: Message) => {
             }}).catch(() => { return; });
 
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
-            return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
+            return makePermsErrorBetter(msg, cmd);
 
         if (!msg.member.hasPermission('MANAGE_GUILD')) {
             talkedRecently.add(msg.author.id);
@@ -383,6 +383,7 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
 
 // Check if it's someone's birthday, and send a HBP message at 8am UTC
 import birthdayCheck from './events/birthdayCheck';
+import makePermsErrorBetter from "./utils/makePermsErrorBetter";
 setInterval(async () => {
     await birthdayCheck()
 }, 3600000);
