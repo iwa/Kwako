@@ -430,7 +430,7 @@ async function editMuteRole(msg: Message, args: string[], guildConf: any, sent: 
             },
             {
                 "name": "❌",
-                "value": "**Disable**",
+                "value": "**Cancel**",
                 "inline": true
             }
         ]
@@ -467,7 +467,7 @@ async function editMuteRole(msg: Message, args: string[], guildConf: any, sent: 
 
         value = role.id;
     }
-    else if (emote.emoji.name === '❌') value = '';
+    else if (emote.emoji.name === '❌') value = guildConf.muteRole;
 
     guildConf.muteRole = value;
 
