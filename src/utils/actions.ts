@@ -25,7 +25,8 @@ let lastGif = new Map([
     ['glare', 0],
     ['tickle', 0],
     ['kiss', 0],
-    ['yeet', 0]
+    ['yeet', 0],
+    ['cuddle', 0]
 ]);
 
 /** define the number of gifs available */
@@ -39,16 +40,10 @@ let count = new Map([
     ['glare', 6],
     ['tickle', 5],
     ['kiss', 2],
-    ['yeet', 3]
+    ['yeet', 3],
+    ['cuddle', 7]
 ]);
 
-/**
- * @param bot - Discord Client object
- * @param msg - Message object
- * @param args - Arguments in the message
- * @param db - Database connection object
- * @param type - Type of actions (hug, pat...)
- */
 export default async function actionsRun(msg: Message, args: string[], type: string, verb: string, at: boolean) {
     if (args.length === 0) return;
     if (args.length <= 4) {
