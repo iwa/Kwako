@@ -32,14 +32,14 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 };
 
 module.exports.help = {
-    name: 'mute',
-    usage: 'mute (mention someone) [reason]',
+    name: 'tempmute',
+    usage: 'tempmute (mention someone) (length)',
     staff: true,
     perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
 };
 
 async function mute(msg: Message, args: string[], muteRole: string, modLogChannel: string): Promise<void> {
-    if (args.length >= 1 && msg.channel.type != 'dm') {
+    if (args.length >= 2 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
 
         let mention = msg.mentions.members.first()
@@ -56,13 +56,20 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         }
 
         args.shift();
+        let timeParsed = await timespan.parse(args[0], "msec", msg).catch(() => {return;});
+        if(!timeParsed || typeof timeParsed !== 'number') return;
+
+        let timeParsedString = await timespan.getString(timeParsed, "msec", msg);
+        if(!timeParsedString || typeof timeParsedString !== 'string') return;
+
+        args.shift();
         let reason = "no reason provided";
         if(args.length > 1)
             reason = args.join(" ")
 
         const embed = new MessageEmbed();
         embed.setColor('RED')
-        embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted`)
+        embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\``)
         embed.setDescription(`Reason: \`${reason}\``);
 
         try {
@@ -76,13 +83,17 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
             if(res) {
                 await msg.channel.send(embed);
 
+                let unmuteDate = Date.now() + timeParsed;
+                let field = `until.${msg.guild.id}`
+                await Kwako.db.collection('mute').updateOne({ _id: mention.user.id }, { $set: { [field]: unmuteDate } }, { upsert: true });
+
                 Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
                 if(modLogChannel) {
                     let channel = await Kwako.channels.fetch(modLogChannel);
                     let embedLog = new MessageEmbed();
-                    embedLog.setTitle("Member muted");
-                    embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**Reason:** \`${reason}\``);
+                    embedLog.setTitle("Member temp-muted");
+                    embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
                     embedLog.setColor(9392322);
                     embedLog.setTimestamp(msg.createdTimestamp);
                     embedLog.setFooter("Date of mute:")
