@@ -81,8 +81,6 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
                         'description': "If you don't know what is the __Message UID__, go in:\n*Discord Settings > Appearance > Developer Mode*\nThen right click/long touch on a RR Embed > Copy ID\nFinally, paste the UID"
                     }});
 
-                    console.log(args)
-
                     let dbEmbed = await Kwako.db.collection('msg').findOne({ _id: args[2] })
                     if (!dbEmbed) return msg.channel.send({'embed':{
                         'title': ":x: This Reaction Roles Embed doesn't exist!"

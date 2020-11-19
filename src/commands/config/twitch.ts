@@ -119,7 +119,6 @@ setInterval(async () => {
         let isStream = data.isStream || false;
 
         if (stream && !isStream) {
-            console.log(stream)
             isStreamChecks.set(data._id, 10);
             await Kwako.db.collection('twitch').updateOne({ _id: data._id }, { $set: { isStream: true } });
 
