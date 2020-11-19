@@ -13,6 +13,8 @@ const url = process.env.MONGO_URL, dbName = process.env.MONGO_DBNAME;
 
 import fs from 'fs';
 
+import GuildConfig from './interfaces/GuildConfig';
+
 export default new class Kwako extends Client {
 
     public log = log;
@@ -25,6 +27,21 @@ export default new class Kwako extends Client {
     private golden: Set<string> = new Set();
 
     public music: Manager;
+
+    private defaultConfig: GuildConfig = {
+        prefix: "!",
+        welcomeMessage: "",
+        starboardChannel: "",
+        muteRole: "",
+        modLogChannel: "",
+        suggestionChannel: "",
+        disabledCommands: [] as string[],
+        useExpSystem: true,
+        showLevelUp: true,
+        boosterBenefits: true,
+        customEmote: "",
+        starReactions: 5
+    }
 
     public constructor() {
 		super(
@@ -72,6 +89,32 @@ export default new class Kwako extends Client {
         string = string.slice(0, (string.length-2));
 
         return string;
+    }
+
+    public async getGuildConf(id: string): Promise<GuildConfig> {
+        let guild = await this.db.collection('guilds').findOne({ '_id': { $eq: id } });
+        let guildConf = guild.config;
+
+        let config: GuildConfig = {
+            prefix: guildConf.prefix || this.defaultConfig.prefix,
+            welcomeMessage: guildConf.welcomeMessage || this.defaultConfig.welcomeMessage,
+            starboardChannel: guildConf.starboardChannel || this.defaultConfig.starboardChannel,
+            muteRole: guildConf.muteRole || this.defaultConfig.muteRole,
+            modLogChannel: guildConf.modLogChannel || this.defaultConfig.modLogChannel,
+            suggestionChannel: guildConf.suggestionChannel || this.defaultConfig.suggestionChannel,
+            disabledCommands: (guildConf.disabledCommands || this.defaultConfig.disabledCommands) as string[],
+            useExpSystem: guildConf.disabledCommands || this.defaultConfig.disabledCommands,
+            showLevelUp: guildConf.showLevelUp || this.defaultConfig.showLevelUp,
+            boosterBenefits: guildConf.boosterBenefits || this.defaultConfig.boosterBenefits,
+            customEmote: guildConf.customEmote || this.defaultConfig.customEmote,
+            starReactions: guildConf.starReactions || this.defaultConfig.starReactions
+        }
+
+        return config;
+    }
+
+    public getDefaultConf(): GuildConfig {
+        return this.defaultConfig;
     }
 
     private async _init() {
