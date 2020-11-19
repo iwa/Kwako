@@ -163,6 +163,7 @@ async function editPrefix(msg: Message, args: string[], guildConf: any, sent: Me
         return editPrefix(msg, args, guildConf, sent);
     }
 
+    guildConf.prefix = prefix;
     await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.prefix']: prefix } });
 
     sent = await updateSent(guildConf, sent);
