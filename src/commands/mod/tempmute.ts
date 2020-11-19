@@ -87,7 +87,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                 let field = `until.${msg.guild.id}`
                 await Kwako.db.collection('mute').updateOne({ _id: mention.user.id }, { $set: { [field]: unmuteDate } }, { upsert: true });
 
-                Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+                Kwako.log.info({msg: 'tempmute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
                 if(modLogChannel) {
                     let channel = await Kwako.channels.fetch(modLogChannel);
