@@ -168,6 +168,9 @@ Kwako.on("guildMemberAdd", async member => {
 
     let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: member.guild.id } });
 
+    let muted = await Kwako.db.collection('mute').findOne({ _id: member.id });
+    if (member.guild.id in muted.until) await member.roles.add(guild.config['muteRole']);
+
     let levelroles:string = guild.levelroles || "[]";
     let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
 
@@ -181,28 +184,33 @@ Kwako.on("guildMemberAdd", async member => {
     let userDB = await Kwako.db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
-        if(!userDB.exp) return;
-
-        if(userDB.exp[member.guild.id] < 0) {
-            await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
-            userDB.exp[member.guild.id] *= -1;
-        }
-
-        let levelroles:string = guild.levelroles || "[]";
-        let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
-
-        let exp = userDB.exp[member.guild.id] || 0;
-        let lvl = utilities.levelInfo(exp);
-
-        levelrolesMap.forEach(async (value, key) => {
-            if(key <= lvl.level) {
-                if(member && value && value[0]) {
-                    await member.roles.add(value[0]).catch(() => {return});
-                    if (value[1])
-                        await member.roles.remove(value[1]).catch(() => {return});
-                }
+        if(userDB.exp) {
+            if(userDB.exp[member.guild.id] < 0) {
+                await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+                userDB.exp[member.guild.id] *= -1;
             }
-        });
+
+            let levelroles:string = guild.levelroles || "[]";
+            let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
+
+            let exp = userDB.exp[member.guild.id] || 0;
+            let lvl = utilities.levelInfo(exp);
+
+            levelrolesMap.forEach(async (value, key) => {
+                if(key <= lvl.level) {
+                    if(member && value && value[0]) {
+                        await member.roles.add(value[0]).catch(() => {return});
+                        if (value[1])
+                            await member.roles.remove(value[1]).catch(() => {return});
+                    }
+                }
+            });
+        }
+    }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) {
+        userJoin(member, modLogChannel);
     }
 
     let welcomeMessage = guildConf.welcomeMessage;
@@ -217,11 +225,6 @@ Kwako.on("guildMemberAdd", async member => {
     } catch {
         return;
     }
-
-    let modLogChannel = guildConf.modLogChannel;
-    if(!modLogChannel) return;
-
-    return userJoin(member, modLogChannel);
 });
 
 Kwako.on('guildCreate', async guild => {
