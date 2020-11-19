@@ -76,6 +76,8 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
             if(res) {
                 await msg.channel.send(embed);
 
+                await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'mute', reason: reason, date: msg.createdTimestamp });
+
                 Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
                 if(modLogChannel) {

@@ -23,7 +23,7 @@ module.exports.run = async (msg: Message, args:string[]) => {
         if(args.length >= 1)
             reason = args.join(" ")
 
-        reason = `${reason} (${msg.author.tag})`;
+        let reasonTagged = `${reason} (${msg.author.tag})`;
 
         const embed = new MessageEmbed()
             .setColor('RED')
@@ -31,11 +31,13 @@ module.exports.run = async (msg: Message, args:string[]) => {
             .setDescription(`**Reason:** ${reason}`);
 
         try {
-            await mention.kick(reason);
+            await mention.kick(reasonTagged);
             await msg.channel.send(embed);
         } catch (err) {
             await msg.channel.send("I can't kick this person!")
         }
+
+        await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'kick', reason: reason, date: msg.createdTimestamp });
 
         Kwako.log.info({msg: 'kick', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
     }

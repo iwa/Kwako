@@ -47,6 +47,8 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
             return;
         }
 
+        await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'warn', reason: reason, date: msg.createdTimestamp });
+
         Kwako.log.info({msg: 'warn', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
     }
 };
