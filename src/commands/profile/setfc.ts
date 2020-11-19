@@ -1,7 +1,8 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setfc (Switch Friend Code)\` to register your FC in your profile card\n\n\`${guildConf.prefix}setfc off\` to remove it`,

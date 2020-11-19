@@ -4,7 +4,7 @@ import { Message } from 'discord.js'
 import imGenerator from '../../utils/img'
 import utilities from '../../utils/utilities'
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if (args.length === 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()

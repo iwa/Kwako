@@ -1,7 +1,8 @@
 import Kwako from '../../Client';
 import { Message } from 'discord.js';
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     if (args.length !== 1) return;
 

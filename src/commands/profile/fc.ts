@@ -1,7 +1,8 @@
 import Kwako from '../../Client'
 import { Message } from 'discord.js'
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if (args.length === 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()

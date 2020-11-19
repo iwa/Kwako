@@ -1,9 +1,10 @@
 import Kwako from '../../Client';
 import { Message, MessageEmbed } from 'discord.js';
+import GuildConfig from '../../interfaces/GuildConfig';
 
 let emojis = ['❕', 'a:ExperienceOrb:735085209573261332', '🟣', '📖', '❓', '⛔', '⭐', '✉️', '❌'];
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return msg.delete();
 
 

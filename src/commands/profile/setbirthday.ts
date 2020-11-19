@@ -1,7 +1,8 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setbirthday (your birthday, mm/dd)\` to register your birthday in your profile card\n\n\`${guildConf.prefix}setbirthday off\` to remove it`,

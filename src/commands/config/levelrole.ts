@@ -1,8 +1,9 @@
 import Kwako from '../../Client';
 import { Message, MessageEmbed } from 'discord.js';
 import utilities from '../../utils/utilities';
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     guildConf.useExpSystem &&= true;
     if(!guildConf.useExpSystem)

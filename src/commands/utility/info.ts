@@ -1,9 +1,10 @@
 import Kwako from '../../Client'
 import { Message } from 'discord.js'
+import GuildConfig from '../../interfaces/GuildConfig';
 
 let { version } = require('../../../package.json')
 
-module.exports.run = async (msg: Message, args: any, guildConf: any) => {
+module.exports.run = async (msg: Message, args: any, guildConf: GuildConfig) => {
     let iwa = await Kwako.users.fetch(process.env.IWA);
     let avatar = iwa.avatarURL({ format: 'png', dynamic: false, size: 256 })
 
