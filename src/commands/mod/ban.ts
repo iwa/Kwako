@@ -23,6 +23,8 @@ module.exports.run = async (msg: Message, args:string[]) => {
         if(args.length >= 1)
             reason = args.join(" ")
 
+        reason = `${reason} (${msg.author.tag})`;
+
         const embed = new MessageEmbed()
             .setColor('RED')
             .setTitle(`🔨 **${mention.user.username}** has been banned`)
