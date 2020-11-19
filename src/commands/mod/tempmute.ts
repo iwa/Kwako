@@ -67,10 +67,10 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         if(args.length >= 1)
             reason = args.join(" ")
 
-        const embed = new MessageEmbed();
-        embed.setColor('RED')
-        embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\``)
-        embed.setDescription(`Reason: \`${reason}\``);
+        const embed = new MessageEmbed()
+            .setColor('RED')
+            .setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\``)
+            .setDescription(`**Reason:** ${reason}`);
 
         try {
             let res = await mention.roles.add(muteRole).catch(async () => {
@@ -91,13 +91,13 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
 
                 if(modLogChannel) {
                     let channel = await Kwako.channels.fetch(modLogChannel);
-                    let embedLog = new MessageEmbed();
-                    embedLog.setTitle("Member temp-muted");
-                    embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
-                    embedLog.setColor(9392322);
-                    embedLog.setTimestamp(msg.createdTimestamp);
-                    embedLog.setFooter("Date of tempmute:")
-                    embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+                    const embedLog = new MessageEmbed()
+                        .setTitle("Member temp-muted")
+                        .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``)
+                        .setColor(9392322)
+                        .setTimestamp(msg.createdTimestamp)
+                        .setFooter("Date of tempmute:")
+                        .setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
                     await (channel as TextChannel).send(embedLog);
                 }
             }

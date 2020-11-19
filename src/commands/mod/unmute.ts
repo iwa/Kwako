@@ -18,9 +18,9 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
             Kwako.log.error(error);
         }
 
-        const embed = new MessageEmbed();
-        embed.setColor(14349246)
-        embed.setTitle(`✅ **${mention.user.username}** has been unmuted`)
+        const embed = new MessageEmbed()
+            .setColor(14349246)
+            .setTitle(`✅ **${mention.user.username}** has been unmuted`);
 
         try {
             await mention.roles.remove(guildConf.muteRole);
@@ -35,13 +35,13 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
         let modLogChannel = guildConf.modLogChannel;
         if(modLogChannel) {
             let channel = await Kwako.channels.fetch(modLogChannel);
-            let embedLog = new MessageEmbed();
-            embedLog.setTitle("Member unmuted");
-            embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>`);
-            embedLog.setColor(14349246);
-            embedLog.setTimestamp(msg.createdTimestamp);
-            embedLog.setFooter("Date of unmute:")
-            embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
+            const embedLog = new MessageEmbed()
+                .setTitle("Member unmuted")
+                .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>`)
+                .setColor(14349246)
+                .setTimestamp(msg.createdTimestamp)
+                .setFooter("Date of unmute:")
+                .setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
             await (channel as TextChannel).send(embedLog);
         }
 

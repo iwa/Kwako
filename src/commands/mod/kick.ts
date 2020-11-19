@@ -23,9 +23,10 @@ module.exports.run = async (msg: Message, args:string[]) => {
         if(args.length >= 1)
             reason = args.join(" ")
 
-        const embed = new MessageEmbed();
-        embed.setColor('RED')
-        embed.setTitle(`🚪 **${mention.user.username}** has been kicked by **${msg.author.username}**`)
+        const embed = new MessageEmbed()
+            .setColor('RED')
+            .setTitle(`🚪 **${mention.user.username}** has been kicked`)
+            .setDescription(`**Reason:** ${reason}`);
 
         try {
             await mention.kick(reason);
