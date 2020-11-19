@@ -26,7 +26,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
         const embed = new MessageEmbed()
             .setColor('ORANGE')
-            .setTitle(`⚠️ **${mention.user.username}**, you've been warned by **${msg.author.username}**`)
+            .setTitle(`⚠️ **${mention.user.username}**, you've been warned`)
             .setDescription(`**Reason:** ${reason}`);
 
         try {
