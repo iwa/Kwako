@@ -96,7 +96,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                     embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
                     embedLog.setColor(9392322);
                     embedLog.setTimestamp(msg.createdTimestamp);
-                    embedLog.setFooter("Date of mute:")
+                    embedLog.setFooter("Date of tempmute:")
                     embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
                     await (channel as TextChannel).send(embedLog);
                 }
