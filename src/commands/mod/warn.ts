@@ -35,7 +35,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
             if(modLogChannel) {
                 let channel = await Kwako.channels.fetch(modLogChannel);
                 let embedLog = new MessageEmbed()
-                    .setTitle("Member warned")
+                    .setTitle("⚠️ Member warned")
                     .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**Reason:** \`${reason}\``)
                     .setColor('ORANGE')
                     .setTimestamp(msg.createdTimestamp)

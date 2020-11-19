@@ -92,7 +92,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
                 if(modLogChannel) {
                     let channel = await Kwako.channels.fetch(modLogChannel);
                     const embedLog = new MessageEmbed()
-                        .setTitle("Member temp-muted")
+                        .setTitle("🤐 Member temp-muted")
                         .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``)
                         .setColor(9392322)
                         .setTimestamp(msg.createdTimestamp)
