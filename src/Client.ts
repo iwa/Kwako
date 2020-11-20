@@ -93,7 +93,7 @@ export default new class Kwako extends Client {
 
     public async getGuildConf(id: string): Promise<GuildConfig> {
         let guild = await this.db.collection('guilds').findOne({ '_id': { $eq: id } });
-        let guildConf = guild.config;
+        let guildConf = guild.config || this.defaultConfig;
 
         let config: GuildConfig = {
             prefix: guildConf.prefix || this.defaultConfig.prefix,
