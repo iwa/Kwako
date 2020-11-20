@@ -102,7 +102,6 @@ Kwako.on('message', async (msg: Message) => {
                 'description': `\`${guildConf.prefix}\``
             }})
 
-        guildConf.useExpSystem &&= true;
         if(guildConf.useExpSystem)
             return cooldown.exp(msg, guildConf);
 

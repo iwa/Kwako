@@ -7,7 +7,6 @@ let emojis = ['❕', 'a:ExperienceOrb:735085209573261332', '🟣', '📖', '❓'
 module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return msg.delete();
 
-
     if(args[0] === 'edit') {
         let embed = new MessageEmbed();
 
