@@ -103,7 +103,7 @@ export default new class Kwako extends Client {
             modLogChannel: guildConf.modLogChannel || this.defaultConfig.modLogChannel,
             suggestionChannel: guildConf.suggestionChannel || this.defaultConfig.suggestionChannel,
             disabledCommands: (guildConf.disabledCommands || this.defaultConfig.disabledCommands) as string[],
-            useExpSystem: guildConf.disabledCommands || this.defaultConfig.disabledCommands,
+            useExpSystem: guildConf.useExpSystem || this.defaultConfig.useExpSystem,
             showLevelUp: guildConf.showLevelUp || this.defaultConfig.showLevelUp,
             boosterBenefits: guildConf.boosterBenefits || this.defaultConfig.boosterBenefits,
             customEmote: guildConf.customEmote || this.defaultConfig.customEmote,
