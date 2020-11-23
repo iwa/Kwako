@@ -1,9 +1,10 @@
 import Kwako from '../../Client'
 import { Message } from 'discord.js'
 
-module.exports.run = async (msg: Message) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if (!msg.member.voice.channel) return;
     if (!msg.member.hasPermission('MANAGE_CHANNELS') && msg.member.voice.channel.members.size !== 2) return;
+    if(args.length !== 1) return;
 
     const player = Kwako.music.create({
         guild: msg.guild.id,
@@ -15,16 +16,19 @@ module.exports.run = async (msg: Message) => {
         'title': ':x: You need to be connected in the same voice channel as me to use this command'
     }});
 
-    player.destroy();
+    if(player.playing) {
+        let current = player.position;
+        player.seek(current + (parseInt(args[0], 10) * 1000))
+        await msg.react('✅');
+    }
 
-    await msg.react('✅');
-    Kwako.log.info({msg: 'stop', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+    Kwako.log.info({msg: 'clear', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 };
 
 module.exports.help = {
-    name: 'stop',
-    aliases: ['leave', 'disconnect', 'dc'],
-    usage: "stop",
-    desc: "Make the bot stop playing music and disconnect it from",
+    name: 'fastforward',
+    aliases: ['ff'],
+    usage: "fastforward (number in seconds)",
+    desc: "Fast forward the music with a certain number of seconds",
     perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD', 'ADD_REACTIONS']
 };
