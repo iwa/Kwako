@@ -2,6 +2,9 @@ import Kwako from '../../Client'
 import { Message } from 'discord.js'
 
 module.exports.run = async (msg: Message) => {
+    if (!msg.member.voice.channel) return;
+    if (!msg.member.hasPermission('MANAGE_CHANNELS') && msg.member.voice.channel.members.size !== 2) return;
+
     const player = Kwako.music.create({
         guild: msg.guild.id,
         voiceChannel: msg.member.voice.channel.id,
@@ -20,7 +23,7 @@ module.exports.run = async (msg: Message) => {
 
 module.exports.help = {
     name: 'stop',
-    aliases: ['leave'],
+    aliases: ['leave', 'disconnect', 'dc'],
     usage: "stop",
     desc: "Make the bot stop playing music and disconnect it from",
     perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD', 'ADD_REACTIONS']

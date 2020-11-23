@@ -2,6 +2,8 @@ import Kwako from '../../Client'
 import { Message } from 'discord.js'
 
 module.exports.run = async (msg: Message, args: string[]) => {
+    if (!msg.member.voice.channel) return;
+    if (!msg.member.hasPermission('MANAGE_CHANNELS') && msg.member.voice.channel.members.size !== 2) return;
     if(args.length !== 1) return;
 
     const player = Kwako.music.create({
