@@ -18,7 +18,7 @@ module.exports.run = (msg: Message, args: string[]) => {
     let queueID: number = parseInt(args[0], 10);
 
     if (isNaN(queueID)) return;
-    if (queueID < 1 || queueID > 10) return;
+    if (queueID < 1 || queueID > 9) return;
 
     let song = player.queue.splice((queueID-1), 1);
 
