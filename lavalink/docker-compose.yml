@@ -1,0 +1,7 @@
+services:
+  lavalink:
+    image: fredboat/lavalink:master-v3
+    volumes:
+      - ./application.yml:/opt/Lavalink/application.yml
+    ports:
+      - 8081:8081
