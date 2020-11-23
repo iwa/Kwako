@@ -2,11 +2,12 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed, Util } from 'discord.js'
 
 module.exports.run = async (msg: Message) => {
-    const player = Kwako.music.create({
-        guild: msg.guild.id,
-        voiceChannel: msg.member.voice.channel.id,
-        textChannel: msg.channel.id,
-    });
+
+    const player = Kwako.music.players.get(msg.guild.id);
+    if (!player) return msg.channel.send({'embed':{
+        'title': "I'm not playing anything right now!",
+        'color': 'RED'
+    }});
 
     let queue = player.queue;
     if (queue.size < 0) return;
@@ -14,7 +15,7 @@ module.exports.run = async (msg: Message) => {
     const embed = new MessageEmbed();
     embed.setColor('GREEN')
 
-    if (queue.size <= 1) {
+    if (queue.size === 0 && !queue.current) {
         embed.setTitle("**:cd: The queue is empty.**")
         msg.channel.send(embed);
         Kwako.log.info({msg: 'queue', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
