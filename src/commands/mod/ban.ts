@@ -1,8 +1,8 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 
-module.exports.run = async (msg: Message, args:string[]) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+module.exports.run = async (msg: Message, args: string[]) => {
+    if (!msg.member.hasPermission('BAN_MEMBERS')) return;
 
     if (args.length >= 2 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
@@ -20,19 +20,24 @@ module.exports.run = async (msg: Message, args:string[]) => {
 
         args.shift();
         let reason = "no reason provided";
-        if(args.length > 1)
+        if(args.length >= 1)
             reason = args.join(" ")
 
-        const embed = new MessageEmbed();
-        embed.setColor('RED')
-        embed.setTitle(`🔨 **${mention.user.username}** has been banned by **${msg.author.username}**`)
+        let reasonTagged = `${reason} (${msg.author.tag})`;
+
+        const embed = new MessageEmbed()
+            .setColor('RED')
+            .setTitle(`🔨 **${mention.user.username}** has been banned`)
+            .setDescription(`**Reason:** ${reason}`);
 
         try {
-            await mention.ban({ days: 7, reason: reason });
+            await mention.ban({ days: 7, reason: reasonTagged });
             await msg.channel.send(embed);
         } catch (err) {
             await msg.channel.send("I can't ban this person!")
         }
+
+        await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'ban', reason: reason, date: msg.createdTimestamp });
 
         Kwako.log.info({msg: 'ban', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }});
     }

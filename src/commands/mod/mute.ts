@@ -1,10 +1,9 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
-//const timespan = require("timespan-parser")("min");
-import timespan from '../../utils/timespan';
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
+    if (!msg.member.hasPermission('KICK_MEMBERS')) return;
 
     let muteRole = guildConf.muteRole;
     if(!muteRole) {
@@ -20,7 +19,7 @@ module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
                 .catch(() => {return});
             });
             muteRole = role.id;
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { ['config.muteRole']: role.id } });
         })
         await msg.channel.send({'embed':{
             'title': "🛠 A 'Muted' role has been generated."
@@ -34,13 +33,13 @@ module.exports.run = async (msg: Message, args:string[], guildConf:any) => {
 
 module.exports.help = {
     name: 'mute',
-    usage: 'mute (mention someone) (length)',
+    usage: 'mute (mention someone) [reason]',
     staff: true,
     perms: ['EMBED_LINKS', 'MANAGE_ROLES', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
 };
 
 async function mute(msg: Message, args: string[], muteRole: string, modLogChannel: string): Promise<void> {
-    if (args.length >= 2 && msg.channel.type != 'dm') {
+    if (args.length >= 1 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
 
         let mention = msg.mentions.members.first()
@@ -48,7 +47,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         if (!mention) return;
         if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
 
-        if (msg.author.id != process.env.IWA && mention.hasPermission('MANAGE_GUILD')) return;
+        if (msg.author.id != process.env.IWA && mention.hasPermission('KICK_MEMBERS')) return;
 
         try {
             msg.delete();
@@ -57,43 +56,42 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         }
 
         args.shift();
-        let timeParsed = await timespan.parse(args[0], "msec", msg).catch(() => {return;});
-        if(!timeParsed || typeof timeParsed !== 'number') return;
-
-        let timeParsedString = await timespan.getString(timeParsed, "msec", msg);
-        if(!timeParsedString || typeof timeParsedString !== 'string') return;
-
-        args.shift();
         let reason = "no reason provided";
-        if(args.length > 1)
+        if(args.length >= 1)
             reason = args.join(" ")
 
-        const embed = new MessageEmbed();
-        embed.setColor('RED')
-        embed.setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted for \`${timeParsedString}\` by **${msg.author.username}**`)
+        const embed = new MessageEmbed()
+            .setColor('RED')
+            .setTitle(`:octagonal_sign: **${mention.user.username}**, you've been muted`)
+            .setDescription(`**Reason:** ${reason}`);
 
         try {
-            await mention.roles.add(muteRole)
-            let reply = await msg.channel.send(embed)
+            let res = await mention.roles.add(muteRole).catch(async () => {
+                    await msg.channel.send({'embed':{
+                        'title': ":x: I can't mute people!",
+                        'description': "Please make sure the 'Muted' role is below my highest role."
+                    }});
+                });
 
-            Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            if(res) {
+                await msg.channel.send(embed);
 
-            if(modLogChannel) {
-                let channel = await Kwako.channels.fetch(modLogChannel);
-                let embedLog = new MessageEmbed();
-                embedLog.setTitle("Member muted");
-                embedLog.setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**For:** \`${timeParsedString}\`\n**Reason:** \`${reason}\``);
-                embedLog.setColor(9392322);
-                embedLog.setTimestamp(msg.createdTimestamp);
-                embedLog.setFooter("Date of mute:")
-                embedLog.setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
-                await (channel as TextChannel).send(embedLog);
+                await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'mute', reason: reason, date: msg.createdTimestamp });
+
+                Kwako.log.info({msg: 'mute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+
+                if(modLogChannel) {
+                    let channel = await Kwako.channels.fetch(modLogChannel);
+                    const embedLog = new MessageEmbed()
+                        .setTitle("🤐 Member muted")
+                        .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>\n**Reason:** \`${reason}\``)
+                        .setColor(9392322)
+                        .setTimestamp(msg.createdTimestamp)
+                        .setFooter("Date of mute:")
+                        .setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
+                    await (channel as TextChannel).send(embedLog);
+                }
             }
-
-            setTimeout(async () => {
-                await reply.delete()
-                return mention.roles.remove(muteRole)
-            }, timeParsed)
         } catch (err) {
             Kwako.log.error(err);
         }

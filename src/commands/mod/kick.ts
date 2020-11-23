@@ -1,8 +1,8 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 
-module.exports.run = async (msg: Message, args:string[]) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+module.exports.run = async (msg: Message, args: string[]) => {
+    if (!msg.member.hasPermission('KICK_MEMBERS')) return;
 
     if (args.length >= 1 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
@@ -20,19 +20,24 @@ module.exports.run = async (msg: Message, args:string[]) => {
 
         args.shift();
         let reason = "no reason provided";
-        if(args.length > 1)
+        if(args.length >= 1)
             reason = args.join(" ")
 
-        const embed = new MessageEmbed();
-        embed.setColor('RED')
-        embed.setTitle(`🚪 **${mention.user.username}** has been kicked by **${msg.author.username}**`)
+        let reasonTagged = `${reason} (${msg.author.tag})`;
+
+        const embed = new MessageEmbed()
+            .setColor('RED')
+            .setTitle(`🚪 **${mention.user.username}** has been kicked`)
+            .setDescription(`**Reason:** ${reason}`);
 
         try {
-            await mention.kick(reason);
+            await mention.kick(reasonTagged);
             await msg.channel.send(embed);
         } catch (err) {
             await msg.channel.send("I can't kick this person!")
         }
+
+        await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'kick', reason: reason, date: msg.createdTimestamp });
 
         Kwako.log.info({msg: 'kick', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag, reason: reason }})
     }

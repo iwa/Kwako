@@ -149,8 +149,6 @@ export default async function imGeneratorPremium(user: any) {
         ctx.drawImage(premium_icon, 258, 54, 40, 40);
         ctx.restore();
     }
-    console.log(user.iwa)
-
 
     // progress bar
     ctx.save();

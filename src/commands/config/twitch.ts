@@ -3,10 +3,11 @@ import { Message, TextChannel } from 'discord.js';
 
 import { ApiClient } from 'twitch';
 import { ClientCredentialsAuthProvider } from 'twitch-auth';
+import GuildConfig from '../../interfaces/GuildConfig';
 const authProvider = new ClientCredentialsAuthProvider(process.env.TWITCHCLIENTID, process.env.TWITCHCLIENTSECRET);
 const twitchClient = new ApiClient({ authProvider });
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     if (args.length === 0) return msg.channel.send({'embed':{
@@ -119,8 +120,7 @@ setInterval(async () => {
         let isStream = data.isStream || false;
 
         if (stream && !isStream) {
-            console.log(stream)
-            isStreamChecks.set(data._id, 5);
+            isStreamChecks.set(data._id, 10);
             await Kwako.db.collection('twitch').updateOne({ _id: data._id }, { $set: { isStream: true } });
 
             let channels = data.channels || [];
@@ -156,4 +156,4 @@ setInterval(async () => {
             }
         }
     }
-}, 5 * 1000);
+}, 30000);

@@ -1,8 +1,9 @@
 import Kwako from '../../Client';
 import { Message, MessageEmbed } from 'discord.js';
 import utilities from '../../utils/utilities';
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
     guildConf.useExpSystem &&= true;
     if(!guildConf.useExpSystem)
@@ -14,7 +15,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
         'title': `\`${guildConf.prefix}levelrole (add|remove|list)\``
     }});
 
-    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
+    let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: msg.guild.id } });
 
     let levelroles:string = guild.levelroles || "[]";
     let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
@@ -64,7 +65,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
             levelroles = JSON.stringify([...levelrolesMap]);
 
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
             await msg.react('🔄');
             await giveRoleToUpper(msg, role, parseInt(args[1], 10));
@@ -103,7 +104,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
             levelroles = JSON.stringify([...levelrolesMap]);
 
-            await Kwako.db.collection('settings').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
+            await Kwako.db.collection('guilds').updateOne({ _id: msg.guild.id }, { $set: { levelroles: levelroles }}, { upsert: true })
 
             let removeEmbed = new MessageEmbed()
                             .setTitle('🚮 Level Role Removed')
@@ -153,11 +154,12 @@ async function giveRoleToUpper (msg: Message, role: string, level: number) {
     let guild = `exp.${msg.guild.id.toString()}`
 
     if(level === 1) {
-        let list = msg.guild.members.cache.filter(m => !m.user.bot).values();
+        let list = (await msg.guild.members.fetch()).array();
         if(list) {
             for(const member of list) {
                 if(member)
-                    await member.roles.add(role).catch(() => {return});
+                    if(!member.user.bot)
+                        await member.roles.add(role).catch(() => {return});
             }
         }
     } else {

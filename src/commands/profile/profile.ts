@@ -4,7 +4,7 @@ import { Message } from 'discord.js'
 import imGenerator from '../../utils/img'
 import utilities from '../../utils/utilities'
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[]) => {
     if (args.length === 1) {
         if (msg.mentions.everyone) return;
         let mention = msg.mentions.users.first()
@@ -31,24 +31,26 @@ async function profileImg(msg: Message, id: string) {
     let userDiscord = await Kwako.users.fetch(id)
     let memberDiscord = await msg.guild.members.fetch(id)
 
-    if (!userDB || !userDB.exp) {
-        if(!userDB.exp[msg.guild.id]) {
-            let user = {
-                avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
-                username: userDiscord.username,
-                premium: Kwako.patrons.has(id) || false,
-                iwa: (id === process.env.IWA) ? true : false,
-                positionExp: "?",
-                level: 1,
-                current: 0,
-                max: 100,
-                userColor: memberDiscord.displayHexColor,
-                expBar: 0,
-                birthday: "--/--",
-                fc: "not registered"
-            }
+    if (!userDB) {
+        if(!userDB.exp) {
+            if(!userDB.exp[msg.guild.id]) {
+                let user = {
+                    avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
+                    username: userDiscord.username,
+                    premium: Kwako.patrons.has(id) || false,
+                    iwa: (id === process.env.IWA) ? true : false,
+                    positionExp: "?",
+                    level: 1,
+                    current: 0,
+                    max: 100,
+                    userColor: memberDiscord.displayHexColor,
+                    expBar: 0,
+                    birthday: "--/--",
+                    fc: "not registered"
+                }
 
-            return sendRankCard(msg, user, userDiscord);
+                return sendRankCard(msg, user, userDiscord);
+            }
         }
     }
 

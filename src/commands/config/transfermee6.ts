@@ -6,7 +6,6 @@ module.exports.run = async (msg: Message) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return msg.delete();
 
     Mee6LevelsApi.getLeaderboardPage(msg.guild.id).then(async (leaderboard: any) => {
-        console.log(leaderboard)
         if(!leaderboard) return msg.react('❌');
         if(!leaderboard[0]) return msg.react('❌');
 

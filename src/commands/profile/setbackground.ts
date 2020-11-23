@@ -2,7 +2,7 @@ import Kwako from '../../Client'
 import { Message } from 'discord.js'
 import { loadImage } from 'canvas'
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     let attachment = msg.attachments.first();
 
     if (args.length !== 1 && !attachment) return msg.channel.send({
@@ -120,6 +120,7 @@ function findRes(width: number, height: number) {
 
 import fs from 'fs'
 import axios from 'axios'
+import GuildConfig from '../../interfaces/GuildConfig';
 
 async function download(url: string, filename: string) {
     //let bar = new Promise((resolve, reject) => {

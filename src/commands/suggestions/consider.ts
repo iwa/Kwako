@@ -1,7 +1,8 @@
 import Kwako from '../../Client'
 import { Message, TextChannel, MessageEmbed } from 'discord.js';
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: { suggestionChannel: string; }) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if ((!msg.member.hasPermission('MANAGE_GUILD'))) return;
 
     let guild: { _id: string, suggestions: string[] } = await Kwako.db.collection('suggestions').findOne({ _id: msg.guild.id }) || null;

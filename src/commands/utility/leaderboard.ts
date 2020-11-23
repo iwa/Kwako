@@ -1,8 +1,9 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 import utilities from '../../utils/utilities'
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if (args.length > 1) return;
 
     switch (args[0]) {
@@ -45,8 +46,12 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
         case "tickles":
             return leaderboard(msg, 'tickle', false)
 
+        case "kiss":
+        case "kisses":
+            return leaderboard(msg, 'kiss', false)
+
         default:
-            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap`", "color": 3396531 } });
+            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap | glare | squish | tickle | kiss`", "color": 3396531 } });
             break;
     }
 };

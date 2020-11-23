@@ -15,6 +15,10 @@ module.exports.run = (msg: Message) => {
         textChannel: msg.channel.id,
     });
 
+    if(player.voiceChannel !== msg.member.voice.channelID) return msg.channel.send({'embed':{
+        'title': ':x: You need to be connected in the same voice channel as me to use this command'
+    }});
+
     if (!player.playing && player.queue.length === 0) {
         const embed = new MessageEmbed()
             .setColor('RED')
@@ -74,7 +78,7 @@ module.exports.run = (msg: Message) => {
 
 module.exports.help = {
     name: 'skip',
-    aliases: ['next'],
+    aliases: ['next', 's'],
     usage: "skip",
     desc: "Vote to skip the current played song\nThe half of the people in the voice channel needs to voteskip for skipping the song",
     perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD']

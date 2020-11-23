@@ -7,21 +7,6 @@ import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util } from 
 import { Manager } from "erela.js";
 import axios from "axios";
 
-const defaultSettings = {
-    prefix: "!",
-    welcomeMessage: "",
-    starboardChannel: "",
-    muteRole: "",
-    modLogChannel: "",
-    suggestionChannel: "",
-    disabledCommands: [] as string[],
-    useExpSystem: true,
-    showLevelUp: true,
-    boosterBenefits: true,
-    customEmote: "",
-    starReactions: 5
-}
-
 let talkedRecently = new Set();
 
 import cooldown from './events/messages/cooldown';
@@ -102,8 +87,7 @@ Kwako.on('message', async (msg: Message) => {
     if (!msg.guild) return Kwako.log.trace({msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first()});
     if (msg.channel.type !== "text") return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
-    guildConf = guildConf.config || defaultSettings;
+    let guildConf = await Kwako.getGuildConf(msg.guild.id);
     let disabled: string[] = guildConf.disabledCommands || [];
 
     await cooldown.message(msg, guildConf);
@@ -118,7 +102,6 @@ Kwako.on('message', async (msg: Message) => {
                 'description': `\`${guildConf.prefix}\``
             }})
 
-        guildConf.useExpSystem &&= true;
         if(guildConf.useExpSystem)
             return cooldown.exp(msg, guildConf);
 
@@ -148,7 +131,7 @@ Kwako.on('message', async (msg: Message) => {
             }}).catch(() => { return; });
 
         if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
-            return msg.channel.send(`**❌ Sorry, I need the following permissions to execute this command**\n\`${cmd.help.perms.join('`, `')}\``).catch(() => { return; });
+            return makePermsErrorBetter(msg, cmd);
 
         if (!msg.member.hasPermission('MANAGE_GUILD')) {
             talkedRecently.add(msg.author.id);
@@ -162,11 +145,14 @@ Kwako.on('message', async (msg: Message) => {
     }
 });
 
-
+import userJoin from './events/logs/userJoin';
 Kwako.on("guildMemberAdd", async member => {
     if(!member.guild.available) return;
 
-    let guild = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
+    let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: member.guild.id } });
+
+    let muted = await Kwako.db.collection('mute').findOne({ _id: member.id });
+    if (member.guild.id in muted.until) await member.roles.add(guild.config['muteRole']);
 
     let levelroles:string = guild.levelroles || "[]";
     let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
@@ -176,33 +162,38 @@ Kwako.on("guildMemberAdd", async member => {
     if (roles && roles[0])
         await member.roles.add(roles[0]).catch(() => {return});
 
-    let guildConf = guild.config || defaultSettings;
+    let guildConf = await Kwako.getGuildConf(member.guild.id);
 
     let userDB = await Kwako.db.collection('user').findOne({ _id: member.id });
     let guildDB = `exp.${member.guild.id.toString()}`
     if (userDB) {
-        if(!userDB.exp) return;
-
-        if(userDB.exp[member.guild.id] < 0) {
-            await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
-            userDB.exp[member.guild.id] *= -1;
-        }
-
-        let levelroles:string = guild.levelroles || "[]";
-        let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
-
-        let exp = userDB.exp[member.guild.id] || 0;
-        let lvl = utilities.levelInfo(exp);
-
-        levelrolesMap.forEach(async (value, key) => {
-            if(key <= lvl.level) {
-                if(member && value && value[0]) {
-                    await member.roles.add(value[0]).catch(() => {return});
-                    if (value[1])
-                        await member.roles.remove(value[1]).catch(() => {return});
-                }
+        if(userDB.exp) {
+            if(userDB.exp[member.guild.id] < 0) {
+                await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
+                userDB.exp[member.guild.id] *= -1;
             }
-        });
+
+            let levelroles:string = guild.levelroles || "[]";
+            let levelrolesMap:Map<number, Array<string>> = new Map(JSON.parse(levelroles));
+
+            let exp = userDB.exp[member.guild.id] || 0;
+            let lvl = utilities.levelInfo(exp);
+
+            levelrolesMap.forEach(async (value, key) => {
+                if(key <= lvl.level) {
+                    if(member && value && value[0]) {
+                        await member.roles.add(value[0]).catch(() => {return});
+                        if (value[1])
+                            await member.roles.remove(value[1]).catch(() => {return});
+                    }
+                }
+            });
+        }
+    }
+
+    let modLogChannel = guildConf.modLogChannel;
+    if(!modLogChannel) {
+        userJoin(member, modLogChannel);
     }
 
     let welcomeMessage = guildConf.welcomeMessage;
@@ -222,7 +213,11 @@ Kwako.on("guildMemberAdd", async member => {
 Kwako.on('guildCreate', async guild => {
     if(!guild.available) return;
 
-    let channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+    let channel = guild.channels.cache.find(val => val.type === 'text' && val.name.match(/g(e?)n(e?)r(a?)l/gi) !== null && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
+    if(!channel)
+        channel = guild.channels.cache.find(val => val.type === 'text' && val.permissionsFor(Kwako.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS']));
+
     if(channel) {
         await (channel as TextChannel).send({
             "embed": {
@@ -262,7 +257,7 @@ Kwako.on('guildCreate', async guild => {
         }
     }
 
-    await Kwako.db.collection('settings').insertOne({ '_id': guild.id });
+    await Kwako.db.collection('guilds').insertOne({ '_id': guild.id, 'config': Kwako.getDefaultConf });
 
     await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
 
@@ -270,7 +265,7 @@ Kwako.on('guildCreate', async guild => {
 });
 
 Kwako.on("guildDelete", async guild => {
-    await Kwako.db.collection('settings').deleteOne({ '_id': { $eq: guild.id } });
+    await Kwako.db.collection('guilds').deleteOne({ '_id': { $eq: guild.id } });
     await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
@@ -281,8 +276,7 @@ import starboard from './events/starboard';
 Kwako.on('messageReactionAdd', async (reaction: MessageReaction, author: User) => {
     if(!reaction.message.guild.available) return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: reaction.message.guild.id } });
-    guildConf = guildConf.config || defaultSettings;
+    let guildConf = await Kwako.getGuildConf(reaction.message.guild.id);
 
     let starboardChannel = guildConf.starboardChannel;
     if(!starboardChannel) return;
@@ -311,13 +305,27 @@ import messageDelete from './events/logs/messageDelete';
 Kwako.on('messageDelete', async msg => {
     if(!msg.guild.available) return;
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: msg.guild.id } });
-    guildConf = guildConf.config || defaultSettings;
+    let guildConf = await Kwako.getGuildConf(msg.guild.id);
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
 
     return messageDelete(msg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+});
+
+import messageUpdate from './events/logs/messageUpdate';
+Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
+    if(!oldmsg.guild.available) return;
+
+    let guildConf = await Kwako.getGuildConf(oldmsg.guild.id);
+
+    let modLogChannel = guildConf.modLogChannel;
+    if (!modLogChannel) return;
+
+    if (!newmsg) return;
+    if (oldmsg.cleanContent === newmsg.cleanContent) return;
+
+    return messageUpdate(newmsg, oldmsg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
@@ -327,8 +335,7 @@ Kwako.on('guildMemberRemove', async member => {
     let guildDB = `exp.${member.guild.id.toString()}`
     await Kwako.db.collection('user').updateOne({ _id: member.id }, { $mul: { [guildDB]: -1 }});
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: member.guild.id } });
-    guildConf = guildConf.config || defaultSettings;
+    let guildConf = await Kwako.getGuildConf(member.guild.id);
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
@@ -344,8 +351,7 @@ Kwako.on('guildBanAdd', async (guild, user) => {
     let guildDB = `exp.${guild.id.toString()}`
     await Kwako.db.collection('user').updateOne({ _id: user.id }, { $unset: { [guildDB]: 0 }});
 
-    let guildConf = await Kwako.db.collection('settings').findOne({ '_id': { $eq: guild.id } });
-    guildConf = guildConf.config || defaultSettings;
+    let guildConf = await Kwako.getGuildConf(guild.id);
 
     let modLogChannel = guildConf.modLogChannel;
     if(!modLogChannel) return;
@@ -376,9 +382,44 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
 
 // Check if it's someone's birthday, and send a HBP message at 8am UTC
 import birthdayCheck from './events/birthdayCheck';
+import makePermsErrorBetter from "./utils/makePermsErrorBetter";
 setInterval(async () => {
     await birthdayCheck()
 }, 3600000);
+
+// unmute loop
+setInterval(async () => {
+    let now = Date.now();
+    let users = await Kwako.db.collection('mute').find().toArray();
+
+    for(const user of users) {
+        if(user.until) {
+
+            for (const [key, val] of Object.entries(user.until)) {
+                if(val <= now) {
+                    let guild = await Kwako.db.collection('guilds').findOne({ '_id': { $eq: key } });
+                    if(!guild) return;
+
+                    let guildConf = await Kwako.getGuildConf(guild._id);
+                    if(!guildConf.muteRole) return;
+
+                    let discGuild = await Kwako.guilds.fetch(key);
+                    if(!discGuild) return;
+
+                    let discMember = await discGuild.members.fetch(user._id);
+                    if(!discMember) return;
+
+                    await discMember.roles.remove(guildConf.muteRole).catch(() => {return});
+                    await Kwako.db.collection('mute').deleteOne({ _id: user._id });
+                }
+            }
+
+        } else {
+            await Kwako.db.collection('mute').deleteOne({ _id: user._id });
+        }
+    }
+
+}, 30000);
 
 // Login
 Kwako.start(process.env.TOKEN);

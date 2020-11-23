@@ -26,10 +26,10 @@ export default async function guildMemberRemove(member: GuildMember | PartialGu
 
 	if ((target as User).id === member.id) {
         let channel = await Kwako.channels.fetch(modLogChannel).catch(() => {return});
-        if(!channel) return Kwako.db.collection('settings').updateOne({ _id: member.guild.id }, { $set: { 'config.modLogChannel': "" } });
+        if(!channel) return Kwako.db.collection('guilds').updateOne({ _id: member.guild.id }, { $set: { 'config.modLogChannel': "" } });
 
         let embed = new MessageEmbed();
-        embed.setTitle("Member kicked");
+        embed.setTitle("🚪 Member kicked");
         embed.setDescription(`**Who:** ${member.user.tag} (<@${member.id}>)\n**By:** ${executor.tag} (<@${executor.id}>)\n**Reason:** \`${reason || "no reason provided"}\``);
         embed.setColor(15260213);
         embed.setTimestamp(createdTimestamp);

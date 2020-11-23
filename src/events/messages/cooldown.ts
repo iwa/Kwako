@@ -9,6 +9,7 @@ import { Message } from 'discord.js';
 
 import levelCheck from '../../utils/levelCheck';
 import utils from '../../utils/utilities';
+import GuildConfig from '../../interfaces/GuildConfig';
 let exp: number = 2;
 
 let cooldownMsg: Map<string, number> = new Map();
@@ -45,21 +46,21 @@ export default class cooldown {
         }
     }
 
-    static async exp(msg: Message, guildConf: any) {
+    static async exp(msg: Message, guildConf: GuildConfig) {
         if (!cooldownXP.has(msg.author.id)) {
             let guild = `exp.${msg.guild.id}`
             let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
 
             let amount = exp;
 
-            let boosterBenefits = guildConf.boosterBenefits || true;
-            if(boosterBenefits ===  true)
+            if(guildConf.boosterBenefits === true)
                 if(msg.member.premiumSinceTimestamp != null || msg.member.hasPermission('MANAGE_GUILD'))
                     amount = Math.floor(amount * 1.25);
 
-            if(user && user.exp)
-                if(user.exp[msg.guild.id])
-                    levelCheck(msg, (user.exp[msg.guild.id]), amount, guildConf.showLevelUp);
+            if(user)
+                if(user.exp)
+                    if(user.exp[msg.guild.id])
+                        levelCheck(msg, (user.exp[msg.guild.id]), amount, guildConf.showLevelUp);
 
             await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
             cooldownXP.add(msg.author.id);

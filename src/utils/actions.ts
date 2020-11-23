@@ -25,7 +25,8 @@ let lastGif = new Map([
     ['glare', 0],
     ['tickle', 0],
     ['kiss', 0],
-    ['yeet', 0]
+    ['yeet', 0],
+    ['cuddle', 0]
 ]);
 
 /** define the number of gifs available */
@@ -39,16 +40,10 @@ let count = new Map([
     ['glare', 6],
     ['tickle', 5],
     ['kiss', 2],
-    ['yeet', 3]
+    ['yeet', 3],
+    ['cuddle', 7]
 ]);
 
-/**
- * @param bot - Discord Client object
- * @param msg - Message object
- * @param args - Arguments in the message
- * @param db - Database connection object
- * @param type - Type of actions (hug, pat...)
- */
 export default async function actionsRun(msg: Message, args: string[], type: string, verb: string, at: boolean) {
     if (args.length === 0) return;
     if (args.length <= 4) {
@@ -117,7 +112,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
             lastGif.set(type, n);
 
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
-        } else if (Kwako.patrons.has(msg.guild.ownerID)) {
+        } else {
             let target = args.join(' ');
             let user = msg.guild.members.cache.find(user => user.user.username.toLowerCase() === target.toLowerCase());
 
@@ -134,12 +129,18 @@ export default async function actionsRun(msg: Message, args: string[], type: str
 
         let guild = `${type}.${msg.guild.id.toString()}`
         let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: msg.author.id } });
-        await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: msg.mentions.members.size } }, { upsert: true });
 
         let nb = 0;
         if(user)
-            if(user[type])
+            if(user[type]) {
                 nb = user[type][msg.guild.id] || 0;
+                if(nb < 0) {
+                    nb *= -1;
+                    await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $mul: { [guild]: -1 }});
+                }
+            }
+
+        await Kwako.db.collection('user').updateOne({ '_id': { $eq: msg.author.id } }, { $inc: { [guild]: msg.mentions.members.size } }, { upsert: true });
 
         embed.setFooter(`You have given ${nb + msg.mentions.members.size} ${verb}`)
 

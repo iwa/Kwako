@@ -1,7 +1,8 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
     if (args.length !== 1) return msg.channel.send({
         "embed": {
           "description": `\`${guildConf.prefix}setbirthday (your birthday, mm/dd)\` to register your birthday in your profile card\n\n\`${guildConf.prefix}setbirthday off\` to remove it`,
@@ -38,7 +39,12 @@ module.exports.run = async (msg: Message, args: string[], guildConf: any) => {
 
     let dd = String(date.getDate()).padStart(2, '0');
     let mm = String(date.getMonth() + 1).padStart(2, '0');
-    if(dd === 'NaN' || mm === 'NaN') return;
+
+    if(dd === 'NaN' || mm === 'NaN') return msg.channel.send({'embed':{
+        'title': 'An error occured',
+        'description': 'Please enter your birthday in the following format: `mm/dd`'
+    }});
+
     let today = `${mm}/${dd}`;
     await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $set: { birthday: today } }, { upsert: true });
     const embed = new MessageEmbed();
