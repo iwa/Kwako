@@ -19,7 +19,9 @@ module.exports.run = async (msg: Message, args: string[]) => {
         'title': ':x: You need to be connected in the same voice channel as me to use this command'
     }});
 
-    let video_url = args[0].split('&')
+    if(!player.voiceState) return;
+
+    let video_url = args[0].split('&');
 
     if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
         let res = await Kwako.music.search(args.join(), msg.author);
