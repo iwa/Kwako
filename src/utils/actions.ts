@@ -48,8 +48,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
     if (args.length === 0) return;
     if (args.length <= 4) {
         if (msg.mentions.everyone) return;
-        let foundMe = msg.cleanContent.match(/[mM][eE]+/m);
-        if (msg.mentions.members.has(msg.author.id) || foundMe) {
+        if (msg.mentions.members.has(msg.author.id)) {
             if (type === 'slap')
                 return msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! It's mean! :c**`, "color": 13632027 }});
             msg.channel.send({ "embed": { "title": `**Don't ${type} yourself! Lemme do it for you...**`, "color": 13632027 }});
