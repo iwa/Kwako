@@ -3,7 +3,7 @@ dotenv.config();
 
 import Kwako from './Client';
 
-import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util } from 'discord.js';
+import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel } from 'discord.js';
 import { Manager } from "erela.js";
 import axios from "axios";
 
@@ -67,14 +67,10 @@ Kwako.once('shardReady', async () => {
             }
         })
         .on("queueEnd", async (player) => {
-            let channel: any = Kwako.channels.cache.get(player.textChannel)
-
-            const embed = new MessageEmbed()
-                .setColor('GREEN')
-                .setTitle("🚪 Queue finished. Disconnecting...");
-
-            await channel.send(embed)
-            player.destroy();
+            setTimeout(async () => {
+                if(!player.playing)
+                    player.destroy();
+            }, 60000);
         });
 
     Kwako.music.init(Kwako.user.id);
@@ -384,9 +380,15 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
             const player = Kwako.music.players.get(voiceChannel.guild.id);
 
             if(player) {
-                player.destroy();
+                setTimeout(async () => {
+                    let voiceChan = await Kwako.channels.fetch(player.voiceChannel);
+                    if (!voiceChan) return player.destroy();
 
-                Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
+                    if ((voiceChan as VoiceChannel).members.size === 1) {
+                        player.destroy();
+                        Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
+                    }
+                }, 60000);
             }
         }
 });

@@ -19,7 +19,9 @@ module.exports.run = async (msg: Message, args: string[]) => {
         'title': ':x: You need to be connected in the same voice channel as me to use this command'
     }});
 
-    let video_url = args[0].split('&')
+    if(!player.voiceState) return;
+
+    let video_url = args[0].split('&');
 
     if (video_url[0].match(/^https?:\/\/(((www|m)\.)youtube.com)\/playlist(.*)$/)) {
         let res = await Kwako.music.search(args.join(), msg.author);
@@ -31,7 +33,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
         if(playlist) {
             const embed = new MessageEmbed()
                 .setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
-                .setDescription(`Playlist: **${playlist.name}**`)
+                .setDescription(`📄Playlist: **${playlist.name}**`)
                 .setFooter(`Added by ${msg.author.username}`)
                 .setColor('LUMINOUS_VIVID_PINK');
 
@@ -65,7 +67,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
 module.exports.help = {
     name: 'play',
     aliases: ['add', 'p'],
-    usage: "play (YouTube link | keywords)",
+    usage: "play (link or keywords)",
     desc: "Play YouTube videos in a voice channel",
     perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD']
 };

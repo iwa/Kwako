@@ -2,6 +2,9 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 
 module.exports.run = (msg: Message) => {
+    if (!msg.member.voice.channel) return;
+    if (!msg.member.hasPermission('MANAGE_CHANNELS') && msg.member.voice.channel.members.size !== 2) return;
+
     const player = Kwako.music.create({
         guild: msg.guild.id,
         voiceChannel: msg.member.voice.channel.id,
