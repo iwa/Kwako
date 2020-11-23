@@ -9,7 +9,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import utilities from './utilities'
 
 /** @desc Automatic replies of the bot when an action is done on it  */
-let reply = ["awww", "thank you :33", "damn you're so precious", "why are you so cute with me ?", "omg", "<3", "so cuuuute c:", "c:", "c;", ":3", "QT af :O", "^u^ thanks!", ">u<", "-u-"]
+let reply = ["awww", "thank you :33", "damn you're so precious", "why are you so cute with me ?", "omg", "<3", "so cuuuute c:", "c:", "c;", ":3", "QT af :O", "^u^ thanks!", ">u<"]
 
 /**
  * define last gif of action.
