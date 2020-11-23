@@ -48,7 +48,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
         case "kiss":
         case "kisses":
-            return leaderboard(msg, 'kiss', false)
+            return leaderboard(msg, 'kiss', true)
 
         default:
             msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap | glare | squish | tickle | kiss`", "color": 3396531 } });
