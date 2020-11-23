@@ -366,6 +366,15 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
     let channel = oldState.channel;
     if(!channel) return;
 
+    if(oldState.id === Kwako.user.id && newState.id === Kwako.user.id) {
+        if(!newState.channel) {
+            let player = Kwako.music.players.get(oldState.guild.id);
+
+            if(player)
+                player.destroy();
+        }
+    }
+
     let members = channel.members;
     if(members.size === 1)
         if(members.has(Kwako.user.id)) {
