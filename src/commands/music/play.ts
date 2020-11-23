@@ -65,7 +65,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
 module.exports.help = {
     name: 'play',
     aliases: ['add', 'p'],
-    usage: "play (YouTube link | keywords)",
+    usage: "play (link or keywords)",
     desc: "Play YouTube videos in a voice channel",
     perms: ['EMBED_LINKS', 'CONNECT', 'SPEAK', 'USE_VAD']
 };
