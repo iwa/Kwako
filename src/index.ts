@@ -53,7 +53,7 @@ Kwako.once('shardReady', async () => {
                 let date = new Date(track.duration);
                 timeString = `Length: ${date.toISOString().substr(11, 8)}`
             } else
-                timeString = '🔴 Listening to a stream | Skip to stop the stream'
+                timeString = '🔴 Listening to a stream'
 
             const embed = new MessageEmbed()
                 .setColor('GREEN')
