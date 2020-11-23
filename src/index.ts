@@ -67,14 +67,10 @@ Kwako.once('shardReady', async () => {
             }
         })
         .on("queueEnd", async (player) => {
-            let channel: any = Kwako.channels.cache.get(player.textChannel)
-
-            const embed = new MessageEmbed()
-                .setColor('GREEN')
-                .setTitle("🚪 Queue finished. Disconnecting...");
-
-            await channel.send(embed)
-            player.destroy();
+            setTimeout(async () => {
+                if(!player.playing)
+                    player.destroy();
+            }, 60000);
         });
 
     Kwako.music.init(Kwako.user.id);
