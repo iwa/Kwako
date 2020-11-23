@@ -2,11 +2,7 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed, Util } from 'discord.js'
 
 module.exports.run = (msg: Message) => {
-    const player = Kwako.music.create({
-        guild: msg.guild.id,
-        voiceChannel: msg.member.voice.channel.id,
-        textChannel: msg.channel.id,
-    });
+    const player = Kwako.music.players.get(msg.guild.id);
 
     if (!player.playing && player.queue.length === 0) {
         const embed = new MessageEmbed();
@@ -36,7 +32,7 @@ module.exports.run = (msg: Message) => {
         let time = new Date(player.position).toISOString().slice(11, 19)
         embed.setFooter(`${time} / ${songDuration}`)
     } else
-        embed.setFooter('🔴 Listening to a stream | Skip to stop the stream')
+        embed.setFooter('🔴 Listening to a stream')
 
     embed.setThumbnail(song.thumbnail)
 
