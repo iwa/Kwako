@@ -55,14 +55,16 @@ Kwako.once('shardReady', async () => {
             } else
                 timeString = '🔴 Listening to a stream'
 
-            const embed = new MessageEmbed()
-                .setColor('GREEN')
-                .setTitle("**:cd: Now Playing:**")
-                .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
-                .setFooter(timeString)
-                .setThumbnail(track.thumbnail)
-            await channel.send(embed)
-            Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
+            if(!player.trackRepeat) {
+                const embed = new MessageEmbed()
+                    .setColor('GREEN')
+                    .setTitle("**:cd: Now Playing:**")
+                    .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
+                    .setFooter(timeString)
+                    .setThumbnail(track.thumbnail)
+                await channel.send(embed)
+                Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
+            }
         })
         .on("queueEnd", async (player) => {
             let channel: any = Kwako.channels.cache.get(player.textChannel)
