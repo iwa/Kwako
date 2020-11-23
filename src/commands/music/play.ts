@@ -31,7 +31,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
         if(playlist) {
             const embed = new MessageEmbed()
                 .setAuthor('Successfully added to the queue:', msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }))
-                .setDescription(`Playlist: **${playlist.name}**`)
+                .setDescription(`📄Playlist: **${playlist.name}**`)
                 .setFooter(`Added by ${msg.author.username}`)
                 .setColor('LUMINOUS_VIVID_PINK');
 
