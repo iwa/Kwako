@@ -8,7 +8,9 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
     switch (args[0]) {
         case "xp":
-        case "exp": {
+        case "exp":
+        case "level":
+        case "lvl": {
             guildConf.useExpSystem &&= true;
             if(guildConf.useExpSystem)
                 return leaderboard(msg, 'exp', false)
