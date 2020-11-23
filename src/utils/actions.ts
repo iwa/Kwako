@@ -5,7 +5,7 @@
  * @category Utils
  */
 import Kwako from '../Client'
-import { Message, MessageEmbed } from 'discord.js';
+import { Guild, Message, MessageEmbed, User } from 'discord.js';
 import utilities from './utilities'
 
 /** @desc Automatic replies of the bot when an action is done on it  */
@@ -144,7 +144,16 @@ export default async function actionsRun(msg: Message, args: string[], type: str
         embed.setFooter(`You have given ${nb + msg.mentions.members.size} ${verb}`)
 
         return msg.channel.send(embed)
-            .then(() => {
+            .then(async (sent) => {
+                let target = msg.mentions.users.first();
+                let reaction = await sent.react('<:noU:769888137378922516>');
+                let collected = await sent.awaitReactions((_reaction, user) => _reaction.emoji.identifier === reaction.emoji.identifier && user.id === target.id, { max: 1, time: 30000 });
+                reaction.remove();
+                if(collected.first()) {
+                    let embed = await actionsRunBack(target, msg.author, msg.guild, type, verb, at);
+                    await msg.channel.send(embed);
+                }
+
                 Kwako.log.info({msg: type, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
             })
             .catch(Kwako.log.error);
@@ -155,4 +164,41 @@ export default async function actionsRun(msg: Message, args: string[], type: str
             'description': 'Please be careful and keep mentions under 5'
         }})
     }
+}
+
+async function actionsRunBack(author: User, target: User, guild: Guild, type: string, verb: string, at: boolean) {
+    let embed = new MessageEmbed();
+    embed.setColor('#F2DEB0')
+
+    if(!author || !target) return;
+
+    embed.setDescription(`<@${author.id}> ${verb}${at ? ' at' : ''} you back <@${target.id}>!`)
+
+    let n = utilities.randomInt(count.get(type))
+    while (lastGif.get(type) === n)
+        n = utilities.randomInt(count.get(type));
+    lastGif.set(type, n);
+
+    embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
+
+    let guildStr = `${type}.${guild.id.toString()}`
+    let user = await Kwako.db.collection('user').findOne({ '_id': { $eq: author.id } });
+
+    let nb = 0;
+    if(user)
+        if(user[type]) {
+            nb = user[type][guild.id] || 0;
+            if(nb < 0) {
+                nb *= -1;
+                await Kwako.db.collection('user').updateOne({ '_id': { $eq: author.id } }, { $mul: { [guildStr]: -1 }});
+            }
+        }
+
+    await Kwako.db.collection('user').updateOne({ '_id': { $eq: author.id } }, { $inc: { [guildStr]: 1 } }, { upsert: true });
+
+    embed.setFooter(`You have given ${nb + 1} ${verb}`)
+
+    Kwako.log.info({msg: type, author: { id: author.id, name: author.tag }, guild: { id: guild.id, name: guild.name }});
+
+    return embed;
 }
