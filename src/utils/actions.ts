@@ -46,7 +46,7 @@ let count = new Map([
 
 export default async function actionsRun(msg: Message, args: string[], type: string, verb: string, at: boolean) {
     if (args.length === 0) return;
-    if (args.length <= 4) {
+    if (args.length <= 5 && msg.mentions.members.size <= 5) {
         if (msg.mentions.everyone) return;
         if (msg.mentions.members.has(msg.author.id)) {
             if (type === 'slap')
@@ -148,5 +148,11 @@ export default async function actionsRun(msg: Message, args: string[], type: str
                 Kwako.log.info({msg: type, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }});
             })
             .catch(Kwako.log.error);
+    } else {
+        await msg.delete().catch(() => {return});
+        return msg.channel.send(`<@${msg.author.id}>`, {'embed':{
+            'title': 'To avoid mass mentions, your message has been deleted',
+            'description': 'Please be careful and keep mentions under 5'
+        }})
     }
 }
