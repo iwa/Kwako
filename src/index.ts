@@ -45,17 +45,17 @@ Kwako.once('shardReady', async () => {
     }).on("nodeConnect", (node) => Kwako.log.info({msg: 'new lavalink node', node: node.options.identifier}))
         .on("nodeError", (node, error) => Kwako.log.error({msg: `lavalink node error\n${error.message}`, node: node.options.identifier}))
         .on("trackStart", async (player, track) => {
-            let channel: any = Kwako.channels.cache.get(player.textChannel);
-            if(!channel) return;
-
-            let timeString;
-            if(!track.isStream) {
-                let date = new Date(track.duration);
-                timeString = `Length: ${date.toISOString().substr(11, 8)}`
-            } else
-                timeString = '🔴 Listening to a stream'
-
             if(!player.trackRepeat) {
+                let channel: any = Kwako.channels.cache.get(player.textChannel);
+                if(!channel) return;
+
+                let timeString;
+                if(!track.isStream) {
+                    let date = new Date(track.duration);
+                    timeString = `Length: ${date.toISOString().substr(11, 8)}`
+                } else
+                    timeString = '🔴 Listening to a stream'
+
                 const embed = new MessageEmbed()
                     .setColor('GREEN')
                     .setTitle("**:cd: Now Playing:**")
