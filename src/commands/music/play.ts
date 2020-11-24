@@ -13,7 +13,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
         textChannel: msg.channel.id,
     });
 
-    player.connect();
+    if (player.state !== "CONNECTED") player.connect();
 
     if(player.voiceChannel !== voiceChannel.id) return msg.channel.send({'embed':{
         'title': ':x: You need to be connected in the same voice channel as me to use this command'
