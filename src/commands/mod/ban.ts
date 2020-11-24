@@ -30,6 +30,11 @@ module.exports.run = async (msg: Message, args: string[]) => {
             .setTitle(`🔨 **${mention.user.username}** has been banned`)
             .setDescription(`**Reason:** ${reason}`);
 
+        await mention.send({'embed':{
+            'title': `🔨 You've been banned from **${msg.guild.name}**`,
+            'description': `**Reason:** ${reason}`
+        }}).catch(() => {return});
+
         try {
             await mention.ban({ days: 7, reason: reasonTagged });
             await msg.channel.send(embed);

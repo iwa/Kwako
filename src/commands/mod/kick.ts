@@ -30,6 +30,11 @@ module.exports.run = async (msg: Message, args: string[]) => {
             .setTitle(`🚪 **${mention.user.username}** has been kicked`)
             .setDescription(`**Reason:** ${reason}`);
 
+        await mention.send({'embed':{
+            'title': `🚪 You've been kicked from **${msg.guild.name}**`,
+            'description': `**Reason:** ${reason}`
+        }}).catch(() => {return});
+
         try {
             await mention.kick(reasonTagged);
             await msg.channel.send(embed);
