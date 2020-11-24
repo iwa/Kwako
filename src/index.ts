@@ -313,6 +313,7 @@ Kwako.on('messageDelete', async msg => {
 
 import messageUpdate from './events/logs/messageUpdate';
 Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
+    if(!oldmsg.guild) return;
     if(!oldmsg.guild.available) return;
 
     let guildConf = await Kwako.getGuildConf(oldmsg.guild.id);
