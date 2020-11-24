@@ -113,7 +113,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
             embed.setImage(`https://${process.env.CDN_URL}/img/${type}/${n}.gif`)
         } else {
             let target = args.join(' ');
-            let user = msg.guild.members.cache.find(user => user.user.username.toLowerCase() === target.toLowerCase());
+            let user = msg.guild.members.cache.find(member => member.user.username.toLowerCase() === target.toLowerCase());
 
             if(!msg.author || !user) return;
             embed.setDescription(`<@${msg.author.id}> ${verb}${at ? ' at' : ''} you <@${user.id}>!`)
@@ -145,7 +145,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
 
         return msg.channel.send(embed)
             .then(async (sent) => {
-                let target = msg.mentions.users.first();
+                let target = msg.mentions.users.first() || Kwako.users.cache.find(user => user.username.toLowerCase() === args.join(' ').toLowerCase());
                 let reaction = await sent.react('<:noU:769888137378922516>');
                 let collected = await sent.awaitReactions((_reaction, user) => _reaction.emoji.identifier === reaction.emoji.identifier && user.id === target.id, { max: 1, time: 30000 });
                 reaction.remove();
