@@ -78,7 +78,7 @@ async function leaderboard (msg: Message, type: string, e: boolean) {
     embed.setTitle(`:trophy: **${title} Leaderboard**`)
     let desc = "";
 
-    let bar = new Promise((resolve) => {
+    let bar = new Promise<void>((resolve) => {
         leaderboard.forEach(async (elem, index) => {
             let member = await msg.guild.members.fetch(elem._id).catch(() => {return});
             if(member) {
