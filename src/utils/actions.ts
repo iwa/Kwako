@@ -26,7 +26,8 @@ let lastGif = new Map([
     ['tickle', 0],
     ['kiss', 0],
     ['yeet', 0],
-    ['cuddle', 0]
+    ['cuddle', 0],
+    ['tongueout', 0]
 ]);
 
 /** define the number of gifs available */
@@ -41,7 +42,8 @@ let count = new Map([
     ['tickle', 5],
     ['kiss', 9],
     ['yeet', 3],
-    ['cuddle', 7]
+    ['cuddle', 7],
+    ['tongueout', 9]
 ]);
 
 export default async function actionsRun(msg: Message, args: string[], type: string, verb: string, at: boolean) {

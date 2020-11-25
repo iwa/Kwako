@@ -52,8 +52,12 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
         case "kisses":
             return leaderboard(msg, 'kiss', true)
 
+        case "tongueout":
+        case "tongueouts":
+            return leaderboard(msg, 'tongueout', false)
+
         default:
-            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap | glare | squish | tickle | kiss`", "color": 3396531 } });
+            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap | glare | squish | tickle | kiss | tongueout`", "color": 3396531 } });
             break;
     }
 };
