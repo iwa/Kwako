@@ -419,7 +419,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
                 await Kwako.db.collection('msg').updateOne({ _id: sent.id }, { $push: { roles: { "id": value, "emote": key } } })
             });
 
-            Kwako.log.info({msg: 'reactionrole embed add', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
+            Kwako.log.info({msg: 'reactionrole setup', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
         return;
     }
