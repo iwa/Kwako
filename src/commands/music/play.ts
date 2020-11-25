@@ -2,6 +2,8 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed, Util } from 'discord.js'
 
 module.exports.run = async (msg: Message, args: string[]) => {
+    if (args.length < 1) return;
+
     const voiceChannel = msg.member.voice.channel;
     if(!voiceChannel) return msg.channel.send({'embed':{
         'title': ':x: You need to be in a voice channel in order to use this command'
@@ -15,11 +17,11 @@ module.exports.run = async (msg: Message, args: string[]) => {
 
     if (player.state !== "CONNECTED") player.connect();
 
-    if(player.voiceChannel !== voiceChannel.id) return msg.channel.send({'embed':{
+    if (player.voiceChannel !== voiceChannel.id) return msg.channel.send({'embed':{
         'title': ':x: You need to be connected in the same voice channel as me to use this command'
     }});
 
-    if(!player.voiceState) return;
+    if (!player.voiceState) return;
 
     let video_url = args[0].split('&');
 
