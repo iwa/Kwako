@@ -12,6 +12,8 @@ module.exports.run = async (msg: Message, args: string[]) => {
         if (!mention) return;
         if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
 
+        if (msg.author.id !== msg.guild.ownerID && mention.hasPermission('BAN_MEMBERS')) return;
+
         try {
             await msg.delete();
         } catch (error) {

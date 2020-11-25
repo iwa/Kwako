@@ -2,7 +2,7 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
 
 module.exports.run = async (msg: Message) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if (!msg.member.hasPermission('MANAGE_CHANNELS')) return;
 
     (msg.channel as TextChannel).permissionOverwrites.forEach(async (value) => {
         await value.update({

@@ -4,7 +4,7 @@ import timespan from '../../utils/timespan';
 import GuildConfig from '../../interfaces/GuildConfig';
 
 module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
-    if (!msg.member.hasPermission('KICK_MEMBERS')) return;
+    if (!msg.member.hasPermission('MANAGE_MESSAGES')) return;
 
     let muteRole = guildConf.muteRole;
     if(!muteRole) {
@@ -48,7 +48,7 @@ async function mute(msg: Message, args: string[], muteRole: string, modLogChanne
         if (!mention) return;
         if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
 
-        if (msg.author.id != process.env.IWA && mention.hasPermission('KICK_MEMBERS')) return;
+        if (msg.author.id !== msg.guild.ownerID && mention.hasPermission('MANAGE_MESSAGES')) return;
 
         try {
             msg.delete();

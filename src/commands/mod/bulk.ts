@@ -1,8 +1,8 @@
 import Kwako from '../../Client'
 import { Message } from 'discord.js'
 
-module.exports.run = async (msg: Message, args: string[]) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+module.exports.run = async (msg: Message) => {
+    if (!msg.member.hasPermission('MANAGE_MESSAGES')) return;
 
     if (msg.channel.type !== "dm") {
         await msg.delete().catch(console.error);
