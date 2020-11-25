@@ -196,7 +196,7 @@ export default async function imGeneratorPremium(user: any) {
     ctx.fillText(birthday, 212, 324)
 
     // birthday format
-    let birthdayFormat = "(mm/dd)"
+    let birthdayFormat = "(dd/mm)"
     ctx.font = '300 14pt Nunito'
     ctx.textAlign = 'left'
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'

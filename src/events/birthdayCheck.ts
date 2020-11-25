@@ -8,7 +8,7 @@ export default async function birthdayCheck() {
     if (hh === 8) {
         let dd = String(today.getDate()).padStart(2, '0');
         let mm = String(today.getMonth() + 1).padStart(2, '0');
-        let todayString = `${mm}/${dd}`;
+        let todayString = `${dd}/${mm}`;
 
         let data = await Kwako.db.collection('user').find({ 'birthday': { $eq: todayString } }).toArray();
         if(!data || data.length === 0) return;
