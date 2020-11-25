@@ -5,7 +5,6 @@ import Kwako from './Client';
 
 import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel } from 'discord.js';
 import { Manager } from "erela.js";
-import axios from "axios";
 
 let talkedRecently = new Set();
 
@@ -257,14 +256,11 @@ Kwako.on('guildCreate', async guild => {
 
     await Kwako.db.collection('guilds').insertOne({ '_id': guild.id, 'config': Kwako.getDefaultConf });
 
-    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
-
     Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 Kwako.on("guildDelete", async guild => {
     await Kwako.db.collection('guilds').deleteOne({ '_id': { $eq: guild.id } });
-    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
