@@ -60,6 +60,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
         let emote = collected.first();
 
         if(emote.emoji.name === '✅') {
+            await sent.delete().catch(() => {return});
             await msg.channel.send({'embed':{
                 "title": `:heartpulse: ${msg.author.username} and ${mention.username} are now married!`,
                 "color": 12265015
@@ -70,6 +71,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
         }
 
         if(emote.emoji.name === '❌') {
+            await sent.delete().catch(() => {return});
             await msg.channel.send(`<@${msg.author.id}>`, {'embed':{
                 "title": `😥 ${mention.username} turned down your proposal...`
             }});
