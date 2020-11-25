@@ -60,7 +60,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
 module.exports.help = {
     name: 'leaderboard',
-    aliases: ['lead', 'lb'],
+    aliases: ['lead', 'lb', 'top'],
     usage: "leaderboard",
     desc: "Show the exp points leaderboard of the server",
     perms: ['EMBED_LINKS']
