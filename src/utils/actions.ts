@@ -39,7 +39,7 @@ let count = new Map([
     ['squish', 4],
     ['glare', 6],
     ['tickle', 5],
-    ['kiss', 2],
+    ['kiss', 9],
     ['yeet', 3],
     ['cuddle', 7]
 ]);
