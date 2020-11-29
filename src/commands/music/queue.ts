@@ -1,7 +1,8 @@
 import Kwako from '../../Client'
 import { Message, MessageEmbed, Util } from 'discord.js'
+import GuildConfig from '../../interfaces/GuildConfig';
 
-module.exports.run = async (msg: Message) => {
+module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
 
     const player = Kwako.music.players.get(msg.guild.id);
     if (!player) return msg.channel.send({'embed':{
@@ -51,12 +52,12 @@ module.exports.run = async (msg: Message) => {
         if (queue.size > 10) {
             let footer = `and ${(queue.size - 10)} more...`;
             let looqueue = player.queueRepeat || false
-            if (looqueue) footer += " | Currently looping the queue - type `?loopqueue` to disable";
+            if (looqueue) footer += ` | 🔁 Looping the queue - \`${guildConf.prefix}loopqueue\` to disable`;
             embed.setFooter(footer)
         }
 
             let looqueue = player.queueRepeat || false
-            if (looqueue) embed.setFooter("Currently looping the queue - type `?loopqueue` to disable");
+            if (looqueue) embed.setFooter(`🔁 Looping the queue - \`${guildConf.prefix}loopqueue\` to disable`);
 
             msg.channel.send(embed);
             msg.channel.stopTyping(true);
