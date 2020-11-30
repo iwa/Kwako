@@ -71,7 +71,7 @@ module.exports.help = {
 };
 
 async function leaderboard (msg: Message, type: string, e: boolean) {
-    let guild = `${type}.${msg.guild.id.toString()}`
+    let guild = `${type}.${msg.guild.id}`
     let leaderboard = await Kwako.db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
 
@@ -86,6 +86,11 @@ async function leaderboard (msg: Message, type: string, e: boolean) {
         leaderboard.forEach(async (elem, index) => {
             let member = await msg.guild.members.fetch(elem._id).catch(() => {return});
             if(member) {
+                if(elem[type][msg.guild.id] < 0) {
+                    elem[type][msg.guild.id] *= -1;
+                    await Kwako.db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
+                }
+
                 n++;
                 if(n === 1)
                     desc = `${desc}:first_place: `
