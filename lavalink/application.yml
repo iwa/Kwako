@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8070
   address: 0.0.0.0
 lavalink:
   server:
