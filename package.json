@@ -8,7 +8,7 @@
     "update": "git fetch origin master && git pull origin master && rm -rf build/ && yarn && tsc",
     "changelog": "github_changelog_generator -u iwa -p Kwako --exclude-labels \"duplicate\",\"question\",\"invalid\",\"wontfix\",\"Duplicate\",\"Question\",\"Invalid\",\"Wontfix\",\"Meta: Exclude From Changelog\",\"update\",\"question-discussion\",\"dependencies\" --add-sections '{\"features\":{\"prefix\":\"**New features:**\",\"labels\":[\"feature\", \"features\"]}}' --no-compare-link",
     "lavalink": "cd lavalink && java -jar Lavalink.jar",
-    "lavadocker": "cd lavalink && docker-compose up"
+    "lavadocker": "docker run --name lavalink-2 -p 8081:8081 -v \"$PWD/lavalink/application.yml:/opt/Lavalink/application.yml\" -d fredboat/lavalink:master-v3"
   },
   "repository": {
     "type": "git",
