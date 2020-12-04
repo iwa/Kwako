@@ -3,9 +3,8 @@ dotenv.config();
 
 import Kwako from './Client';
 
-import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util } from 'discord.js';
+import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel } from 'discord.js';
 import { Manager } from "erela.js";
-import axios from "axios";
 
 let talkedRecently = new Set();
 
@@ -45,34 +44,32 @@ Kwako.once('shardReady', async () => {
     }).on("nodeConnect", (node) => Kwako.log.info({msg: 'new lavalink node', node: node.options.identifier}))
         .on("nodeError", (node, error) => Kwako.log.error({msg: `lavalink node error\n${error.message}`, node: node.options.identifier}))
         .on("trackStart", async (player, track) => {
-            let channel: any = Kwako.channels.cache.get(player.textChannel);
-            if(!channel) return;
+            if(!player.trackRepeat) {
+                let channel: any = Kwako.channels.cache.get(player.textChannel);
+                if(!channel) return;
 
-            let timeString;
-            if(!track.isStream) {
-                let date = new Date(track.duration);
-                timeString = `Length: ${date.toISOString().substr(11, 8)}`
-            } else
-                timeString = '🔴 Listening to a stream | Skip to stop the stream'
+                let timeString;
+                if(!track.isStream) {
+                    let date = new Date(track.duration);
+                    timeString = `Length: ${date.toISOString().substr(11, 8)}`
+                } else
+                    timeString = '🔴 Listening to a stream'
 
-            const embed = new MessageEmbed()
-                .setColor('GREEN')
-                .setTitle("**:cd: Now Playing:**")
-                .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
-                .setFooter(timeString)
-                .setThumbnail(track.thumbnail)
-            await channel.send(embed)
-            Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
+                const embed = new MessageEmbed()
+                    .setColor('GREEN')
+                    .setTitle("**:cd: Now Playing**")
+                    .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
+                    .setFooter(timeString)
+                    .setThumbnail(track.thumbnail)
+                await channel.send(embed)
+                Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
+            }
         })
         .on("queueEnd", async (player) => {
-            let channel: any = Kwako.channels.cache.get(player.textChannel)
-
-            const embed = new MessageEmbed()
-                .setColor('GREEN')
-                .setTitle("🚪 Queue finished. Disconnecting...");
-
-            await channel.send(embed)
-            player.destroy();
+            setTimeout(async () => {
+                if(!player.playing)
+                    player.destroy();
+            }, 60000);
         });
 
     Kwako.music.init(Kwako.user.id);
@@ -259,14 +256,11 @@ Kwako.on('guildCreate', async guild => {
 
     await Kwako.db.collection('guilds').insertOne({ '_id': guild.id, 'config': Kwako.getDefaultConf });
 
-    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
-
     Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
 
 Kwako.on("guildDelete", async guild => {
     await Kwako.db.collection('guilds').deleteOne({ '_id': { $eq: guild.id } });
-    await axios.get('http://localhost:8080/api/guilds/update').catch(err => Kwako.log.error(err));
     Kwako.log.info({msg: 'guild removed', guild: { id: guild.id, name: guild.name }});
 });
 
@@ -315,6 +309,7 @@ Kwako.on('messageDelete', async msg => {
 
 import messageUpdate from './events/logs/messageUpdate';
 Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
+    if(!oldmsg.guild) return;
     if(!oldmsg.guild.available) return;
 
     let guildConf = await Kwako.getGuildConf(oldmsg.guild.id);
@@ -364,6 +359,15 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
     let channel = oldState.channel;
     if(!channel) return;
 
+    if(oldState.id === Kwako.user.id && newState.id === Kwako.user.id) {
+        if(!newState.channel) {
+            let player = Kwako.music.players.get(oldState.guild.id);
+
+            if(player)
+                player.destroy();
+        }
+    }
+
     let members = channel.members;
     if(members.size === 1)
         if(members.has(Kwako.user.id)) {
@@ -373,9 +377,15 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
             const player = Kwako.music.players.get(voiceChannel.guild.id);
 
             if(player) {
-                player.destroy();
+                setTimeout(async () => {
+                    let voiceChan = await Kwako.channels.fetch(player.voiceChannel);
+                    if (!voiceChan) return player.destroy();
 
-                Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
+                    if ((voiceChan as VoiceChannel).members.size === 1) {
+                        player.destroy();
+                        Kwako.log.info({msg: 'auto stop', guild: { id: voiceChannel.guild.id, name: voiceChannel.guild.name }})
+                    }
+                }, 60000);
             }
         }
 });

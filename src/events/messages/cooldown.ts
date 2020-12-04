@@ -59,8 +59,14 @@ export default class cooldown {
 
             if(user)
                 if(user.exp)
-                    if(user.exp[msg.guild.id])
-                        levelCheck(msg, (user.exp[msg.guild.id]), amount, guildConf.showLevelUp);
+                    if(user.exp[msg.guild.id]) {
+                        if(user.exp[msg.guild.id] < 0) {
+                            user.exp[msg.guild.id] *= -1;
+                            await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $mul: { [guild]: -1 }});
+                        }
+
+                        levelCheck(msg, user.exp[msg.guild.id], amount, guildConf.showLevelUp);
+                    }
 
             await Kwako.db.collection('user').updateOne({ _id: msg.author.id }, { $inc: { [guild]: amount }  }, { upsert: true });
             cooldownXP.add(msg.author.id);

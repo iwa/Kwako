@@ -2,6 +2,9 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed } from 'discord.js'
 
 module.exports.run = (msg: Message, args: string[]) => {
+    if (!msg.member.voice.channel) return;
+    if (!msg.member.hasPermission('MANAGE_CHANNELS') && msg.member.voice.channel.members.size !== 2) return;
+
     const player = Kwako.music.create({
         guild: msg.guild.id,
         voiceChannel: msg.member.voice.channel.id,
@@ -15,9 +18,9 @@ module.exports.run = (msg: Message, args: string[]) => {
     let queueID: number = parseInt(args[0], 10);
 
     if (isNaN(queueID)) return;
-    if (queueID < 1) return;
+    if (queueID < 1 || queueID > 9) return;
 
-    let song = player.queue.splice(queueID, 1);
+    let song = player.queue.splice((queueID-1), 1);
 
     if (!song[0]) return;
 

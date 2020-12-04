@@ -34,11 +34,11 @@ export default async function messageDelete(msg: Message | PartialMessage, modLo
 		type: 'MESSAGE_DELETE',
 	}).catch(() => {return;});
 
-    if (!fetchedLogs) return selfDelete(msg, modLogChannel);;
+    if (!fetchedLogs) return selfDelete(msg, modLogChannel);
 
 	const deletionLog = fetchedLogs.entries.first();
 
-	if (!deletionLog) return selfDelete(msg, modLogChannel);;
+	if (!deletionLog) return selfDelete(msg, modLogChannel);
 
     const { executor, target, createdTimestamp } = deletionLog;
 

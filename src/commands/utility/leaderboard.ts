@@ -8,7 +8,9 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
     switch (args[0]) {
         case "xp":
-        case "exp": {
+        case "exp":
+        case "level":
+        case "lvl": {
             guildConf.useExpSystem &&= true;
             if(guildConf.useExpSystem)
                 return leaderboard(msg, 'exp', false)
@@ -48,24 +50,28 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
         case "kiss":
         case "kisses":
-            return leaderboard(msg, 'kiss', false)
+            return leaderboard(msg, 'kiss', true)
+
+        case "tongueout":
+        case "tongueouts":
+            return leaderboard(msg, 'tongueout', false)
 
         default:
-            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap | glare | squish | tickle | kiss`", "color": 3396531 } });
+            msg.channel.send({ "embed": { "title": "`exp | pat | hug | boop | slap | glare | squish | tickle | kiss | tongueout`", "color": 3396531 } });
             break;
     }
 };
 
 module.exports.help = {
     name: 'leaderboard',
-    aliases: ['lead', 'lb'],
+    aliases: ['lead', 'lb', 'top'],
     usage: "leaderboard",
     desc: "Show the exp points leaderboard of the server",
     perms: ['EMBED_LINKS']
 };
 
 async function leaderboard (msg: Message, type: string, e: boolean) {
-    let guild = `${type}.${msg.guild.id.toString()}`
+    let guild = `${type}.${msg.guild.id}`
     let leaderboard = await Kwako.db.collection('user').find({ [guild]: { $exists: true } }).sort({ [guild]: -1 }).limit(10).toArray();
     let n = 0;
 
@@ -76,10 +82,15 @@ async function leaderboard (msg: Message, type: string, e: boolean) {
     embed.setTitle(`:trophy: **${title} Leaderboard**`)
     let desc = "";
 
-    let bar = new Promise((resolve) => {
+    let bar = new Promise<void>((resolve) => {
         leaderboard.forEach(async (elem, index) => {
             let member = await msg.guild.members.fetch(elem._id).catch(() => {return});
             if(member) {
+                if(elem[type][msg.guild.id] < 0) {
+                    elem[type][msg.guild.id] *= -1;
+                    await Kwako.db.collection('user').updateOne({ _id: elem._id }, { $mul: { [guild]: -1 }});
+                }
+
                 n++;
                 if(n === 1)
                     desc = `${desc}:first_place: `

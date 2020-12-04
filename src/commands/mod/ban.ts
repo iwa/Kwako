@@ -12,6 +12,8 @@ module.exports.run = async (msg: Message, args: string[]) => {
         if (!mention) return;
         if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
 
+        if (msg.author.id !== msg.guild.ownerID && mention.hasPermission('BAN_MEMBERS')) return;
+
         try {
             await msg.delete();
         } catch (error) {
@@ -29,6 +31,11 @@ module.exports.run = async (msg: Message, args: string[]) => {
             .setColor('RED')
             .setTitle(`🔨 **${mention.user.username}** has been banned`)
             .setDescription(`**Reason:** ${reason}`);
+
+        await mention.send({'embed':{
+            'title': `🔨 You've been banned from **${msg.guild.name}**`,
+            'description': `**Reason:** ${reason}`
+        }}).catch(() => {return});
 
         try {
             await mention.ban({ days: 7, reason: reasonTagged });

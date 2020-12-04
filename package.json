@@ -7,7 +7,8 @@
     "build": "rm -rf build/ && tsc",
     "update": "git fetch origin master && git pull origin master && rm -rf build/ && yarn && tsc",
     "changelog": "github_changelog_generator -u iwa -p Kwako --exclude-labels \"duplicate\",\"question\",\"invalid\",\"wontfix\",\"Duplicate\",\"Question\",\"Invalid\",\"Wontfix\",\"Meta: Exclude From Changelog\",\"update\",\"question-discussion\",\"dependencies\" --add-sections '{\"features\":{\"prefix\":\"**New features:**\",\"labels\":[\"feature\", \"features\"]}}' --no-compare-link",
-    "lavalink": "cd lavalink && java -jar Lavalink.jar"
+    "lavalink": "cd lavalink && java -jar Lavalink.jar",
+    "lavadocker": "docker run --name lavalink -p 8081:8081 -v \"$PWD/lavalink/application.yml:/opt/Lavalink/application.yml\" -d fredboat/lavalink:master-v3"
   },
   "repository": {
     "type": "git",
@@ -20,22 +21,23 @@
   },
   "homepage": "https://github.com/iwa/Kwako#readme",
   "dependencies": {
-    "@types/mongodb": "^3.5.33",
-    "@types/node": "^14.14.0",
-    "@types/pino": "^6.3.3",
-    "@types/ws": "^7.2.9",
-    "anilist-node": "^1.5.0",
+    "@types/mongodb": "^3.5.34",
+    "@types/node": "^14.14.9",
+    "@types/pino": "^6.3.4",
+    "@types/ws": "^7.4.0",
+    "anilist-node": "^1.6.0",
     "axios": "^0.21.0",
     "bufferutil": "^4.0.2",
     "canvas": "^2.6.1",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.0",
     "dotenv": "^8.2.0",
     "erela.js": "^2.2.0",
     "mee6-levels-api": "^1.1.0",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "pino": "^6.7.0",
-    "twitch": "^4.2.7",
-    "utf-8-validate": "^5.0.2"
+    "twitch": "^4.3.0",
+    "utf-8-validate": "^5.0.3"
   },
   "devDependencies": {
     "pino-pretty": "^4.3.0"

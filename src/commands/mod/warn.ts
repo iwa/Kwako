@@ -3,7 +3,7 @@ import { Message, MessageEmbed, TextChannel } from 'discord.js'
 import GuildConfig from '../../interfaces/GuildConfig';
 
 module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
-    if (!msg.member.hasPermission('KICK_MEMBERS')) return;
+    if (!msg.member.hasPermission('MANAGE_MESSAGES')) return;
 
     if (args.length >= 1 && msg.channel.type !== 'dm') {
         if (msg.mentions.everyone) return;
@@ -13,6 +13,8 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
         if (!mention) return;
         if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
+
+        if (msg.author.id !== msg.guild.ownerID && mention.hasPermission('MANAGE_MESSAGES')) return;
 
         try {
             await msg.delete();
@@ -47,6 +49,11 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
         } catch (err) {
             return;
         }
+
+        await mention.send({'embed':{
+            'title': `⚠️ You've been warned in **${msg.guild.name}**`,
+            'description': `**Reason:** ${reason}`
+        }}).catch(() => {return});
 
         await Kwako.db.collection('infractions').insertOne({ target: mention.id, author: msg.author.id, guild: msg.guild.id, type: 'warn', reason: reason, date: msg.createdTimestamp });
 

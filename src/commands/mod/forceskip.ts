@@ -2,7 +2,7 @@ import Kwako from '../../Client'
 import { Message, MessageEmbed, VoiceChannel } from 'discord.js'
 
 module.exports.run = (msg: Message) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if (!msg.member.hasPermission('MANAGE_CHANNELS')) return;
 
     let voiceChannel: VoiceChannel = msg.member.voice.channel;
     if(!voiceChannel) return;

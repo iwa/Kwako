@@ -32,26 +32,60 @@ async function profileImg(msg: Message, id: string) {
     let memberDiscord = await msg.guild.members.fetch(id)
 
     if (!userDB) {
-        if(!userDB.exp) {
-            if(!userDB.exp[msg.guild.id]) {
-                let user = {
-                    avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
-                    username: userDiscord.username,
-                    premium: Kwako.patrons.has(id) || false,
-                    iwa: (id === process.env.IWA) ? true : false,
-                    positionExp: "?",
-                    level: 1,
-                    current: 0,
-                    max: 100,
-                    userColor: memberDiscord.displayHexColor,
-                    expBar: 0,
-                    birthday: "--/--",
-                    fc: "not registered"
-                }
-
-                return sendRankCard(msg, user, userDiscord);
-            }
+        let user = {
+            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
+            username: userDiscord.username,
+            premium: Kwako.patrons.has(id) || false,
+            iwa: (id === process.env.IWA) ? true : false,
+            positionExp: "?",
+            level: 1,
+            current: 0,
+            max: 100,
+            userColor: memberDiscord.displayHexColor,
+            expBar: 0,
+            birthday: "--/--",
+            fc: "not registered"
         }
+
+        return sendRankCard(msg, user, userDiscord);
+    }
+
+    if(!userDB.exp) {
+        let user = {
+            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
+            username: userDiscord.username,
+            premium: Kwako.patrons.has(id) || false,
+            iwa: (id === process.env.IWA) ? true : false,
+            positionExp: "?",
+            level: 1,
+            current: 0,
+            max: 100,
+            userColor: memberDiscord.displayHexColor,
+            expBar: 0,
+            birthday: userDB.birthday || "--/--",
+            fc: userDB.fc || "not registered"
+        }
+
+        return sendRankCard(msg, user, userDiscord);
+    }
+
+    if(!userDB.exp[msg.guild.id]) {
+        let user = {
+            avatar: userDiscord.avatarURL({ format: 'png', dynamic: false, size: 512 }) || userDiscord.defaultAvatarURL,
+            username: userDiscord.username,
+            premium: Kwako.patrons.has(id) || false,
+            iwa: (id === process.env.IWA) ? true : false,
+            positionExp: "?",
+            level: 1,
+            current: 0,
+            max: 100,
+            userColor: memberDiscord.displayHexColor,
+            expBar: 0,
+            birthday: userDB.birthday || "--/--",
+            fc: userDB.fc || "not registered"
+        }
+
+        return sendRankCard(msg, user, userDiscord);
     }
 
     let guild = `exp.${msg.guild.id.toString()}`

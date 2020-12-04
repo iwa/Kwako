@@ -231,15 +231,19 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
             }
 
         case 'setup':
-            let rep = await msg.channel.send({'embed':{
+            let embed = new MessageEmbed();
+
+            // Set title
+            let repTitle = await msg.channel.send({'embed':{
                 'title': "What's the title of the Reaction Role Message?",
                 'footer': {
                     'text': 'Type "cancel" to cancel.'
                 }
             }});
 
-            let collected = await msg.channel.awaitMessages(m => m.author.id === msg.author.id, { max: 1, time: 60000 });
-            await rep.delete();
+            let collected = await msg.channel.awaitMessages(m => m.author.id === msg.author.id, { max: 1, time: 300000 });
+            await collected.first().delete().catch(() => {return});
+            await repTitle.delete();
             if(!collected) return msg.channel.send({'embed':{
                 'title': "Cancelled..."
             }});
@@ -249,6 +253,39 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
                 'title': "Cancelled..."
             }});
 
+            embed.setTitle(title);
+            let sent = await msg.channel.send(embed);
+
+            // Set description
+            let repDesc = await msg.channel.send({'embed':{
+                'title': "What's the title of the Reaction Role Message?",
+                'footer': {
+                    'text': 'Type "cancel" to cancel.'
+                }
+            }});
+
+            let collecteDesc = await msg.channel.awaitMessages(m => m.author.id === msg.author.id, { max: 1, time: 300000 });
+            await collecteDesc.first().delete().catch(() => {return});
+            await repDesc.delete();
+            if(!collecteDesc) {
+                await sent.delete();
+                return msg.channel.send({'embed':{
+                    'title': "Cancelled..."
+                }});
+            }
+
+            let desc = collecteDesc.first().cleanContent;
+            if(desc.toLowerCase() === "cancel") {
+                await sent.delete();
+                return msg.channel.send({'embed':{
+                    'title': "Cancelled..."
+                }});
+            }
+
+            embed.setDescription(desc);
+            await sent.edit(embed);
+
+            // Set roles
             let stop = false;
             let roles = new Map();
 
@@ -270,70 +307,105 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
                 }
             }});
             while (!stop) {
-                let collected = await msg.channel.awaitMessages(m => m.author.id === msg.author.id, { max: 1, time: 60000 });
+                let collected = await msg.channel.awaitMessages(m => m.author.id === msg.author.id, { max: 1, time: 300000 });
                 if(!collected) {
+                    await sent.delete();
+                    await roleMsg.delete();
+                    await repRoles.delete();
+
                     stop = true;
                     return msg.channel.send({'embed':{
                         'title': "Cancelled..."
                     }});
                 }
-
-                let title = collected.first().cleanContent;
-                if(title.toLowerCase() === "cancel") {
-                    stop = true;
-                    return msg.channel.send({'embed':{
-                        'title': "Cancelled..."
-                    }});
-                }
-
-                if(title.toLowerCase() === "done") {
-                    stop = true;
-                    return;
-                }
-
-                let args = msg.content.trim().split(/ +/g);
-
-                let emote = args[0]
-                if((emote.startsWith('<:') || emote.startsWith('<a:')) && emote.endsWith('>'))
-                    emote = emote.slice(emote.length-19, emote.length-1);
-
-                let role = args[1];
-                if(role.startsWith('<@&') && role.endsWith('>')) {
-                    role = role.slice(3, (role.length-1))
-                    let chan = await msg.guild.roles.fetch(role);
-                    if(!chan || !chan.editable)
-                        (await msg.channel.send({'embed':{
-                            'title': ":x: This role doesn't exist!"
-                        }})).delete({timeout: 6000});
-                } else
-                    (await msg.channel.send({'embed':{
-                        'title': ":x: Please mention a role"
-                    }})).delete({timeout: 6000});
 
                 await collected.first().delete().catch(() => {return});
 
-                roles.set(emote, role);
+                let said = collected.first().cleanContent;
+                if(said.toLowerCase() === "cancel") {
+                    await sent.delete();
+                    await roleMsg.delete();
+                    await repRoles.delete();
 
-                let embedRoleDesc = "";
-                roles.forEach((val, key) => {
-                    embedRoleDesc = `${embedRoleDesc}${key}: <@&${val}>\n`;
-                });
+                    stop = true;
+                    return msg.channel.send({'embed':{
+                        'title': "Cancelled..."
+                    }});
+                } else if(said.toLowerCase() === "done") {
+                    stop = true;
+                } else if(collected.first().content.trim().split(/ +/g).length === 2) {
+                    let args = collected.first().content.trim().split(/ +/g);
+                    let error = false;
 
-                await roleMsg.edit({'embed':{
-                    'title': "Current roles binded",
-                    'description': embedRoleDesc
-                }})
+                    let emote = args[0]
+                    if((emote.startsWith('<:') || emote.startsWith('<a:')) && emote.endsWith('>'))
+                        emote = emote.slice(emote.length-19, emote.length-1);
+
+                    let role = args[1];
+                    if(role.startsWith('<@&') && role.endsWith('>')) {
+                        role = role.slice(3, (role.length-1))
+                        let chan = await msg.guild.roles.fetch(role);
+                        if(!chan || !chan.editable) {
+                            error = true;
+                            (await msg.channel.send({'embed':{
+                                'title': ":x: This role doesn't exist!"
+                            }})).delete({timeout: 6000});
+                        }
+                    } else {
+                        error = true;
+                        (await msg.channel.send({'embed':{
+                            'title': ":x: Please mention a role"
+                        }})).delete({timeout: 6000});
+                    }
+
+                    if(!error) {
+                        let emoteIdentifier = Kwako.emojis.resolveIdentifier(emote);
+                        if(emoteIdentifier !== emote) {
+                            roles.set(emote, role);
+
+                            let embedRoleDesc = "";
+                            roles.forEach((val, key) => {
+                                if(key.length > 3) {
+                                    let emoteIdentifier = Kwako.emojis.resolveIdentifier(key);
+                                    if(!emoteIdentifier) return;
+                                    if(emoteIdentifier.substring(0, 2) !== 'a:')
+                                        emoteIdentifier = `:${emoteIdentifier}`;
+
+                                    key = `<${emoteIdentifier}>`;
+                                }
+                                embedRoleDesc = `${embedRoleDesc}${key} - <@&${val}>\n`;
+                            });
+
+                            await roleMsg.edit({'embed':{
+                                'title': "Current roles binded",
+                                'description': embedRoleDesc
+                            }})
+                        } else await (await msg.channel.send({
+                            'embed': {
+                                'title': ":x: I can't use this emote"
+                            }
+                        })).delete({timeout: 4000});
+                    }
+                }
             }
 
+            await msg.delete().catch(() => {return});
+            await roleMsg.delete();
             await repRoles.delete();
 
-            let embed = new MessageEmbed();
-            embed.setTitle(title);
             roles.forEach((val, key) => {
+                if(key.length > 3) {
+                    let emoteIdentifier = Kwako.emojis.resolveIdentifier(key);
+                    if(!emoteIdentifier) return;
+                    if(emoteIdentifier.substring(0, 2) !== 'a:')
+                        emoteIdentifier = `:${emoteIdentifier}`;
+
+                    key = `<:${emoteIdentifier}>`;
+                }
                 embed.addField(key, `<@&${val}>`, true);
             });
+            await sent.edit(embed);
 
-            let sent = await msg.channel.send(embed);
             if(sent) {
                 roles.forEach((val, key) => {
                     sent.react(key).catch(() => {
@@ -342,9 +414,12 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
                 });
             }
 
-            await rep.delete();
-            await roleMsg.delete();
-            await repRoles.delete();
+            await Kwako.db.collection('msg').insertOne({ _id: sent.id, channel: sent.channel.id })
+            roles.forEach(async (value, key) => {
+                await Kwako.db.collection('msg').updateOne({ _id: sent.id }, { $push: { roles: { "id": value, "emote": key } } })
+            });
+
+            Kwako.log.info({msg: 'reactionrole setup', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }})
 
         return;
     }

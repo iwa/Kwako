@@ -28,6 +28,10 @@ setTimeout(() => {
             "value": commands.get("music")
         },
         {
+            "name": "**💍 Marriage**",
+            "value": commands.get("marriage")
+        },
+        {
             "name": "**🛠 Utility**",
             "value": commands.get("utility")
         },

@@ -3,7 +3,7 @@ import { Message, MessageEmbed, TextChannel } from 'discord.js'
 import GuildConfig from '../../interfaces/GuildConfig';
 
 module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig) => {
-    if (!msg.member.hasPermission('MANAGE_GUILD')) return;
+    if (!msg.member.hasPermission('MANAGE_MESSAGES')) return;
 
     if (args.length === 1 && msg.channel.type != 'dm') {
         if (msg.mentions.everyone) return;
@@ -19,31 +19,38 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
             Kwako.log.error(error);
         }
 
-        const embed = new MessageEmbed()
-            .setColor(14349246)
-            .setTitle(`✅ **${mention.user.username}** has been unmuted`);
-
-        try {
-            await mention.roles.remove(guildConf.muteRole);
-            await Kwako.db.collection('mute').deleteOne({ _id: mention.id });
-            await msg.channel.send(embed);
-        } catch (err) {
-            await msg.channel.send({'embed':{
-                'title': ":x: > I can't unmute this person!"
-            }});
-        }
-
-        let modLogChannel = guildConf.modLogChannel;
-        if(modLogChannel) {
-            let channel = await Kwako.channels.fetch(modLogChannel);
-            const embedLog = new MessageEmbed()
-                .setTitle("Member unmuted")
-                .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>`)
+        if(mention.roles.cache.has(guildConf.muteRole)) {
+            const embed = new MessageEmbed()
                 .setColor(14349246)
-                .setTimestamp(msg.createdTimestamp)
-                .setFooter("Date of unmute:")
-                .setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
-            await (channel as TextChannel).send(embedLog);
+                .setTitle(`✅ **${mention.user.username}** has been unmuted`);
+
+            try {
+                await mention.roles.remove(guildConf.muteRole);
+                await Kwako.db.collection('mute').deleteOne({ _id: mention.id });
+                await msg.channel.send(embed);
+            } catch (err) {
+                await msg.channel.send({'embed':{
+                    'title': ":x: > I can't unmute this person!"
+                }});
+            }
+
+            let modLogChannel = guildConf.modLogChannel;
+            if(modLogChannel) {
+                let channel = await Kwako.channels.fetch(modLogChannel);
+                const embedLog = new MessageEmbed()
+                    .setTitle("Member unmuted")
+                    .setDescription(`**Who:** ${mention.user.tag} (<@${mention.id}>)\n**By:** <@${msg.author.id}>`)
+                    .setColor(14349246)
+                    .setTimestamp(msg.createdTimestamp)
+                    .setFooter("Date of unmute:")
+                    .setAuthor(msg.author.username, msg.author.avatarURL({ format: 'png', dynamic: false, size: 128 }));
+                await (channel as TextChannel).send(embedLog);
+            }
+        } else {
+            await msg.channel.send({'embed':{
+                'title': ":x: This person isn't muted",
+                'color': 13864854
+            }})
         }
 
         Kwako.log.info({msg: 'unmute', author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name }, target: { id: mention.id, name: mention.user.tag }})
