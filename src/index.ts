@@ -57,7 +57,7 @@ Kwako.once('shardReady', async () => {
 
                 const embed = new MessageEmbed()
                     .setColor('GREEN')
-                    .setTitle("**:cd: Now Playing**")
+                    .setTitle(":cd: Now Playing")
                     .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
                     .setFooter(timeString)
                     .setThumbnail(track.thumbnail)
