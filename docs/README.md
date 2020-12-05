@@ -4,7 +4,9 @@
   <h1>Kwako</h1>
   <h4>Discover this new general purpose Discord bot, loved for its kindness, usefulness and simplicity.</h4>
 
-  <img alt="Kwako Status" src="https://img.shields.io/website?down_color=red&down_message=offline&label=kwako&style=for-the-badge&up_color=brightgreen&up_message=online&url=https%3A%2F%2Fapi.iwa.sh%2Fapp%2Fapi">
+  <a href="https://status.iwa.sh/">
+    <img alt="Kwako Status" src="https://img.shields.io/static/v1?label=kwako&message=status&color=brightgreen&style=for-the-badge"/>
+  </a>
 
   <br/>
 
