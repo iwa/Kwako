@@ -7,7 +7,7 @@ First of all, you need to invite the bot through [this link](https://discord.com
 
 ?> **Note:** Please ensure that Kwako has all the necessary perms, or the bot might not fully work.
 
-### 2. Setup the bot through the Web Dashboard
+### 2. Setup the bot
 Kwako is fully customizable, from the prefix to reactions roles messages.
 You can manage the bot thanks to the `!config` command.
 

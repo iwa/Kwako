@@ -3,7 +3,6 @@
   <img src="https://cdn.iwa.sh/img/tiles/kwako.png" alt="logo"/>
   <h1>Kwako</h1>
 
-  <img alt="Kwako Status" src="https://img.shields.io/website?down_color=red&down_message=offline&label=kwako&style=for-the-badge&up_color=brightgreen&up_message=online&url=https%3A%2F%2Fapi.iwa.sh%2Fapp%2Fapi">
   <a href="https://nodejs.org/en/">
     <img alt="Node minimal version" src="https://img.shields.io/static/v1?style=for-the-badge&label=node&message=%3E%3D14&color=blue"/>
   </a>
