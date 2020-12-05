@@ -34,6 +34,8 @@ Kwako.once('shardReady', async () => {
                 port: parseInt(process.env.LAVALINK_PORT, 10),
                 password: process.env.LAVALINK_PWD,
                 secure: false,
+                retryAmount: 10,
+                retryDelay: 5000
             },
           ],
         autoPlay: true,
@@ -64,6 +66,24 @@ Kwako.once('shardReady', async () => {
                 await channel.send(embed)
                 Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
             }
+        })
+        .on("trackStuck", async (player, track, payload) => {
+            let channel: any = Kwako.channels.cache.get(player.textChannel);
+            if(!channel) return;
+
+            const embed = new MessageEmbed()
+                .setTitle(":x: There's a problem with the track")
+                .setDescription(`Nothing will be played for ${Math.ceil(payload.thresholdMs/1000)}s`)
+            await channel.send(embed)
+        })
+        .on("trackError", async (player, track, payload) => {
+            let channel: any = Kwako.channels.cache.get(player.textChannel);
+            if(!channel) return;
+
+            const embed = new MessageEmbed()
+                .setTitle(":x: There's a problem with the track")
+                .setDescription(`Error: ${payload.error}\nReason: ${payload.exception.message}\nCause: ${payload.exception.cause}`)
+            await channel.send(embed)
         })
         .on("queueEnd", async (player) => {
             setTimeout(async () => {
