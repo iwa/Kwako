@@ -1435,29 +1435,30 @@ tweetnacl@^1.0.3:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twitch-api-call@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.3.0.tgz#0c1abb85865cafe4590e1410cded3a1c98ca22ee"
-  integrity sha512-fRciZkgidQ29UfVczSOUk2Va0vWsZWpyuSUF9aJ+SFq8+lbDf4tFdB8qZTkAKdvSWoo4y3jMkP2rW8bcO3AR6Q==
+twitch-api-call@^4.3.5:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.3.5.tgz#68af4502544cfb564f79ed3f6a50056e5c9a8a6c"
+  integrity sha512-osSuGfUPltr7ipyRupVj9KmiC/GhPLNH3WWQv37H11ZXR9PF0EfbdIPDsxP9rwp7M/Pk8R/mZZ2uZfK401YO2g==
   dependencies:
     "@d-fischer/cross-fetch" "^4.0.2"
     "@d-fischer/qs" "^7.0.2"
     tslib "^2.0.3"
 
-twitch-auth@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.3.0.tgz#194e61789561823154dc87fc78cd69ee7a467e1b"
-  integrity sha512-rT2CwAq5TxuFUUkmuBJ73IEbJHFQcBvt1kjRsaGZ1HqYLIQ4LnWO3qAXeQ0G8wbYvpPkWSrQiQiFTEIYntvM1g==
+twitch-auth@^4.3.5:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.3.5.tgz#1c97c90c828ad906d69ee2b2e8c81969718942ab"
+  integrity sha512-Z3NAd3A0nmDrQSiy9x6GgGxU3E0NZIokpcYq8QCDYCnEmOYgkiwD1xEq+e8akrUqAVOvnft0p448tjIQdBibbA==
   dependencies:
     "@d-fischer/deprecate" "^2.0.2"
+    "@d-fischer/logger" "^2.1.1"
     "@d-fischer/shared-utils" "^2.4.1"
     tslib "^2.0.3"
-    twitch-api-call "^4.3.0"
+    twitch-api-call "^4.3.5"
 
-twitch@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.3.0.tgz#6b2fcae9e558392f30184172e0d149ce8165a6bc"
-  integrity sha512-Jn2H6YWL/T+IIpcwunYjQt/kSgOqmWog9Bn5UxjLuRxpIVWSlK69lcUz6JL0ywpp10ThCkF/S/LBiS/3z8f0sw==
+twitch@^4.3.5:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.3.5.tgz#d640ec14f96589d888676a670408d5099cf524c9"
+  integrity sha512-lrYy5deFVQwdjMsheaci4rrMOmDbnf02/Np/ABcOGYkGcloa+5yFcDeXa5cpQh70yUJ5DFtymnVisQWk2djkTw==
   dependencies:
     "@d-fischer/cache-decorators" "^2.1.1"
     "@d-fischer/deprecate" "^2.0.2"
@@ -1466,8 +1467,8 @@ twitch@^4.3.0:
     "@d-fischer/shared-utils" "^2.4.1"
     top-package "^1.0.0"
     tslib "^2.0.3"
-    twitch-api-call "^4.3.0"
-    twitch-auth "^4.3.0"
+    twitch-api-call "^4.3.5"
+    twitch-auth "^4.3.5"
 
 type-fest@^0.10.0:
   version "0.10.0"
