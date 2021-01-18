@@ -316,10 +316,10 @@ Kwako.on('messageDelete', async msg => {
 
     let guildConf = await Kwako.getGuildConf(msg.guild.id);
 
-    let modLogChannel = guildConf.modLogChannel;
-    if(!modLogChannel) return;
+    let msgLogChannel = guildConf.msgLogChannel;
+    if(!msgLogChannel) return;
 
-    return messageDelete(msg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+    return messageDelete(msg, msgLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import messageUpdate from './events/logs/messageUpdate';
@@ -329,13 +329,13 @@ Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
 
     let guildConf = await Kwako.getGuildConf(oldmsg.guild.id);
 
-    let modLogChannel = guildConf.modLogChannel;
-    if (!modLogChannel) return;
+    let msgLogChannel = guildConf.msgLogChannel;
+    if (!msgLogChannel) return;
 
     if (!newmsg) return;
     if (oldmsg.cleanContent === newmsg.cleanContent) return;
 
-    return messageUpdate(newmsg, oldmsg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+    return messageUpdate(newmsg, oldmsg, msgLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';
