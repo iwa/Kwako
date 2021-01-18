@@ -246,11 +246,6 @@ Kwako.on('guildCreate', async guild => {
               },
               "fields": [
                 {
-                  "name": "Web Dashboard",
-                  "value": "https://kwako.iwa.sh/",
-                  "inline": true
-                },
-                {
                   "name": "List of the commands",
                   "value": "`!help`",
                   "inline": true
