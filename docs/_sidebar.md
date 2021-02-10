@@ -1,7 +1,9 @@
-- Home
-- Features
-- Documentation
+- Docs
   - Getting started
-
-    - [Basic bot setup](start/basic.md)
-    - [Premium](start/premium.md)
+    - [Basic Bot Setup](docs/start/basic.md)
+    - [Premium](docs/start/premium.md)
+  - Features
+    - [Actions commands](docs/features/actions.md)
+- Others
+    - [How to fetch an ID](docs/others/id.md)
+    - [Changelog](docs/others/changelog.md)
