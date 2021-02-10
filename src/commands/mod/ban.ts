@@ -8,9 +8,20 @@ module.exports.run = async (msg: Message, args: string[]) => {
         if (msg.mentions.everyone) return;
 
         let mention = msg.mentions.members.first()
+        let id;
 
-        if (!mention) return;
-        if (mention.id === msg.author.id || mention.id === Kwako.user.id) return;
+        if (!mention) {
+            let member = await msg.guild.members.fetch(args[0]).catch(() => { return; });
+            if(!member) return msg.channel.send({'embed':{'title':':x: This member does not exists'}});
+            if(member.user.bot) return;
+            id = member.id;
+            mention = member;
+        } else {
+            if(mention.user.bot) return;
+            id = mention.id
+        }
+
+        if (id === msg.author.id || id === Kwako.user.id) return;
 
         if (msg.author.id !== msg.guild.ownerID && mention.hasPermission('BAN_MEMBERS')) return;
 
@@ -38,7 +49,7 @@ module.exports.run = async (msg: Message, args: string[]) => {
         }}).catch(() => {return});
 
         try {
-            await mention.ban({ days: 7, reason: reasonTagged });
+            await msg.guild.members.ban(id, { days: 7, reason: reasonTagged });
             await msg.channel.send(embed);
         } catch (err) {
             await msg.channel.send("I can't ban this person!")
