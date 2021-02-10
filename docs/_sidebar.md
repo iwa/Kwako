@@ -6,4 +6,4 @@
     - [Actions commands](docs/features/actions.md)
 - Others
     - [How to fetch an ID](docs/others/id.md)
-    - [Changelog](docs/others/changelog.md)
+    - [Changelog](docs/others/changelogs.md)
