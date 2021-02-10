@@ -3,6 +3,7 @@
     - [Basic Bot Setup](docs/start/basic.md)
     - [Premium](docs/start/premium.md)
   - Features
+    - [Prefix](docs/features/prefix.md)
     - [Actions commands](docs/features/actions.md)
 - Others
     - [How to fetch an ID](docs/others/id.md)
