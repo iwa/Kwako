@@ -34,6 +34,8 @@ Kwako.once('shardReady', async () => {
                 port: parseInt(process.env.LAVALINK_PORT, 10),
                 password: process.env.LAVALINK_PWD,
                 secure: false,
+                retryAmount: 10,
+                retryDelay: 5000
             },
           ],
         autoPlay: true,
@@ -57,13 +59,31 @@ Kwako.once('shardReady', async () => {
 
                 const embed = new MessageEmbed()
                     .setColor('GREEN')
-                    .setTitle("**:cd: Now Playing**")
+                    .setTitle(":cd: Now Playing")
                     .setDescription(`[${Util.escapeMarkdown(track.title)}](${track.uri})`)
                     .setFooter(timeString)
                     .setThumbnail(track.thumbnail)
                 await channel.send(embed)
                 Kwako.log.info({msg: 'music playing', author: { id: (track.requester as any).id, name: (track.requester as any).tag }, guild: { id: channel.guild.id, name: channel.guild.name }, song: { name: Util.escapeMarkdown(track.title), url: track.uri}});
             }
+        })
+        .on("trackStuck", async (player, track, payload) => {
+            let channel: any = Kwako.channels.cache.get(player.textChannel);
+            if(!channel) return;
+
+            const embed = new MessageEmbed()
+                .setTitle(":x: There's a problem with the track")
+                .setDescription(`Nothing will be played for ${Math.ceil(payload.thresholdMs/1000)}s`)
+            await channel.send(embed)
+        })
+        .on("trackError", async (player, track, payload) => {
+            let channel: any = Kwako.channels.cache.get(player.textChannel);
+            if(!channel) return;
+
+            const embed = new MessageEmbed()
+                .setTitle(":x: There's a problem with the track")
+                .setDescription(`Error: ${payload.error}\nReason: ${payload.exception.message}\nCause: ${payload.exception.cause}`)
+            await channel.send(embed)
         })
         .on("queueEnd", async (player) => {
             setTimeout(async () => {
@@ -226,11 +246,6 @@ Kwako.on('guildCreate', async guild => {
               },
               "fields": [
                 {
-                  "name": "Web Dashboard",
-                  "value": "https://kwako.iwa.sh/",
-                  "inline": true
-                },
-                {
                   "name": "List of the commands",
                   "value": "`!help`",
                   "inline": true
@@ -301,10 +316,10 @@ Kwako.on('messageDelete', async msg => {
 
     let guildConf = await Kwako.getGuildConf(msg.guild.id);
 
-    let modLogChannel = guildConf.modLogChannel;
-    if(!modLogChannel) return;
+    let msgLogChannel = guildConf.msgLogChannel;
+    if(!msgLogChannel) return;
 
-    return messageDelete(msg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+    return messageDelete(msg, msgLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import messageUpdate from './events/logs/messageUpdate';
@@ -314,13 +329,13 @@ Kwako.on('messageUpdate', async (oldmsg, newmsg) => {
 
     let guildConf = await Kwako.getGuildConf(oldmsg.guild.id);
 
-    let modLogChannel = guildConf.modLogChannel;
-    if (!modLogChannel) return;
+    let msgLogChannel = guildConf.msgLogChannel;
+    if (!msgLogChannel) return;
 
     if (!newmsg) return;
     if (oldmsg.cleanContent === newmsg.cleanContent) return;
 
-    return messageUpdate(newmsg, oldmsg, modLogChannel, guildConf.prefix, guildConf.suggestionChannel);
+    return messageUpdate(newmsg, oldmsg, msgLogChannel, guildConf.prefix, guildConf.suggestionChannel);
 });
 
 import guildMemberRemove from './events/logs/guildMemberRemove';

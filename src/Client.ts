@@ -33,14 +33,23 @@ export default new class Kwako extends Client {
         welcomeMessage: "",
         starboardChannel: "",
         muteRole: "",
-        modLogChannel: "",
+        msgLogChannel: "",
         suggestionChannel: "",
         disabledCommands: [] as string[],
         useExpSystem: true,
         showLevelUp: true,
         boosterBenefits: true,
         customEmote: "",
-        starReactions: 5
+        starReactions: 5,
+        modLogChannel: "",
+        automodCensoredWords: false,
+        automodCensoredWordsList: [],
+        automodRepeatedText: false,
+        automodLinks: false,
+        automodCaps: false,
+        automodExcessiveEmojis: false,
+        automodExcessiveSpoilers: false,
+        automodExcessiveMentions: false,
     }
 
     public constructor() {
@@ -100,14 +109,23 @@ export default new class Kwako extends Client {
             welcomeMessage: guildConf.welcomeMessage || this.defaultConfig.welcomeMessage,
             starboardChannel: guildConf.starboardChannel || this.defaultConfig.starboardChannel,
             muteRole: guildConf.muteRole || this.defaultConfig.muteRole,
-            modLogChannel: guildConf.modLogChannel || this.defaultConfig.modLogChannel,
+            msgLogChannel: guildConf.msgLogChannel || this.defaultConfig.msgLogChannel,
             suggestionChannel: guildConf.suggestionChannel || this.defaultConfig.suggestionChannel,
             disabledCommands: (guildConf.disabledCommands || this.defaultConfig.disabledCommands) as string[],
             useExpSystem: (!guildConf.useExpSystem) ? guildConf.useExpSystem : this.defaultConfig.useExpSystem,
             showLevelUp: (!guildConf.showLevelUp) ? guildConf.showLevelUp : this.defaultConfig.showLevelUp,
             boosterBenefits: (!guildConf.boosterBenefits) ? guildConf.boosterBenefits : this.defaultConfig.boosterBenefits,
             customEmote: guildConf.customEmote || this.defaultConfig.customEmote,
-            starReactions: guildConf.starReactions || this.defaultConfig.starReactions
+            starReactions: guildConf.starReactions || this.defaultConfig.starReactions,
+            modLogChannel: guildConf.modLogChannel || this.defaultConfig.modLogChannel,
+            automodCensoredWords: guildConf.automodCensoredWords || this.defaultConfig.automodCensoredWords,
+            automodCensoredWordsList: guildConf.automodCensoredWordsList || this.defaultConfig.automodCensoredWordsList,
+            automodRepeatedText: guildConf.automodRepeatedText || this.defaultConfig.automodRepeatedText,
+            automodLinks: guildConf.automodLinks || this.defaultConfig.automodLinks,
+            automodCaps: guildConf.automodCaps || this.defaultConfig.automodCaps,
+            automodExcessiveEmojis: guildConf.automodExcessiveEmojis || this.defaultConfig.automodExcessiveEmojis,
+            automodExcessiveSpoilers: guildConf.automodExcessiveSpoilers || this.defaultConfig.automodExcessiveSpoilers,
+            automodExcessiveMentions: guildConf.automodExcessiveMentions || this.defaultConfig.automodExcessiveMentions,
         }
 
         return config;

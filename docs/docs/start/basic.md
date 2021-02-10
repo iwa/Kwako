@@ -1,4 +1,4 @@
-# Basic bot setup
+# Basic Bot Setup
 
 This page will explain how to get a basic setup of Kwako.
 
@@ -13,4 +13,4 @@ You can manage the bot thanks to the `!config` command.
 
 Send `!config edit` in a channel, and wait until all the reactions has appeared before continuing.
 
-**Note:** You need to either be the owner or have the 'Manage Server' permission in order to manage the configuration of Kwako in a server.
+?> **Note:** You need to either be the owner or have the 'Manage Server' permission in order to manage the configuration of Kwako in a server.
