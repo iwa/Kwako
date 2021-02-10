@@ -24,4 +24,4 @@ Go to your profile page > Appearance > Developer Mode.
 Now that you have enabled the Delevoper Mode, you're able to fetch those UID.<br>
 To do so, right click / long press on something (a Message, a User or a Channel): you should now see the "Copy ID" button. Click on it. You can now paste the ID anywhere.
 
-![raze](../../_media/others/copyid.png)
+![copy id button](../../_media/others/copyid.png)
