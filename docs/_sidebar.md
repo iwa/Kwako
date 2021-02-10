@@ -5,6 +5,7 @@
   - Features
     - [Prefix](docs/features/prefix.md)
     - [Actions commands](docs/features/actions.md)
+    - [Level System](docs/features/level.md)
 - Others
     - [How to fetch an ID](docs/others/id.md)
     - [Changelog](docs/others/changelogs.md)
