@@ -36,7 +36,7 @@
     "moment": "^2.29.1",
     "mongodb": "^3.6.4",
     "pino": "^6.11.1",
-    "twitch": "^4.4.9",
+    "twitch": "^4.5.0",
     "utf-8-validate": "^5.0.4"
   },
   "devDependencies": {
