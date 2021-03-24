@@ -240,7 +240,7 @@ export default async function imGeneratorPremium(user: any) {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
     ctx.fillText(made, 488, 354)
 
-    return new MessageAttachment(canvas.toBuffer('image/jpeg', {quality: 1}), 'rank.jpg')
+    return new MessageAttachment(canvas.toBuffer('image/png'), 'rank.png')
 }
 
 async function make_base(ctx: CanvasRenderingContext2D, url: string) {
