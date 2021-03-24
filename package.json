@@ -42,6 +42,6 @@
     "utf-8-validate": "^5.0.4"
   },
   "devDependencies": {
-    "pino-pretty": "^4.5.0"
+    "pino-pretty": "^4.7.1"
   }
 }
