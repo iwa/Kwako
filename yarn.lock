@@ -137,10 +137,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mongodb@^3.6.6":
-  version "3.6.6"
-  resolved "https://registry.npmjs.org/@types/mongodb/-/mongodb-3.6.6.tgz"
-  integrity sha512-ghYevKiSh/TGk2MAwSRZP7T1ilR9Pw8Fa7pT9GGVGZPUsWKdZjZ4G6LG3MqK2iXKdNba994F8W9ikA+qx2Eo3A==
+"@types/mongodb@^3.6.10":
+  version "3.6.10"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.6.10.tgz#80cceaabeec9f460e5b46844e938e8eba74f9266"
+  integrity sha512-BkwAHFiZSSWdTIqbUVGmgvIsiXXjqAketeK7Izy7oSs6G3N8Bn993tK9eq6QEovQDx6OQ2FGP2KWDDxBzdlJ6Q==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
@@ -163,10 +163,10 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-12.12.54.tgz"
   integrity sha512-ge4xZ3vSBornVYlDnk7yZ0gK6ChHf/CHB7Gl1I0Jhah8DDnEQqBzgohYG4FX4p81TNirSETOiSyn+y1r9/IR6w==
 
-"@types/node@^14.14.25":
-  version "14.14.25"
-  resolved "https://registry.npmjs.org/@types/node/-/node-14.14.25.tgz"
-  integrity sha512-EPpXLOVqDvisVxtlbvzfyqSsFeQxltFbluZNRndIb8tr9KiBnYNLzrc1N3pyKUCww2RNrfHDViqDWWE1LCJQtQ==
+"@types/node@^14.14.35":
+  version "14.14.35"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.35.tgz#42c953a4e2b18ab931f72477e7012172f4ffa313"
+  integrity sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag==
 
 "@types/pino-std-serializers@*":
   version "2.4.1"
@@ -175,10 +175,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/pino@^6.3.5":
-  version "6.3.5"
-  resolved "https://registry.npmjs.org/@types/pino/-/pino-6.3.5.tgz"
-  integrity sha512-l3MXskUBef0KnHtEaOMq0OdPDG5+9nRNP3AmeuW+RJCIbOPRuVaEhJUCe5xE9LGPqgU4psF0okb38h1tp2ZVZw==
+"@types/pino@^6.3.6":
+  version "6.3.6"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.6.tgz#3aa928bcbd30dc0c6a0ec2e9302cabd5dee6e832"
+  integrity sha512-yVgSyMGzNDYe/XNMJyuIkklDeZbFdGAxRztYLoN1QQrrgiLJ1oJPmnS8Ge5xpzI9ODKEddKH97VFQ7cWO6Pumw==
   dependencies:
     "@types/node" "*"
     "@types/pino-std-serializers" "*"
@@ -217,10 +217,10 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
-anilist-node@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.npmjs.org/anilist-node/-/anilist-node-1.6.1.tgz"
-  integrity sha512-r7HjMhkYEPsymHJYMLTx4DrpH7bbhXB1i3mqbfrVzq7CIG5iO3Wvs52NSbHEA7zyH+fV2PqkcE/jEoNIqSZhfA==
+anilist-node@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/anilist-node/-/anilist-node-1.7.0.tgz#36676646cbd4649066c2bd78f7e2b7ab0c6084f8"
+  integrity sha512-TXLVkYt4ZKUujzSDShZO1bP17eARdkVAGxHkVm/NVVwXdmPd+lpH63Wm3MAD6g/FIUsU1ZoyWuB72bIsyJ1SgQ==
   dependencies:
     node-fetch "^2.6.1"
 
@@ -365,13 +365,13 @@ camelcase@5.0.0:
   resolved "https://registry.npmjs.org/camelcase/-/camelcase-5.0.0.tgz"
   integrity sha512-faqwZqnWxbxn+F1d399ygeamQNy3lPp/H9H6rNrqYh4FSVCtcY+3cub1MxA8o9mDd55mM8Aghuu/kuyYA6VTsA==
 
-canvas@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.npmjs.org/canvas/-/canvas-2.6.1.tgz"
-  integrity sha512-S98rKsPcuhfTcYbtF53UIJhcbgIAK533d1kJKMwsMwAIFgfd58MOyxRud3kktlzWiEkFliaJtvyZCBtud/XVEA==
+canvas@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.7.0.tgz#3ce3fe30c69595ccd2bd1232967e681c026be61e"
+  integrity sha512-pzCxtkHb+5su5MQjTtepMDlIOtaXo277x0C0u3nMOxtkhTyQ+h2yNKhlROAaDllWgRyePAUitC08sXw26Eb6aw==
   dependencies:
     nan "^2.14.0"
-    node-pre-gyp "^0.11.0"
+    node-pre-gyp "^0.15.0"
     simple-get "^3.0.3"
 
 chalk@2.4.2:
@@ -454,10 +454,10 @@ core-util-is@~1.0.0:
   resolved "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
-dateformat@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz"
-  integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
+dateformat@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-4.5.1.tgz#c20e7a9ca77d147906b6dc2261a8be0a5bd2173c"
+  integrity sha512-OD0TZ+B7yP7ZgpJf5K2DIbj3FZvFvxgFUuaqA/V5zTjAtAAXZ1E8bktHxmAGs4x5b7PflqA9LeQ84Og7wYtF7Q==
 
 debug@^3.2.6:
   version "3.2.6"
@@ -695,9 +695,9 @@ glob@^7.1.3:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-got@^10.0.3:
+got@^10.3.0:
   version "10.7.0"
-  resolved "https://registry.npmjs.org/got/-/got-10.7.0.tgz"
+  resolved "https://registry.yarnpkg.com/got/-/got-10.7.0.tgz#62889dbcd6cca32cd6a154cc2d0c6895121d091f"
   integrity sha512-aWTDeNw9g+XqEZNcTjMMZSy7B7yE9toWOFYip7ofFTLleJhvZwUxxTxkTpKvF+p1SAA4VHmuEy7PiHTHyq8tJg==
   dependencies:
     "@sindresorhus/is" "^2.0.0"
@@ -891,12 +891,12 @@ lowercase-keys@^2.0.0:
   resolved "https://registry.npmjs.org/lowercase-keys/-/lowercase-keys-2.0.0.tgz"
   integrity sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==
 
-mee6-levels-api@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/mee6-levels-api/-/mee6-levels-api-1.1.0.tgz"
-  integrity sha512-vlQVmSs7Z0wJxUv3SMCkP4U4BEzY7CmDzNo6EhZ6UOtgtK8c9NEuQkzvUumbtYj7L5jvlpoNHFbyYFwA1IpHyQ==
+mee6-levels-api@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/mee6-levels-api/-/mee6-levels-api-1.2.0.tgz#3eaca88ab7dd96ba6cf91d66148b2a6c8f46688f"
+  integrity sha512-fuQljUTcy4C5PXtJxSr3BTBedw6LguNxrMdgmTB1c41adtMFP2+N+RuYKrMxZF1WZzeD0PCl7Wu9Z0iDCRXvFQ==
   dependencies:
-    got "^10.0.3"
+    got "^10.3.0"
 
 memory-pager@^1.0.2:
   version "1.5.0"
@@ -952,9 +952,9 @@ minizlib@^1.2.1:
   dependencies:
     minipass "^2.9.0"
 
-mkdirp@^0.5.0, mkdirp@^0.5.1:
+mkdirp@^0.5.0, mkdirp@^0.5.3:
   version "0.5.5"
-  resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.5.tgz"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
@@ -964,10 +964,10 @@ moment@^2.29.1:
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-mongodb@^3.6.4:
-  version "3.6.4"
-  resolved "https://registry.npmjs.org/mongodb/-/mongodb-3.6.4.tgz"
-  integrity sha512-Y+Ki9iXE9jI+n9bVtbTOOdK0B95d6wVGSucwtBkvQ+HIvVdTCfpVRp01FDC24uhC/Q2WXQ8Lpq3/zwtB5Op9Qw==
+mongodb@^3.6.5:
+  version "3.6.5"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.6.5.tgz#c27d786fd4d3c83dc19302483707d12a9d2aee5f"
+  integrity sha512-mQlYKw1iGbvJJejcPuyTaytq0xxlYbIoVDm2FODR+OHxyEiMR021vc32bTvamgBjCswsD54XIRwhg3yBaWqJjg==
   dependencies:
     bl "^2.2.1"
     bson "^1.1.4"
@@ -992,10 +992,10 @@ nan@^2.14.0:
   resolved "https://registry.npmjs.org/nan/-/nan-2.14.1.tgz"
   integrity sha512-isWHgVjnFjh2x2yuJ/tj3JbwoHu3UC2dX5G/88Cm24yB6YopVgxvBObDY7n5xW6ExmFhJpSEQqFPvq9zaXc8Jw==
 
-needle@^2.2.1:
-  version "2.5.0"
-  resolved "https://registry.npmjs.org/needle/-/needle-2.5.0.tgz"
-  integrity sha512-o/qITSDR0JCyCKEQ1/1bnUXMmznxabbwi/Y4WwJElf+evwJNFNwIDMCCt5IigFVxgeGBJESLohGtIS9gEzo1fA==
+needle@^2.5.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/needle/-/needle-2.6.0.tgz#24dbb55f2509e2324b4a99d61f413982013ccdbe"
+  integrity sha512-KKYdza4heMsEfSWD7VPUIz3zX2XDwOyX2d+geb4vrERZMT5RMU6ujjaD+I5Yr54uZxQ2w6XRTAhHBbSCyovZBg==
   dependencies:
     debug "^3.2.6"
     iconv-lite "^0.4.4"
@@ -1011,21 +1011,21 @@ node-gyp-build@^4.2.0:
   resolved "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.2.3.tgz"
   integrity sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==
 
-node-pre-gyp@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.11.0.tgz"
-  integrity sha512-TwWAOZb0j7e9eGaf9esRx3ZcLaE5tQ2lvYy1pb5IAaG1a2e2Kv5Lms1Y4hpj+ciXJRofIxxlt5haeQ/2ANeE0Q==
+node-pre-gyp@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.15.0.tgz#c2fc383276b74c7ffa842925241553e8b40f1087"
+  integrity sha512-7QcZa8/fpaU/BKenjcaeFF9hLz2+7S9AqyXFhlH/rilsQ/hPZKK32RtR5EQHJElgu+q5RfbJ34KriI79UWaorA==
   dependencies:
     detect-libc "^1.0.2"
-    mkdirp "^0.5.1"
-    needle "^2.2.1"
+    mkdirp "^0.5.3"
+    needle "^2.5.0"
     nopt "^4.0.1"
     npm-packlist "^1.1.6"
     npmlog "^4.0.2"
     rc "^1.2.7"
     rimraf "^2.6.1"
     semver "^5.3.0"
-    tar "^4"
+    tar "^4.4.2"
 
 nopt@^4.0.1:
   version "4.0.3"
@@ -1155,15 +1155,15 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.1.tgz"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-pino-pretty@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.npmjs.org/pino-pretty/-/pino-pretty-4.5.0.tgz"
-  integrity sha512-TtIzAq3JrPT4cYMZcXHypAXYV+MTE7ncAPUFoaz/1enVD2Loj+hV6RZsypYo85dm7SbBolW6fcIydOF28iGjsg==
+pino-pretty@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-4.7.1.tgz#499cf185e110399deae731221c899915c811bd1a"
+  integrity sha512-ILE5YBpur88FlZ0cr1BNqVjgG9fOoK+md3peqmcs7AC6oq7SNiaJioIcrykMxfNsuygMYjUJtvAcARRE9aRc9w==
   dependencies:
     "@hapi/bourne" "^2.0.0"
     args "^5.0.1"
     chalk "^4.0.0"
-    dateformat "^3.0.3"
+    dateformat "^4.5.1"
     fast-safe-stringify "^2.0.7"
     jmespath "^0.15.0"
     joycon "^2.2.5"
@@ -1177,16 +1177,16 @@ pino-std-serializers@^3.1.0:
   resolved "https://registry.npmjs.org/pino-std-serializers/-/pino-std-serializers-3.2.0.tgz"
   integrity sha512-EqX4pwDPrt3MuOAAUBMU0Tk5kR/YcCM5fNPEzgCO2zJ5HfX0vbiH9HbJglnyeQsN96Kznae6MWD47pZB5avTrg==
 
-pino@^6.11.1:
-  version "6.11.1"
-  resolved "https://registry.npmjs.org/pino/-/pino-6.11.1.tgz"
-  integrity sha512-PoDR/4jCyaP1k2zhuQ4N0NuhaMtei+C9mUHBRRJQujexl/bq3JkeL2OC23ada6Np3zeUMHbO4TGzY2D/rwZX3w==
+pino@^6.11.2:
+  version "6.11.2"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-6.11.2.tgz#2f3d119c526651aab4ec3d280844785d52d0b690"
+  integrity sha512-bmzxwbrIPxQUlAuMkF4PWVErUGERU4z37HazlhflKFg08crsNE3fACGN6gPwg5xtKOK47Ux5cZm8YCuLV4wWJg==
   dependencies:
     fast-redact "^3.0.0"
     fast-safe-stringify "^2.0.7"
     flatstr "^1.0.12"
     pino-std-serializers "^3.1.0"
-    quick-format-unescaped "^4.0.1"
+    quick-format-unescaped "4.0.1"
     sonic-boom "^1.0.2"
 
 prism-media@^1.2.2:
@@ -1207,9 +1207,9 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-quick-format-unescaped@^4.0.1:
+quick-format-unescaped@4.0.1:
   version "4.0.1"
-  resolved "https://registry.npmjs.org/quick-format-unescaped/-/quick-format-unescaped-4.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/quick-format-unescaped/-/quick-format-unescaped-4.0.1.tgz#437a5ea1a0b61deb7605f8ab6a8fd3858dbeb701"
   integrity sha512-RyYpQ6Q5/drsJyOhrWHYMWTedvjTIat+FTwv0K4yoUxzvekw2aRHMQJLlnvt8UantkZg2++bEzD9EdxXqkWf4A==
 
 rc@^1.2.7:
@@ -1439,9 +1439,9 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-tar@^4:
+tar@^4.4.2:
   version "4.4.13"
-  resolved "https://registry.npmjs.org/tar/-/tar-4.4.13.tgz"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.13.tgz#43b364bc52888d555298637b10d60790254ab525"
   integrity sha512-w2VwSrBoHa5BsSyH+KxEqeQBAllHhccyMFVHtGtdMpF4W7IRWfZjFiQceJPChOeTsSDVUpER2T8FA93pr0L+QA==
   dependencies:
     chownr "^1.1.1"
@@ -1472,43 +1472,43 @@ tweetnacl@^1.0.3:
   resolved "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twitch-api-call@^4.4.9:
-  version "4.4.9"
-  resolved "https://registry.npmjs.org/twitch-api-call/-/twitch-api-call-4.4.9.tgz"
-  integrity sha512-avsGou1gbLlMBpcafe12f5nFLVip0ZSERWpzaj3mo8WglJFQAcOSKzkYBtZFJjVbk9qGP0eWcgWL2iJ/5ZL1bA==
+twitch-api-call@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.5.2.tgz#0e81dc8caa2fe10dcc3f883f946aedad79b22dc4"
+  integrity sha512-crJgecBtNT+uCFvLFgv5hA9XMEYrcNEyvClpUnA7ieQQIGe0zPHokQv775UYqnTfAlRX5sV27CgXHIz+T03x+A==
   dependencies:
     "@d-fischer/cross-fetch" "^4.0.2"
     "@d-fischer/qs" "^7.0.2"
     "@types/node-fetch" "^2.5.7"
     node-fetch "^2.6.1"
     tslib "^2.0.3"
-    twitch-common "^4.4.9"
+    twitch-common "^4.5.2"
 
-twitch-auth@^4.4.9:
-  version "4.4.9"
-  resolved "https://registry.npmjs.org/twitch-auth/-/twitch-auth-4.4.9.tgz"
-  integrity sha512-0oMco1Duz1p2jHwSKk9OwN80iQ1r0l+hLOe5n8B2Elpq4RwDk4U8EuH51p6+I02ccvCK2AipJCjRmRvoGc/U6A==
+twitch-auth@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.5.2.tgz#9e3ee0a69cb20a77d1d0be4a74703f20c884f844"
+  integrity sha512-91O+qzSOoL8xWSvqOXWkwG/NmyNHcIYDxAhpLctJDoJ4ZAop1zI4T9kDCpj42XEnK3yGiLnbkwMhqs50AyN+Kw==
   dependencies:
     "@d-fischer/deprecate" "^2.0.2"
     "@d-fischer/logger" "^3.1.0"
     "@d-fischer/shared-utils" "^3.0.1"
     tslib "^2.0.3"
-    twitch-api-call "^4.4.9"
-    twitch-common "^4.4.9"
+    twitch-api-call "^4.5.2"
+    twitch-common "^4.5.2"
 
-twitch-common@^4.4.9:
-  version "4.4.9"
-  resolved "https://registry.npmjs.org/twitch-common/-/twitch-common-4.4.9.tgz"
-  integrity sha512-vcnth5Pne4jCQDOfD5+pGchiQbk90oaMIEkhKO+vrOdSnQ8N01k0FFUvuKfM6A/NXDWkTy6wcIgT/7chCzlxXg==
+twitch-common@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/twitch-common/-/twitch-common-4.5.2.tgz#1d495e8b7bc0dbc68142e691428fa30ff2d21693"
+  integrity sha512-GCOd7k8Bdz987EcPyuuepYAp4p23TUhGcpblH7NS3PX0hg+UN5mbCG8lsrva3X+nAAyUWiwjhu7g00UvTWLgGg==
   dependencies:
     "@d-fischer/logger" "^3.1.0"
     "@d-fischer/shared-utils" "^3.0.1"
     tslib "^2.0.3"
 
-twitch@^4.4.9:
-  version "4.4.9"
-  resolved "https://registry.npmjs.org/twitch/-/twitch-4.4.9.tgz"
-  integrity sha512-KqXebXk5BKYxTTjn505FePQubecYaz3M0fmD6Ty4dRGAGD2Nx5svTIV9O38ms+m1NS4fcCiRoGBoDpjykifGJA==
+twitch@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.5.2.tgz#6304dc23ee850acc66d1d3bf43c07b06bbe4b213"
+  integrity sha512-saezJraoUo7TEWF9VwJKPZ6JcqyAKhguzjB3kRDLzBCWCrmndS0cncaipMSvRZRbBQU12JyHmRuO1qJgQAW/0A==
   dependencies:
     "@d-fischer/cache-decorators" "^2.1.1"
     "@d-fischer/deprecate" "^2.0.2"
@@ -1517,9 +1517,9 @@ twitch@^4.4.9:
     "@d-fischer/shared-utils" "^3.0.1"
     top-package "^1.0.0"
     tslib "^2.0.3"
-    twitch-api-call "^4.4.9"
-    twitch-auth "^4.4.9"
-    twitch-common "^4.4.9"
+    twitch-api-call "^4.5.2"
+    twitch-auth "^4.5.2"
+    twitch-common "^4.5.2"
 
 type-fest@^0.10.0:
   version "0.10.0"
