@@ -137,10 +137,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mongodb@^3.6.10":
-  version "3.6.10"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.6.10.tgz#80cceaabeec9f460e5b46844e938e8eba74f9266"
-  integrity sha512-BkwAHFiZSSWdTIqbUVGmgvIsiXXjqAketeK7Izy7oSs6G3N8Bn993tK9eq6QEovQDx6OQ2FGP2KWDDxBzdlJ6Q==
+"@types/mongodb@^3.6.12":
+  version "3.6.12"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.6.12.tgz#727960d34f35054d2f2ce68909e16094f742d935"
+  integrity sha512-49aEzQD5VdHPxyd5dRyQdqEveAg9LanwrH8RQipnMuulwzKmODXIZRp0umtxi1eBUfEusRkoy8AVOMr+kVuFog==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
@@ -163,10 +163,10 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-12.12.54.tgz"
   integrity sha512-ge4xZ3vSBornVYlDnk7yZ0gK6ChHf/CHB7Gl1I0Jhah8DDnEQqBzgohYG4FX4p81TNirSETOiSyn+y1r9/IR6w==
 
-"@types/node@^14.14.35":
-  version "14.14.35"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.35.tgz#42c953a4e2b18ab931f72477e7012172f4ffa313"
-  integrity sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag==
+"@types/node@^14.14.37":
+  version "14.14.37"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
+  integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
 
 "@types/pino-std-serializers@*":
   version "2.4.1"
@@ -198,10 +198,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ws@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.npmjs.org/@types/ws/-/ws-7.4.0.tgz"
-  integrity sha512-Y29uQ3Uy+58bZrFLhX36hcI3Np37nqWE7ky5tjiDoy1GDZnIwVxS0CgF+s+1bXMzjKBFy+fqaRfb708iNzdinw==
+"@types/ws@^7.4.1":
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.1.tgz#49eacb15a0534663d53a36fbf5b4d98f5ae9a73a"
+  integrity sha512-ISCK1iFnR+jYv7+jLNX0wDqesZ/5RAeY3wUx6QaphmocphU61h+b+PHjS18TF4WIPTu/MMzxIq2PHr32o2TS5Q==
   dependencies:
     "@types/node" "*"
 
@@ -522,19 +522,19 @@ detect-node@^2.0.4:
   resolved "https://registry.npmjs.org/detect-node/-/detect-node-2.0.4.tgz"
   integrity sha512-ZIzRpLJrOj7jjP2miAtgqIfmzbxa4ZOr5jJc601zklsfEx9oTzmmj2nVpIPRpNlRTIh8lc1kyViIY7BWSGNmKw==
 
-discord.js@^12.5.1:
-  version "12.5.1"
-  resolved "https://registry.npmjs.org/discord.js/-/discord.js-12.5.1.tgz"
-  integrity sha512-VwZkVaUAIOB9mKdca0I5MefPMTQJTNg0qdgi1huF3iwsFwJ0L5s/Y69AQe+iPmjuV6j9rtKoG0Ta0n9vgEIL6w==
+discord.js@^12.5.3:
+  version "12.5.3"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-12.5.3.tgz#56820d473c24320871df9ea0bbc6b462f21cf85c"
+  integrity sha512-D3nkOa/pCkNyn6jLZnAiJApw2N9XrIsXUAdThf01i7yrEuqUmDGc7/CexVWwEcgbQR97XQ+mcnqJpmJ/92B4Aw==
   dependencies:
     "@discordjs/collection" "^0.1.6"
     "@discordjs/form-data" "^3.0.1"
     abort-controller "^3.0.0"
     node-fetch "^2.6.1"
-    prism-media "^1.2.2"
+    prism-media "^1.2.9"
     setimmediate "^1.0.5"
     tweetnacl "^1.0.3"
-    ws "^7.3.1"
+    ws "^7.4.4"
 
 dotenv@^8.2.0:
   version "8.2.0"
@@ -891,10 +891,10 @@ lowercase-keys@^2.0.0:
   resolved "https://registry.npmjs.org/lowercase-keys/-/lowercase-keys-2.0.0.tgz"
   integrity sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==
 
-mee6-levels-api@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/mee6-levels-api/-/mee6-levels-api-1.2.0.tgz#3eaca88ab7dd96ba6cf91d66148b2a6c8f46688f"
-  integrity sha512-fuQljUTcy4C5PXtJxSr3BTBedw6LguNxrMdgmTB1c41adtMFP2+N+RuYKrMxZF1WZzeD0PCl7Wu9Z0iDCRXvFQ==
+mee6-levels-api@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/mee6-levels-api/-/mee6-levels-api-1.3.0.tgz#aaadb5fe4feaa697204f1765651e80a8f5c0f16b"
+  integrity sha512-F7JjRPbTHARWzZavnkAJHCzS58C0Fhr4sf2Bae8N5LBay4bBUvNZbajbYrZ3eR08MuIUh7SSx+6+kl6L61BJiQ==
   dependencies:
     got "^10.3.0"
 
@@ -1189,10 +1189,10 @@ pino@^6.11.2:
     quick-format-unescaped "4.0.1"
     sonic-boom "^1.0.2"
 
-prism-media@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.npmjs.org/prism-media/-/prism-media-1.2.2.tgz"
-  integrity sha512-I+nkWY212lJ500jLe4tN9tWO7nRiBAVdMv76P9kffZjYhw20raMlW1HSSvS+MLXC9MmbNZCazMrAr+5jEEgTuw==
+prism-media@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/prism-media/-/prism-media-1.2.9.tgz#8d4f97b36efdfc82483eb8d3db64020767866f36"
+  integrity sha512-UHCYuqHipbTR1ZsXr5eg4JUmHER8Ss4YEb9Azn+9zzJ7/jlTtD1h0lc4g6tNx3eMlB8Mp6bfll0LPMAV4R6r3Q==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
@@ -1472,43 +1472,43 @@ tweetnacl@^1.0.3:
   resolved "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twitch-api-call@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.5.2.tgz#0e81dc8caa2fe10dcc3f883f946aedad79b22dc4"
-  integrity sha512-crJgecBtNT+uCFvLFgv5hA9XMEYrcNEyvClpUnA7ieQQIGe0zPHokQv775UYqnTfAlRX5sV27CgXHIz+T03x+A==
+twitch-api-call@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.5.3.tgz#23eb7502cd75d4ac443422f89134ea8f3bfe385f"
+  integrity sha512-JiqNzbRprQZQJnJudLvheYW2ECgbDqQoZMJ9Gjmu6Klfk1pDX7XRLmlAi5SgXXgjgyr3qn2kW/TfOlWoQTitpQ==
   dependencies:
     "@d-fischer/cross-fetch" "^4.0.2"
     "@d-fischer/qs" "^7.0.2"
     "@types/node-fetch" "^2.5.7"
     node-fetch "^2.6.1"
     tslib "^2.0.3"
-    twitch-common "^4.5.2"
+    twitch-common "^4.5.3"
 
-twitch-auth@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.5.2.tgz#9e3ee0a69cb20a77d1d0be4a74703f20c884f844"
-  integrity sha512-91O+qzSOoL8xWSvqOXWkwG/NmyNHcIYDxAhpLctJDoJ4ZAop1zI4T9kDCpj42XEnK3yGiLnbkwMhqs50AyN+Kw==
+twitch-auth@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.5.3.tgz#66996451dd40979920c332afe061d05d565b7842"
+  integrity sha512-PISO4XVPikP7kRUDK3+IwoPPS0v3MpsvTJHDKIDR3IylGjFD1PjoZLye/UdrQwX/dPtwR+nveU0SwonZbydh0A==
   dependencies:
     "@d-fischer/deprecate" "^2.0.2"
     "@d-fischer/logger" "^3.1.0"
     "@d-fischer/shared-utils" "^3.0.1"
     tslib "^2.0.3"
-    twitch-api-call "^4.5.2"
-    twitch-common "^4.5.2"
+    twitch-api-call "^4.5.3"
+    twitch-common "^4.5.3"
 
-twitch-common@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/twitch-common/-/twitch-common-4.5.2.tgz#1d495e8b7bc0dbc68142e691428fa30ff2d21693"
-  integrity sha512-GCOd7k8Bdz987EcPyuuepYAp4p23TUhGcpblH7NS3PX0hg+UN5mbCG8lsrva3X+nAAyUWiwjhu7g00UvTWLgGg==
+twitch-common@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/twitch-common/-/twitch-common-4.5.3.tgz#c2c92c1bfd2ede77608ccdb8bcd977d1a5a2daf1"
+  integrity sha512-/bp4wqJQkySdxmynVlNX+qQJ70ZSKp1D1JDmYjBWihdhMBA2armeVQNfZ6y8HGcKL/HM7vEdmNx8wCGbWnnJaw==
   dependencies:
     "@d-fischer/logger" "^3.1.0"
     "@d-fischer/shared-utils" "^3.0.1"
     tslib "^2.0.3"
 
-twitch@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.5.2.tgz#6304dc23ee850acc66d1d3bf43c07b06bbe4b213"
-  integrity sha512-saezJraoUo7TEWF9VwJKPZ6JcqyAKhguzjB3kRDLzBCWCrmndS0cncaipMSvRZRbBQU12JyHmRuO1qJgQAW/0A==
+twitch@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.5.3.tgz#2ea68c55509eb2f12109f37b0e0f4bd9488d16e0"
+  integrity sha512-pZRaGo72UOMUF4Qhw6rdtzhI+shxeWggFdk3/2AB7dfncUv4GF0W0vVH/ikPFujL5N+mO6itsmc/urBnGGvaMQ==
   dependencies:
     "@d-fischer/cache-decorators" "^2.1.1"
     "@d-fischer/deprecate" "^2.0.2"
@@ -1517,9 +1517,9 @@ twitch@^4.5.2:
     "@d-fischer/shared-utils" "^3.0.1"
     top-package "^1.0.0"
     tslib "^2.0.3"
-    twitch-api-call "^4.5.2"
-    twitch-auth "^4.5.2"
-    twitch-common "^4.5.2"
+    twitch-api-call "^4.5.3"
+    twitch-auth "^4.5.3"
+    twitch-common "^4.5.3"
 
 type-fest@^0.10.0:
   version "0.10.0"
@@ -1559,6 +1559,11 @@ ws@^7.3.1:
   version "7.3.1"
   resolved "https://registry.npmjs.org/ws/-/ws-7.3.1.tgz"
   integrity sha512-D3RuNkynyHmEJIpD2qrgVkc9DQ23OrN/moAwZX4L8DfvszsJxpjQuUq3LMx6HoYji9fbIOBY18XWBsAux1ZZUA==
+
+ws@^7.4.4:
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.4.tgz#383bc9742cb202292c9077ceab6f6047b17f2d59"
+  integrity sha512-Qm8k8ojNQIMx7S+Zp8u/uHOx7Qazv3Yv4q68MiWWWOJhiwG5W3x7iqmRtJo8xxrciZUY4vRxUTJCKuRnF28ZZw==
 
 yallist@^3.0.0, yallist@^3.0.3:
   version "3.1.1"
