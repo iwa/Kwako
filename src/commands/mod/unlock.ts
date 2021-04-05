@@ -16,8 +16,8 @@ module.exports.run = async (msg: Message) => {
     });
 
     const embed = new MessageEmbed();
-    embed.setColor('RED')
-    embed.setTitle(`🔒 The channel has been locked by **${msg.author.username}**`)
+    embed.setColor('GREEN')
+    embed.setTitle(`🔓 The channel has been unlocked by **${msg.author.username}**`)
 
     try {
         await msg.channel.send(embed);
