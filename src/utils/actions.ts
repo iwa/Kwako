@@ -151,7 +151,7 @@ export default async function actionsRun(msg: Message, args: string[], type: str
                 if(target.bot) return;
                 let reaction = await sent.react('<:noU:797910052542349323>');
                 let collected = await sent.awaitReactions((_reaction, user) => _reaction.emoji.identifier === reaction.emoji.identifier && user.id === target.id, { max: 1, time: 30000 });
-                reaction.remove();
+                reaction.remove().catch(() => { return; });
                 if(collected.first()) {
                     let embed = await actionsRunBack(target, msg.author, msg.guild, type, verb, at);
                     await msg.channel.send(embed);
