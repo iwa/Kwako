@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/iwa/Kwako#readme",
   "dependencies": {
-    "@types/mongodb": "^3.6.10",
+    "@types/mongodb": "^3.6.11",
     "@types/node": "^14.14.35",
     "@types/pino": "^6.3.6",
     "@types/ws": "^7.4.0",
