@@ -269,7 +269,7 @@ Kwako.on('guildCreate', async guild => {
         }
     }
 
-    await Kwako.db.collection('guilds').insertOne({ '_id': guild.id, 'config': Kwako.getDefaultConf });
+    await Kwako.db.collection('guilds').insertOne({ '_id': guild.id, 'config': Kwako.getDefaultConf() });
 
     Kwako.log.info({msg: 'new guild', guild: { id: guild.id, name: guild.name }});
 });
