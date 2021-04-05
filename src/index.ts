@@ -3,7 +3,7 @@ dotenv.config();
 
 import Kwako from './Client';
 
-import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel } from 'discord.js';
+import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel, GuildChannel } from 'discord.js';
 import { Manager } from "erela.js";
 
 let talkedRecently = new Set();
@@ -404,6 +404,22 @@ Kwako.on('voiceStateUpdate', async (oldState, newState) => {
             }
         }
 });
+
+Kwako.on('channelCreate', async channel => {
+    if(channel.type === 'dm' || channel.type === 'group') return;
+
+    let guildConf = await Kwako.getGuildConf((channel as GuildChannel).guild.id)
+
+    if(guildConf.muteRole) {
+        await (channel as GuildChannel).updateOverwrite(guildConf.muteRole, {
+            'SEND_MESSAGES': false,
+            'ADD_REACTIONS': false,
+            'CONNECT': false,
+            'SPEAK': false
+        });
+    }
+});
+// todo: add a loop to verify every channels
 
 // Check if it's someone's birthday, and send a HBP message at 8am UTC
 import birthdayCheck from './events/birthdayCheck';
