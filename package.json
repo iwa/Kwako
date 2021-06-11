@@ -1,0 +1,22 @@
+{
+    "name": "kwako",
+    "version": "next",
+    "description": "",
+    "main": "build/index.js",
+    "scripts": {
+        "build": "rm -rf build/ && tsc",
+        "update": "git fetch origin main && git pull origin main && rm -rf build/ && yarn && tsc",
+        "lavalink": "cd lavalink && java -jar Lavalink.jar",
+        "lavadocker": "docker run --name lavalink -p 8070:8070 -v \"$PWD/lavalink/application.yml:/opt/Lavalink/application.yml\" --restart unless-stopped -d fredboat/lavalink:master-v3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/iwa/Kwako.git"
+    },
+    "author": "iwa",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/iwa/Kwako/issues"
+    },
+    "homepage": "https://github.com/iwa/Kwako#readme"
+}
