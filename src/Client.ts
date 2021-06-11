@@ -100,6 +100,22 @@ export default new class Kwako extends Client {
         return string;
     }
 
+    private languages = new Map([
+        ['en', require('../lang/en.json')],
+        ['fr', require('../lang/fr.json')]
+    ]);
+    private serverLanguages: Map<string, string> = new Map();
+    public getText(guildId: string, textId: string, ...args: string[]): string {
+        let lang = this.serverLanguages.get(guildId) || 'en';
+        let text: string = (this.languages.get(lang))[textId];
+
+        if (text)
+            for (let i = 0; i < 3; i++)
+                text = text.replace(`{${i}}`, args[i]);
+
+        return text;
+    }
+
     /*public async getGuildConf(id: string): Promise<GuildConfig> {
         let guild = await this.db.collection('guilds').findOne({ '_id': { $eq: id } });
         let guildConf = (guild) ? guild.config : this.defaultConfig;

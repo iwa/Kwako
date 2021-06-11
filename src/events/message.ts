@@ -21,7 +21,7 @@ export default async function message(msg: Message) {
         if (msg.mentions.has(Kwako.user.id) && !msg.mentions.everyone)
             return msg.channel.send({
                 'embed': {
-                    'description': `My prefix is \`${Kwako.prefix}\``
+                    'description': Kwako.getText(msg.guild.id, 'showPrefix', Kwako.prefix)
                 }
             })
 
@@ -37,9 +37,10 @@ export default async function message(msg: Message) {
 
     if (talkedRecently.has(msg.author.id)) {
         const embed = new MessageEmbed()
-            .setTitle('⌛ Command Cooldown')
-            .setColor('#e67e22')
-            .setDescription(`${msg.author}, please wait 3s before sending your next command!`);
+            .setTitle(Kwako.getText(msg.guild.id, 'cmdCooldownEmbedTitle'))
+            .setDescription(Kwako.getText(msg.guild.id, 'cmdCooldownEmbedDesc', msg.author.username))
+            .setColor('#e67e22');
+
         let sent = await msg.channel.send(embed);
         return setTimeout(async () => { await sent.delete(); }, 3000);
     }
@@ -49,8 +50,8 @@ export default async function message(msg: Message) {
         if (cmd.help.premium && !Kwako.patrons.has(msg.guild.ownerID))
             return msg.channel.send({
                 "embed": {
-                    "title": "❌ Sorry, but this feature is premium-only.",
-                    "description": "[Become a Patron](https://www.patreon.com/iwa) in order to access the new features before everyone else!",
+                    "title": Kwako.getText(msg.guild.id, 'premiumRequiredEmbedTitle'),
+                    "description": Kwako.getText(msg.guild.id, 'premiumRequiredEmbedDesc'),
                     "color": 13901365
                 }
             }).catch(() => { return; });

@@ -1,0 +1,7 @@
+{
+    "showPrefix": "My prefix is `{0}`",
+    "cmdCooldownEmbedTitle": "⌛ Command Cooldown",
+    "cmdCooldownEmbedDesc": "**{0}**, please wait 3s before sending your next command!",
+    "premiumRequiredEmbedTitle": "❌ Sorry, but this feature is premium-only.",
+    "premiumRequiredEmbedDesc": "[Become a Patron](https://www.patreon.com/iwa) in order to access the new features before everyone else!"
+}
