@@ -3,7 +3,7 @@
 	"tasks": [
         {
             "type": "shell",
-            "command": "tsc --sourcemap",
+            "command": "yarn run tsc --sourcemap",
             "group": "build",
             "label": "tsc: build",
             "presentation": {

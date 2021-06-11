@@ -258,7 +258,7 @@ module.exports.run = async (msg: Message, args: string[], guildConf: GuildConfig
 
             // Set description
             let repDesc = await msg.channel.send({'embed':{
-                'title': "What's the title of the Reaction Role Message?",
+                'title': "What's the description of the Reaction Role Message?",
                 'footer': {
                     'text': 'Type "cancel" to cancel.'
                 }
