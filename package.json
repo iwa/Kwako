@@ -18,5 +18,20 @@
     "bugs": {
         "url": "https://github.com/iwa/Kwako/issues"
     },
-    "homepage": "https://github.com/iwa/Kwako#readme"
+    "homepage": "https://github.com/iwa/Kwako#readme",
+    "devDependencies": {
+        "typescript": "^4.3.2"
+    },
+    "dependencies": {
+        "@types/node": "^15.12.2",
+        "@types/pino": "^6.3.8",
+        "@types/ws": "^7.4.4",
+        "axios": "^0.21.1",
+        "bufferutil": "^4.0.3",
+        "discord.js": "^12.5.3",
+        "dotenv": "^10.0.0",
+        "moment": "^2.29.1",
+        "pino": "^6.11.3",
+        "utf-8-validate": "^5.0.5"
+    }
 }
