@@ -1472,43 +1472,43 @@ tweetnacl@^1.0.3:
   resolved "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twitch-api-call@^4.5.3:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.5.3.tgz#23eb7502cd75d4ac443422f89134ea8f3bfe385f"
-  integrity sha512-JiqNzbRprQZQJnJudLvheYW2ECgbDqQoZMJ9Gjmu6Klfk1pDX7XRLmlAi5SgXXgjgyr3qn2kW/TfOlWoQTitpQ==
+twitch-api-call@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/twitch-api-call/-/twitch-api-call-4.6.0.tgz#6ce02ed5227a9b3a0a8d36ef5abcff2f5e04a9c7"
+  integrity sha512-pnWcVJ32BUzCgK/H5BlyBrvbD6+vwVCu02Sf5Z6IaRZgRfsW+GX3U8zET0oUsCuAH2UGUeoVzIbO/9RA3e9uQw==
   dependencies:
     "@d-fischer/cross-fetch" "^4.0.2"
     "@d-fischer/qs" "^7.0.2"
     "@types/node-fetch" "^2.5.7"
     node-fetch "^2.6.1"
     tslib "^2.0.3"
-    twitch-common "^4.5.3"
+    twitch-common "^4.6.0"
 
-twitch-auth@^4.5.3:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.5.3.tgz#66996451dd40979920c332afe061d05d565b7842"
-  integrity sha512-PISO4XVPikP7kRUDK3+IwoPPS0v3MpsvTJHDKIDR3IylGjFD1PjoZLye/UdrQwX/dPtwR+nveU0SwonZbydh0A==
+twitch-auth@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/twitch-auth/-/twitch-auth-4.6.0.tgz#11ec9962658acbc1abad689e25bac52cbef8bfd7"
+  integrity sha512-A1B2ARRZWm9O8V9DPpSXvUdrdS1/bABVKSbrYbm4lSycbkOmjf5nEAHZyESI1uP/AkjsZAgCAEn4XGx6dRK3uQ==
   dependencies:
     "@d-fischer/deprecate" "^2.0.2"
     "@d-fischer/logger" "^3.1.0"
     "@d-fischer/shared-utils" "^3.0.1"
     tslib "^2.0.3"
-    twitch-api-call "^4.5.3"
-    twitch-common "^4.5.3"
+    twitch-api-call "^4.6.0"
+    twitch-common "^4.6.0"
 
-twitch-common@^4.5.3:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/twitch-common/-/twitch-common-4.5.3.tgz#c2c92c1bfd2ede77608ccdb8bcd977d1a5a2daf1"
-  integrity sha512-/bp4wqJQkySdxmynVlNX+qQJ70ZSKp1D1JDmYjBWihdhMBA2armeVQNfZ6y8HGcKL/HM7vEdmNx8wCGbWnnJaw==
+twitch-common@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/twitch-common/-/twitch-common-4.6.0.tgz#9de740e1771c360bbc84b4bdbeea4339c5cac799"
+  integrity sha512-loB9f3SV9mEvpUZlE8dFNDgMXhMkVnV5dxoZoQzX4yOsJkQv8gNQOLQ6gi7A6Xx1O0tQyEl0kC3HWXcAUEblVw==
   dependencies:
     "@d-fischer/logger" "^3.1.0"
     "@d-fischer/shared-utils" "^3.0.1"
     tslib "^2.0.3"
 
-twitch@^4.5.3:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.5.3.tgz#2ea68c55509eb2f12109f37b0e0f4bd9488d16e0"
-  integrity sha512-pZRaGo72UOMUF4Qhw6rdtzhI+shxeWggFdk3/2AB7dfncUv4GF0W0vVH/ikPFujL5N+mO6itsmc/urBnGGvaMQ==
+twitch@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/twitch/-/twitch-4.6.0.tgz#534e61895f58e965f72694d0f216e0812525aa15"
+  integrity sha512-pTwwybfkXkJoROj4I9stG2n1vG4dMBZ3/keREWB73khk3LCdfh5j8wMt+93/rbKQa8kbCYIvOPI/7w1B6tCanw==
   dependencies:
     "@d-fischer/cache-decorators" "^2.1.1"
     "@d-fischer/deprecate" "^2.0.2"
@@ -1517,9 +1517,9 @@ twitch@^4.5.3:
     "@d-fischer/shared-utils" "^3.0.1"
     top-package "^1.0.0"
     tslib "^2.0.3"
-    twitch-api-call "^4.5.3"
-    twitch-auth "^4.5.3"
-    twitch-common "^4.5.3"
+    twitch-api-call "^4.6.0"
+    twitch-auth "^4.6.0"
+    twitch-common "^4.6.0"
 
 type-fest@^0.10.0:
   version "0.10.0"
