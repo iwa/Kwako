@@ -9,9 +9,10 @@ import fs from 'fs';
 
 //import GuildConfig from './interfaces/GuildConfig';
 
+const PREFIX = "k!";
 export default new class Kwako extends Client {
 
-    public prefix = process.env.PREFIX;
+    public readonly prefix = PREFIX;
 
     public log = log;
 
