@@ -6,6 +6,7 @@ import Kwako from './Client';
 import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel, GuildChannel } from 'discord.js';
 import ready from "./listeners/ready";
 import message from "./listeners/message";
+import interaction from "./listeners/interaction";
 //import { Manager } from "erela.js";
 
 // Process related Events
@@ -24,6 +25,7 @@ Kwako.once('shardReady', async () => {
 });
 
 Kwako.on('messageCreate', async (msg) => { message(msg); });
+Kwako.on('interactionCreate', async (int) => { interaction(int); });
 
 // Login
 Kwako.start(process.env.TOKEN);
