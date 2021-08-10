@@ -1,7 +1,8 @@
 import { Collection, Client, Intents } from "discord.js";
 import log from './Logger';
-import pg from 'pg';
 import axios from 'axios';
+import { MongoClient, Db } from 'mongodb';
+//import dbHelper from "./utils/dbHelper";
 //import { Manager } from 'erela.js';
 
 import fs from 'fs';
@@ -14,12 +15,7 @@ export default new class Kwako extends Client {
 
     public log = log;
 
-    public db: pg.Client = new pg.Client({
-        host: 'localhost',
-        database: 'kwako',
-        user: process.env.PGUSER,
-        password: process.env.PGPASSWORD
-    });
+    public db: Db;
 
     public commands: Collection<any, any> = new Collection();
 
@@ -173,8 +169,9 @@ export default new class Kwako extends Client {
         });
         this.log.trace('commmands initialized');*/
 
-        this.db.connect();
-        this.log.trace('db initialized');
+        let mongod = await MongoClient.connect(process.env.MONGO_URL);
+        this.db = mongod.db(process.env.MONGO_DBNAME);
+        this.log.debug('db initialized');
 
         await this.getPledgeData();
         this.log.trace('premium enabled');
