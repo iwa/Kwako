@@ -4,8 +4,7 @@ import { TextChannel } from 'discord.js';
 //let { version } = require('../../package.json');
 
 export default async function ready() {
-    await Kwako.user.setActivity(`k!help ☁️`, { type: 'WATCHING' }).catch(err => Kwako.log.error(err));
-    await Kwako.user.setStatus("online").catch(err => Kwako.log.error(err))
+    Kwako.user.setPresence({ status: 'online', activities: [{ name: "k!help ☁️", type: 'WATCHING' }], afk: false });
 
     //let allMsg = Kwako.db.collection('msg').find()
     //if(allMsg) {

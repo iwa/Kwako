@@ -23,7 +23,7 @@ Kwako.once('shardReady', async () => {
     Kwako.log.debug(`logged in as ${Kwako.user.username}`);
 });
 
-Kwako.on('message', async (msg: Message) => message(msg));
+Kwako.on('messageCreate', async (msg) => { message(msg); });
 
 // Login
 Kwako.start(process.env.TOKEN);

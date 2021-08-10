@@ -1,4 +1,4 @@
-import { Collection, Client } from "discord.js";
+import { Collection, Client, Intents } from "discord.js";
 import log from './Logger';
 import pg from 'pg';
 import axios from 'axios';
@@ -55,7 +55,7 @@ export default new class Kwako extends Client {
     public constructor() {
         super(
             {
-                disableMentions: 'everyone',
+                intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
             }
         );
     }
@@ -179,7 +179,7 @@ export default new class Kwako extends Client {
         await this.getPledgeData();
         this.log.trace('premium enabled');
 
-        this.setInterval(async () => {
+        setInterval(async () => {
             await this.getPledgeData();
         }, 300000);
     }

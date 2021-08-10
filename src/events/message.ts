@@ -7,7 +7,7 @@ export default async function message(msg: Message) {
     if (!msg) return;
     if (msg.author.bot) return;
     if (!msg.guild) return Kwako.log.trace({ msg: 'dm', author: { id: msg.author.id, name: msg.author.tag }, content: msg.cleanContent, attachment: msg.attachments.first() });
-    if (msg.channel.type !== "text") return;
+    if (msg.channel.type !== "GUILD_TEXT") return;
 
     //let guildConf = await Kwako.getGuildConf(msg.guild.id);
     //let disabled: string[] = guildConf.disabledCommands || [];
@@ -20,9 +20,9 @@ export default async function message(msg: Message) {
     if (!msg.content.startsWith(Kwako.prefix)) {
         if (msg.mentions.has(Kwako.user.id) && !msg.mentions.everyone)
             return msg.channel.send({
-                'embed': {
+                'embeds': [{
                     'description': Kwako.getText(msg.guild.id, 'showPrefix', Kwako.prefix)
-                }
+                }]
             })
 
         //if (guildConf.useExpSystem)
@@ -41,25 +41,25 @@ export default async function message(msg: Message) {
             .setDescription(Kwako.getText(msg.guild.id, 'cmdCooldownEmbedDesc', msg.author.username))
             .setColor('#e67e22');
 
-        let sent = await msg.channel.send(embed);
+        let sent = await msg.channel.send({ embeds: [embed] });
         return setTimeout(async () => { await sent.delete(); }, 3000);
     }
 
     //if (!cmd || disabled.includes(cmd.help.name)) return;
     if (cmd) {
-        if (cmd.help.premium && !Kwako.patrons.has(msg.guild.ownerID))
+        if (cmd.help.premium && !Kwako.patrons.has(msg.guild.ownerId))
             return msg.channel.send({
-                "embed": {
+                "embeds": [{
                     "title": Kwako.getText(msg.guild.id, 'premiumRequiredEmbedTitle'),
                     "description": Kwako.getText(msg.guild.id, 'premiumRequiredEmbedDesc'),
                     "color": 13901365
-                }
+                }]
             }).catch(() => { return; });
 
         //if (cmd.help.perms && !msg.guild.me.hasPermission(cmd.help.perms))
         //    return makePermsErrorBetter(msg, cmd);
 
-        if (!msg.member.hasPermission('MANAGE_GUILD')) {
+        if (!msg.member.permissions.has('MANAGE_GUILD')) {
             talkedRecently.add(msg.author.id);
             setTimeout(() => {
                 talkedRecently.delete(msg.author.id);
