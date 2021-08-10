@@ -1,4 +1,4 @@
-import { Collection, Client, Intents } from "discord.js";
+import { Collection, Client, Intents, ApplicationCommandData } from "discord.js";
 import log from './Logger';
 import axios from 'axios';
 import { MongoClient, Db } from 'mongodb';
@@ -21,7 +21,7 @@ export default new class Kwako extends Client {
     public db: Db;
     public dbHelper = dbHelper;
 
-    public commands: Collection<any, any> = new Collection();
+    public commands: Collection<string, Command> = new Collection();
 
     public patrons: Set<string> = new Set();
     private golden: Set<string> = new Set();
@@ -153,6 +153,17 @@ export default new class Kwako extends Client {
     //    return this.defaultConfig;
     //}
 
+    private async _registerCommands() {
+        const data: ApplicationCommandData[] = [];
+        for (const cmd of this.commands)
+            data.push({ name: cmd[1].name, description: 'a kwako command' });
+
+        if (process.env.NODE_ENV === 'production')
+            await this.application?.commands.set(data).then(() => console.debug('ok'));
+        else
+            await this.guilds.cache.get('449334887019970570')?.commands.set(data).then(() => console.debug('ok'));
+    }
+
     private async _init() {
         fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
             if (error) return log.error(error);
@@ -190,5 +201,6 @@ export default new class Kwako extends Client {
     public async start(token: string) {
         await this._init();
         await this.login(token);
+        await this._registerCommands();
     }
 }
