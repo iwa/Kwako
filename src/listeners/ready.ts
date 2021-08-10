@@ -1,8 +1,6 @@
 import Kwako from '../Client';
 import { TextChannel } from 'discord.js';
 
-//let { version } = require('../../package.json');
-
 export default async function ready() {
     Kwako.user.setPresence({ status: 'online', activities: [{ name: "k!help ☁️", type: 'WATCHING' }], afk: false });
 

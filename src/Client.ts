@@ -2,7 +2,7 @@ import { Collection, Client, Intents } from "discord.js";
 import log from './Logger';
 import axios from 'axios';
 import { MongoClient, Db } from 'mongodb';
-//import dbHelper from "./utils/dbHelper";
+import dbHelper from "./utils/dbHelper";
 //import { Manager } from 'erela.js';
 
 import fs from 'fs';
@@ -16,6 +16,7 @@ export default new class Kwako extends Client {
     public log = log;
 
     public db: Db;
+    public dbHelper = dbHelper;
 
     public commands: Collection<any, any> = new Collection();
 
