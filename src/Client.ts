@@ -25,6 +25,8 @@ export default new class Kwako extends Client {
 
     //public music: Manager;
 
+    public createEmbed = createEmbed;
+
     /*private defaultConfig: GuildConfig = {
         prefix: "!",
         welcomeMessage: "",
