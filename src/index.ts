@@ -4,8 +4,8 @@ dotenv.config();
 import Kwako from './Client';
 
 import { MessageReaction, User, Message, MessageEmbed, TextChannel, Util, VoiceChannel, GuildChannel } from 'discord.js';
-import ready from "./events/ready";
-import message from "./events/message";
+import ready from "./listeners/ready";
+import message from "./listeners/message";
 //import { Manager } from "erela.js";
 
 // Process related Events
