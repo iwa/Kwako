@@ -6,6 +6,8 @@ import dbHelper from "./utils/dbHelper";
 //import { Manager } from 'erela.js';
 
 import fs from 'fs';
+import Command from "./structures/Command";
+import createEmbed from "./utils/createEmbed";
 
 //import GuildConfig from './interfaces/GuildConfig';
 
@@ -152,26 +154,26 @@ export default new class Kwako extends Client {
     //}
 
     private async _init() {
-        /*fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
+        fs.readdir('./build/commands/', { withFileTypes: true }, (error, f) => {
             if (error) return log.error(error);
-            f.forEach((f) => {
+            f.forEach(async (f) => {
                 if (f.isDirectory()) {
                     fs.readdir(`./build/commands/${f.name}/`, (error, fi) => {
                         if (error) return log.error(error);
-                        fi.forEach((fi) => {
+                        fi.forEach(async (fi) => {
                             if (!fi.endsWith(".js")) return;
-                            let commande = require(`./commands/${f.name}/${fi}`);
-                            this.commands.set(commande.help.name, commande);
+                            let commande: Command = (await import(`./commands/${f.name}/${fi}`)).default;
+                            this.commands.set(commande.name, commande);
                         })
                     })
                 } else {
                     if (!f.name.endsWith(".js")) return;
-                    let commande = require(`./commands/${f.name}`);
-                    this.commands.set(commande.help.name, commande);
+                    let commande: Command = (await import(`./commands/${f.name}`)).default;
+                    this.commands.set(commande.name, commande);
                 }
             });
         });
-        this.log.trace('commmands initialized');*/
+        this.log.trace('commmands initialized');
 
         let mongod = await MongoClient.connect(process.env.MONGO_URL);
         this.db = mongod.db(process.env.MONGO_DBNAME);

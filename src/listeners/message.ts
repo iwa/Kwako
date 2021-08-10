@@ -1,5 +1,6 @@
 import Kwako from '../Client';
 import { Message, MessageEmbed } from "discord.js";
+import Command from '../structures/Command';
 
 let talkedRecently = new Set();
 
@@ -31,9 +32,9 @@ export default async function message(msg: Message) {
         return;
     }
 
-    let args = msg.content.slice(1).trim().split(/ +/g);
+    let args = msg.content.slice(2).trim().split(/ +/g);
     let req = args.shift().toLowerCase();
-    let cmd: any = Kwako.commands.get(req) || Kwako.commands.find((comd) => comd.help.aliases && comd.help.aliases.includes(req));
+    let cmd: Command = Kwako.commands.get(req) || Kwako.commands.find((comd) => comd.aliases && comd.aliases.includes(req));
 
     if (talkedRecently.has(msg.author.id)) {
         const embed = new MessageEmbed()
@@ -47,7 +48,7 @@ export default async function message(msg: Message) {
 
     //if (!cmd || disabled.includes(cmd.help.name)) return;
     if (cmd) {
-        if (cmd.help.premium && !Kwako.patrons.has(msg.guild.ownerId))
+        if (cmd.premium && !Kwako.patrons.has(msg.guild.ownerId))
             return msg.channel.send({
                 "embeds": [{
                     "title": Kwako.getText(msg.guild.id, 'premiumRequiredEmbedTitle'),
@@ -67,6 +68,6 @@ export default async function message(msg: Message) {
         }
 
         Kwako.log.trace({ msg: msg.cleanContent, author: { id: msg.author.id, name: msg.author.tag }, guild: { id: msg.guild.id, name: msg.guild.name } });
-        await cmd.run(msg, args);
+        await cmd.runMsg(msg, args);
     }
 }
