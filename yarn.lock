@@ -217,12 +217,13 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
-anilist-node@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/anilist-node/-/anilist-node-1.7.0.tgz#36676646cbd4649066c2bd78f7e2b7ab0c6084f8"
-  integrity sha512-TXLVkYt4ZKUujzSDShZO1bP17eARdkVAGxHkVm/NVVwXdmPd+lpH63Wm3MAD6g/FIUsU1ZoyWuB72bIsyJ1SgQ==
+anilist-node@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/anilist-node/-/anilist-node-1.11.0.tgz#2de52fafa9857bd3a514549d0999575cf3268a3d"
+  integrity sha512-ekWVz51+P8BzEw/uRkrbHTtWLNzOUhHKD5H6BOcxQ+5eG9m5+pxTxCmkMRpJSBTK+dnUf8RnXyYo++UfFTEKOQ==
   dependencies:
-    node-fetch "^2.6.1"
+    abort-controller "^3.0.0"
+    node-fetch "^2.6.6"
 
 ansi-regex@^2.0.0:
   version "2.1.1"
@@ -1001,10 +1002,17 @@ needle@^2.5.0:
     iconv-lite "^0.4.4"
     sax "^1.2.4"
 
-node-fetch@2.6.1, node-fetch@^2.6.1:
+node-fetch@2.6.1:
   version "2.6.1"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.1.tgz"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
+
+node-fetch@^2.6.1, node-fetch@^2.6.6:
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.6.tgz#1751a7c01834e8e1697758732e9efb6eeadfaf89"
+  integrity sha512-Z8/6vRlTUChSdIgMa51jxQ4lrw/Jy5SOW10ObaA47/RElsAN2c5Pn8bTgFGWn/ibwzXTE8qwr1Yzx28vsecXEA==
+  dependencies:
+    whatwg-url "^5.0.0"
 
 node-gyp-build@^4.2.0:
   version "4.2.3"
@@ -1462,6 +1470,11 @@ top-package@^1.0.0:
   resolved "https://registry.npmjs.org/top-package/-/top-package-1.0.1.tgz"
   integrity sha512-tsuhQlHSigOTTvonxHXwqSKEVSnWMh2GvpTvXa5YmoyOwL5YvU4lTd/KNVZlKM5v7gqx44UEuQxyPQEpmaIHdg==
 
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+  integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
+
 tslib@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.0.3.tgz"
@@ -1542,6 +1555,19 @@ util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
+
+webidl-conversions@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
+  integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
+
+whatwg-url@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
+  integrity sha1-lmRU6HZUYuN2RNNib2dCzotwll0=
+  dependencies:
+    tr46 "~0.0.3"
+    webidl-conversions "^3.0.0"
 
 wide-align@^1.1.0:
   version "1.1.3"
